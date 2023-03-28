@@ -1,0 +1,61 @@
+/*
+	Box Value
+*/
+.box-value__wrapper{
+	margin-top: 38px;
+	[class^="col-"]{
+		margin-top: 28px;
+	}
+}
+.box-value{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+	.box-value__icon{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: center;
+		align-content: center;
+		align-items: center;
+		width: 80px;
+		min-width: 80px;
+		height: 80px;
+		border-radius: 50%;
+		background-color: #ffffff;
+		box-shadow: 0px 10px 20px rgba(0,0,0,0.06);
+		text-align: center;
+		font-size: 35px;
+		line-height: 1;
+		margin-top: -4px;
+		color: $default_color;
+		& + .box-value__content{
+			margin-left: 20px;
+		}
+	}
+	.box-value__content{}
+	.box-value__value{
+		font-size: 42px;
+		line-height: 1;
+		color: $default_color02;
+		font-family: $default_font2;
+		font-weight: 600;
+	}
+	.box-value__label{
+		margin-top: 5px;
+	}
+	@include media-breakpoint-down(md) {
+		.box-value__icon{
+			width: 60px;
+			min-width: 60px;
+			height: 60px;
+			font-size: 27px;
+		}
+		.box-value__value{
+			font-size: 32px;
+		}
+	}
+}

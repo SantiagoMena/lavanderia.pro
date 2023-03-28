@@ -1,0 +1,288 @@
+.footer-wrapper01{
+	background-color: #323232;
+	color: #e7e7e7;
+	position: relative;
+	padding: 76px 0 72px;
+	@include media-breakpoint-down(md) {
+		padding: 50px 0 47px;
+	}
+	@include media-breakpoint-down(sm) {
+		padding: 50px 0 40px;
+	}
+	> .container{
+		@media (min-width: 1230px){
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+}
+.f-holder{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-content: flex-start;
+	align-items: flex-start;
+	padding: 25px 0 24px;
+	@include media-breakpoint-down(md) {
+		padding: 20px 0 19px;
+	}
+	@include media-breakpoint-down(sm) {
+		padding: 18px 0 19px;
+		flex-wrap: wrap;
+		justify-content: center;
+		> *{
+			width: 100%;
+			text-align: center;
+		}
+	}
+}
+/*
+	footer objects
+*/
+.f-logo{
+	line-height: 1;
+	color: #ffffff;
+	font-family: $default_font2;
+	font-weight: 600;
+	display: inline-block;
+	position: relative;
+	top: 1px;
+	transition: color .2s;
+	font-size: 30px;
+	padding:0 0 5px 22px;
+	margin: -5px 0 0 10px;
+	@include media-breakpoint-up(lg) {
+		letter-spacing: -0.01em;
+	}
+	.tt-icon{
+		position: absolute;
+		top: -1px;
+		left: -9px;
+		font-size: 25px;
+		line-height: 1;
+		color: $default_color;
+		transform: scaleX(-1);
+	}
+	@include media-breakpoint-down(md) {
+		font-size: 21px;
+		padding:0 0 5px 14px;
+		.tt-icon{
+			font-size: 18px;
+			top: 0px;
+		}
+	}
+	&:hover{
+		color: #ffffff;
+	}
+}
+.f-title{
+	font-size: 20px;
+	line-height: 1;
+	color: #ffffff;
+	font-family: $default_font2;
+	font-weight: 600;
+	margin-bottom: 0;
+	padding: 0 0 19px 0;
+	@include media-breakpoint-down(md) {
+		font-size: 16px;
+		padding: 0 0 11px 0;
+	}
+}
+.f-text{
+	margin-top: 15px;
+	@include media-breakpoint-down(md) {
+		margin-top: 10px;
+	}
+}
+.f-social{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: flex-start;
+	margin-left: -6px;
+	margin-top: 16px;
+	li{
+		a{
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-content: center;
+			align-items: center;
+			font-size: 13px;
+			line-height: 13px;
+			width: 40px;
+			height: 40px;
+			color: $default_color02;
+			background-color:#ffffff;
+			transition: color .2s linear, background-color .2s linear;
+			border-radius: 50%;
+			&:hover{
+				background-color:$default_color;
+				color: #ffffff;
+			}
+		}
+		margin-left: 6px;
+		margin-top: 6px;
+	}
+	@include media-breakpoint-down(md) {
+		margin-top: 8px;
+	}
+}
+.f-info{
+	li{
+		position: relative;
+		[class^=icons-]{
+			position: absolute;
+			left: 0;
+			top: 8px;
+			font-size: 14px;
+			color: $default_color;
+		}
+		padding: 0 0 0 22px;
+		line-height: 32px;
+		a{
+			color: #ffffff;
+			transition: color .2s linear;
+			&:hover{
+				color: $default_color;
+			}
+		}
+		@include media-breakpoint-down(lg) {
+			line-height: 26px;
+			&:not(:first-child){
+				margin-top: 6px;
+			}
+			[class^=icons-]{
+				font-size: 12px;
+			}
+		}
+	}
+}
+
+.f-link{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: flex-start;
+	li{
+		a{
+			color: $default_text_color;
+			position: relative;
+			&:before{
+				content: '';
+				display: block;
+				position: absolute;
+				bottom: 0px;
+				width: 0%;
+				height: 1px;
+				margin: auto;
+				left: 0;
+				right: 0;
+				background-color: $default_color;
+				transition: width .2s linear;
+			}
+			&:hover{
+				color: $default_color;
+				&:before{
+					width: 100%;
+				}
+			}
+		}
+		margin-left: 17px;
+	}
+	@include media-breakpoint-down(sm) {
+		justify-content: center;
+		margin-top: 5px;
+		li{
+			margin: 0;
+			text-align: center;
+			width: 100%;
+		}
+	}
+}
+
+#subscribeform{
+	position: relative;
+	.f-form__input{
+		margin-top: 13px;
+	}
+	.form-control{
+		background: #ffffff;
+		font-size: 16px;
+		line-height: 25px;
+		border: 1px solid #e3e6ea;
+		color: $default_text_color;
+		padding:12px 12px 12px 15px;
+		outline: none;
+		font-family: $default_font;
+		transition: all 0.3s;
+		border-radius: $radius;
+		width: 100%;
+		max-width: 316px;
+		height: 49px;
+		position: relative;
+		&.is-invalid{
+			border: 1px solid red;
+		}
+	}
+	.f-form__btn{
+		margin-top: 21px;
+		.tt-btn{
+			letter-spacing: 0.05em;
+		}
+	}
+	label.error{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		align-content: stretch;
+		align-items: center;
+		position: absolute;
+		top: 96px;
+		left: 0;
+		padding: 8px 12px 6px;
+		background: red;
+		color: #ffffff;
+		font-size: 14px;
+		line-height: 22px;
+		z-index: 3;
+		width: 100%;
+		&:after{
+			content: '';
+			position: absolute;
+			top: -12px;
+			left: 50%;
+			border: 6px solid transparent;
+			border-bottom: 6px solid #f8353e;
+		}
+	}
+	@include media-breakpoint-down(md) {
+		.form-control{
+			height: 44px;
+			padding:12px 12px 12px 11px;
+			font-size: 15px;
+		}
+		.f-form__btn{
+			margin-top: 15px;
+		}
+	}
+	@include media-breakpoint-down(sm) {
+		.f-form__input{
+			margin-top: 7px;
+		}
+	}
+}
+
+.f-col-wrapper{
+	margin-top: -38px;
+	[class^="col"]{
+		margin-top: 38px;
+	}
+}

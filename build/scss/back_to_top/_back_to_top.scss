@@ -1,0 +1,101 @@
+/* Back to top */
+.tt-back-to-top{
+	bottom: -90px;
+	overflow: hidden;
+	display: inline-block;
+	position: fixed;
+	z-index: 20;
+	right: 15px;
+	background-color:#ffffff;
+	border-radius: 50%;
+	.button,
+	.mask{
+		display: inline-flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: center;
+		align-content: center;
+		align-items: center;
+		font-size: 14px;
+		line-height: 17px;
+		z-index: 2;
+		font-weight: 600;
+		width: 70px;
+		height: 70px;
+		color: #ffffff;
+		cursor: pointer;
+		position: relative;
+		background: $gradient_color;
+		border-radius:0;
+		text-align: center;
+		box-shadow: none;
+		outline: none;
+		border:2px solid $default_color;
+		transition: color .2s, background-color .2s,  border-color .2s;
+		white-space: nowrap;
+		padding: 0;
+		border-radius: 50%;
+	}
+	.button{
+		background: $gradient_color;
+		mask: url("../images/btn-mask.png");
+		mask-size: 3000% 100%;
+		animation: ani2 0.7s steps(29) forwards;
+		border: none;
+	}
+	.mask {
+		position: absolute;
+		background:transparent !important;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+		color: $default_color;
+		background-color: #ffffff;
+	}
+	&.pt-show{
+		@media (min-width: 790px){
+			bottom: 60px;
+		}
+		@media (max-width: 789px){
+			bottom: 60px;
+		}
+	}
+	svg{
+		width: 24px;
+		height: auto;
+	}
+	&:hover{
+		.mask{
+			color: $default_color;
+			background-color: #ffffff;
+		}
+		&.tt-btn__hover02{
+			.mask{
+				color: #ffffff;
+			}
+		}
+		.button{
+			animation: ani 0.7s steps(29) forwards;
+		}
+	}
+	@include media-breakpoint-down(md) {
+		.button,
+		.mask{
+			width: 60px;
+			height: 60px;
+		}
+	}
+	@include media-breakpoint-down(sm) {
+		.button,
+		.mask{
+			width: 50px;
+			height: 50px;
+		}
+		svg{
+			width: 19px;
+			height: auto;
+		}
+	}
+}
