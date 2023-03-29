@@ -12,7 +12,7 @@ services:
         container_name: lavanderia.pro.nginx
         build: ./nginx
         ports:
-            - "89:80"
+            - "1001:80"
         # depends_on: 
         #     - php
         volumes:
