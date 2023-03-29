@@ -39,7 +39,7 @@ try {
 
     //Content
     $mail->isHTML(true);                                  //Set email format to HTML
-    $mail->Subject = 'Here is what was sent ProLaundry, form "Schedule a Pickup"';
+    $mail->Subject = 'Here is what was sent ProLaundry, form "Programar una Lavada"';
     $mail->Body    =
     	'Name: ' .$name.
     	'<br>E-mail: ' .$email.
