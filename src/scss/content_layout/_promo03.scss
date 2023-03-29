@@ -1,0 +1,138 @@
+/*
+	Promo 03
+*/
+.promo03{
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+	text-align: center;
+	background-color: #ffffff;
+	box-shadow: 0 10px 20px rgba(157, 174, 185, 0.15);
+	height: 100%;
+	padding: 53px 5px 45px;
+	position: relative;
+	cursor: pointer;
+	.promo03__icon{
+		color: $default_color02;
+		display: inline-block;
+		font-size: 90px;
+		transform: scale(1);
+		transition: all .3s;
+		&.icons-884417{
+			font-size: 86px;
+		}
+		&.icons-1233149{
+			font-size: 82px;
+		}
+		&.icons-495018{
+			font-size: 83px;
+		}
+		min-height: 100px;
+	}
+	.promo03__title{
+		font-size: 20px;
+		line-height: 30px;
+		color: $default_color02;
+		font-family: $default_font2;
+		font-weight: 600;
+		margin-top: 35px;
+	}
+	.promo03__subtitle{
+		font-size: 16px;
+		line-height: 27px;
+		margin-top: 6px;
+	}
+	.promo03__show-layout{
+		height: 100%;
+	}
+	.promo03__price{
+		font-size: 16px;
+		color: $default_color02;
+		font-family: $default_font2;
+		font-weight: 600;
+		margin-top:7px;
+		.tt-value{
+			font-size: 28px;
+			line-height: 38px;
+			color: $default_color;
+		}
+	}
+	.promo03__show-btn{
+		visibility: hidden;
+		margin-top: 30px;
+		position: absolute;
+		width: 100%;
+		opacity: 0;
+		transition: opacity .45s;
+		transition-delay: 0.1s;
+	}
+	.promo03__move{
+		transition: all .3s;
+	}
+	@include media-breakpoint-down(md) {
+		.promo03__icon{
+			font-size: 81px;
+			&.icons-884417,
+			&.icons-1233149,
+			&.icons-495018{
+				font-size: 76px;
+			}
+			min-height: 80px;
+		}
+		.promo03__title{
+			font-size: 16px;
+			line-height: 26px;
+			margin-top: 34px;
+		}
+		.promo03__subtitle{
+			font-size: 15px;
+			line-height: 25px;
+		}
+		.promo03__price{
+			font-size: 13px;
+		}
+		.promo03__show-btn{
+			margin-top: 20px;
+		}
+	}
+	@media (max-width: 650px){
+		max-width: 271px;
+		margin-left: auto;
+		margin-right: auto;
+		.promo03__price{
+			font-size: 12px;
+			.tt-value{
+				font-size: 20px;
+			}
+		}
+	}
+	&.active{
+		.promo03__icon{
+			transform: scale(0);
+			height: 0;
+		}
+		.promo03__show-btn{
+			visibility: visible;
+			opacity: 1;
+		}
+		.promo03__move{
+			position: relative;
+			transform: translateY(-100px);
+		}
+	}
+}
+.promo03__wrapper{
+	@include media-breakpoint-up(lg) {
+		margin-left: -30px;
+		margin-right: -30px;
+	}
+	.tt-item{
+		padding:15px 15px 55px;
+		height: 100%;
+	}
+	.slick-dots{
+		margin-top: -25px;
+	}
+}

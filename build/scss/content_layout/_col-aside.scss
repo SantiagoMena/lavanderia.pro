@@ -1,0 +1,93 @@
+.tt-aside{
+	.tt-block-aside{
+		&:not(:first-child){
+			margin-top: 20px;
+		}
+	}
+	&.tt-aside__indent-large{
+		padding-right: 52px;
+		@include media-breakpoint-down(md) {
+			padding-right: 35px;
+		}
+		.tt-block-aside{
+			&:not(:first-child){
+				margin-top: 40px;
+			}
+		}
+	}
+}
+.rightColumn{
+	@include media-breakpoint-up(md) {
+		padding-left: 30px;
+	}
+	@include media-breakpoint-up(lg) {
+		padding-left: 50px;
+	}
+	@include media-breakpoint-down(sm) {
+		max-width: 400px;
+	}
+}
+
+
+.tt-block-aside{
+	box-shadow: 0 19px 40px rgba(157, 174, 185, 0.15);
+	background-color: #ffffff;
+	&:not(.no-inner){
+		padding: 34px 40px 35px 40px;
+	}
+	&.no-wrapper{
+		background: transparent;
+		box-shadow: none;
+		padding: 0
+
+	}
+	.tt-aside-title{
+		color: $default_color02;
+		font-family: $default_font2;
+		font-weight: 600;
+		padding: 0 0 7px 0;
+		font-size: 20px;
+		line-height: 30px;
+	}
+	.tt-aside-content{
+
+	}
+	@include media-breakpoint-down(md) {
+		&:not(.no-inner){
+			padding: 24px 30px 25px;
+		}
+	}
+	@include media-breakpoint-down(sm) {
+		&:not(.no-inner){
+			padding: 24px 20px 25px;
+		}
+	}
+
+}
+
+.box-aside-info{
+	padding: 0;
+	margin: 0;
+	li{
+		position: relative;
+		[class^="icons-"]{
+			color: $default_color;
+			position: absolute;
+			top: 5px;
+			left: 0;
+		}
+		padding:0 0 0 28px;
+		&:not(:first-child){
+			margin-top: 5px;
+		}
+		a{
+			color: $default_text_color;
+			&:hover{
+				color: $default_color;
+			}
+		}
+	}
+	& + [class^="tt-btn"]{
+		margin-top: 22px;
+	}
+}

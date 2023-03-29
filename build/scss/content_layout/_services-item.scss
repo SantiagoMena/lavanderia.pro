@@ -1,0 +1,53 @@
+/*
+	Services-item
+*/
+.services-item__img{
+	img{
+		width: 100%;
+	}
+}
+.services-item__layout{
+	margin-top: -75px;
+	position: relative;
+	&:before{
+		content: '';
+		width: calc(100% - 30px);
+		height: 75px;
+		background: #ffffff;
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	padding: 70px 0 0 0;
+	@include media-breakpoint-down(md) {
+		padding: 50px 0 0 0;
+	}
+}
+.submenu-aside{
+	li{
+		position: relative;
+		a{
+			color: $default_color02;
+			transition: color .2s;
+			display:block;
+			padding: 19px 24px;
+			font-size: 16px;
+			font-family: $default_font2;
+			font-weight: 600;
+			&:hover{
+				color: $default_color;
+			}
+		}
+		&:not(:first-child){
+			margin-top: 5px;
+		}
+		&.active{
+			a{
+				background: $gradient_color;
+				color: #ffffff;
+			}
+		}
+	}
+}
+

@@ -1,0 +1,59 @@
+#map{
+	background-size: cover;
+	background-position: center center;
+	iframe{
+		border: 0;
+		width: 100%;
+		height: 100%;
+	}
+	&:not(.map-layout-wrapper){
+		@include media-breakpoint-up(lg) {
+			height: 378px;
+		}
+		@include media-breakpoint-down(md) {
+			height: 245px;
+		}
+		@include media-breakpoint-down(sm) {
+			height: 333px;
+		}
+	}
+	&.map-layout-wrapper{
+		@include media-breakpoint-up(lg) {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 1;
+		}
+		@include media-breakpoint-down(md) {
+			height: 245px;
+		}
+		@include media-breakpoint-down(sm) {
+			height: 333px;
+		}
+	}
+}
+.map-layout{
+	background-color: #ffffff;
+	padding: 50px;
+	margin-bottom: 120px;
+	position: relative;
+	z-index: 2;
+	@include media-breakpoint-up(lg) {
+		p+.form-default{
+			margin-top: 33px;
+		}
+	}
+	@include media-breakpoint-down(md) {
+		margin-bottom: 80px;
+		padding: 0;
+		text-align: center;
+		max-width: 770px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	@include media-breakpoint-down(sm) {
+		margin-bottom: 60px;
+	}
+}

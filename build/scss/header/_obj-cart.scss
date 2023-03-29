@@ -1,0 +1,236 @@
+
+.tt-obj-cart{
+	.tt-obj__btn{
+		position: relative;
+		display: inline-block;
+		transition: color .2s linear;
+		color: $default_color02;
+		&:hover{
+			color: $default_color;
+		}
+		.tt-obj__badge{
+			position: absolute;
+			right: 0px;
+			top: 9px;
+			pointer-events:none;
+			background-color: $default_color;
+			border-radius:50%;
+			width: 17px;
+			height: 17px;
+			font-size: 10px;
+			line-height: 18px;
+			color: #ffffff;
+			text-align: center;
+		}
+	}
+	@include media-breakpoint-up(lg) {
+		.tt-obj__btn{
+			font-size: 26px;
+			line-height: 1;
+			padding: 15px 8px 12px 5px;
+		}
+	}
+	@include media-breakpoint-down(md) {
+		.tt-obj__btn{
+			font-size: 25px;
+			line-height: 25px;
+			top: 1px;
+			padding: 5px 5px 5px 5px;
+			.tt-obj__badge{
+				top: -1px;
+				right: -3px;
+			}
+		}
+	}
+	@include media-breakpoint-down(sm) {
+		.tt-obj__btn{
+			font-size: 20px;
+			line-height: 20px;
+			top: 1px;
+			padding: 5px 5px 5px 5px;
+			.tt-obj__badge{
+				top: 1px;
+				right: -6px;
+			}
+		}
+	}
+
+	.tt-obj__dropdown{
+		position: absolute;
+		opacity: 0;
+		width: 349px;
+		margin: -8px 0 0 0;
+		padding:32px 0px 40px;
+		text-align: left;
+		transform: translateY(20px);
+		transition: 0.2s ease 0s;
+		background: #ffffff;
+		right: 0;
+		top: 100%;
+		z-index: 22;
+		box-shadow: 0 0px 40px rgba(0, 0, 0, 0.1);
+		pointer-events:none;
+	}
+	.tt-obj__dropdown-close{
+		position: absolute;
+		right: 16px;
+		top: 15px;
+		display: inline-block;
+		padding:5px;
+		color: $default_color02;
+		transition: color .2s linear;
+		cursor: pointer;
+		font-size: 11px;
+		line-height: 1;
+		&:hover{
+			color: $default_color;
+		}
+	}
+	&.active{
+		.tt-obj__btn{
+			color: $default_color;
+		}
+		.tt-obj__dropdown{
+			opacity: 1;
+			transform: translateY(0);
+			transition: 0.3s ease 0.15s;
+			pointer-events:auto;
+		}
+	}
+	.tt-obj__title{
+		font-size: 24px;
+		line-height: 34px;
+		color: $default_color02;
+		font-family: $default_font2;
+		font-weight: 600;
+		margin: 0;
+		padding: 0 35px 16px;
+	}
+	@include media-breakpoint-down(md) {
+		.tt-obj__title{
+			font-size: 20px;
+			line-height: 30px;
+		}
+		.tt-obj__dropdown{
+			width: 300px;
+		}
+	}
+	@include media-breakpoint-down(sm) {
+		.tt-obj__dropdown{
+			width: 274px;
+		}
+	}
+}
+.tt-cart-list{
+	padding:0 35px;
+	.tt-item{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		align-content: flex-start;
+		align-items: flex-start;
+		position: relative;
+		&:not(:first-child){
+			margin-top: 19px;
+		}
+	}
+	.tt-item__remove{
+		position: absolute;
+		right: -5px;
+		top: 2px;
+		color: #c7c7c8;
+		transition: color .2s linear;
+		padding:5px;
+		font-size: 14px;
+		&:hover{
+			color: $default_color;
+		}
+	}
+	.tt-item__img{
+		width: 88px;
+		min-width: 88px;
+		position: relative;
+		top: 6px;
+	}
+	.tt-item__content{
+		margin-left: 18px;
+		padding-right: 15px;
+	}
+	.tt-item__title{
+		font-size: 16px;
+		line-height: 27px;
+		color: $default_text_color;
+		padding-right: 5px;
+		a{
+			color: $default_text_color;
+			transition: color .2s linear;
+			&:hover{
+				color: $default_color;
+			}
+		}
+	}
+	.tt-item__price{
+		font-size: 20px;
+		font-family: $default_font2;
+		font-weight: 600;
+		color: $default_color02;
+		margin-top: 14px;
+		.new-price{
+			font-size: 20px;
+			color: $default_color;
+		}
+		.old-price{
+			font-size: 16px;
+			text-decoration: line-through;
+			margin-left: 7px;
+		}
+	}
+	@include media-breakpoint-down(md) {
+		padding:0 25px;
+		.tt-item__title{
+			font-size: 14px;
+			line-height: 23px;
+		}
+		.tt-item__price{
+			font-size: 18px;
+			margin-top: 7px;
+		}
+		.tt-item__img{
+			width: 75px;
+			min-width: 75px;
+		}
+	}
+
+}
+.tt-cart-total{
+	border-top:1px solid $border;
+	font-size: 24px;
+	line-height: 1;
+	font-family: $default_font2;
+	font-weight: 600;
+	color: $default_color02;
+	padding:27px 35px 0;
+	margin-top: 28px;
+	.tt-row{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+		align-content: flex-start;
+		align-items: flex-start;
+	}
+	.tt-btn{
+		margin-top: 25px;
+		width: 100%;
+	}
+	@include media-breakpoint-down(md) {
+		font-size: 20px;
+		padding:23px 25px 0;
+		.tt-btn{
+			font-size: 16px;
+			height: 50px;
+			margin-top: 20px;
+		}
+	}
+}

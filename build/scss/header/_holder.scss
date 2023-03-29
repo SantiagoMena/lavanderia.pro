@@ -1,0 +1,144 @@
+
+$holder_lg:					78px;
+$holder_md:					65px;
+$holder_sm:					53px;
+
+.tt-holder{
+	background-color: #ffffff;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-content: center;
+	align-items: center;
+	position: relative;
+	padding-left: 35px;
+	padding-right: 35px;
+	z-index: 31;
+	.tt-col-wide{
+		flex: 2 1 auto;
+	}
+	.tt-col-objects{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		&:not(.text-center){
+			justify-content: flex-start;
+			align-content: center;
+			align-items: center;
+		}
+		&.text-center{
+			justify-content: center;
+			align-content: center;
+			align-items: center;
+		}
+		.tt-col__item:not(:first-child){
+			margin-left: 32px;
+		}
+	}
+	.tt-col-left{
+		padding-right: 15px;
+	}
+	.tt-col-right{
+		padding-left: 15px;
+	}
+	.tt-col-left,
+	.tt-col-center,
+	.tt-col-right{
+		display: flex;
+		align-content: center;
+		align-items: center;
+		min-height: $holder_lg;
+	}
+	.tt-btn{
+		position: relative;
+		top: 4px;
+	}
+	@media (max-width: 1300px){
+		padding-left: 25px;
+		padding-right: 25px;
+	}
+	@include media-breakpoint-down(md) {
+		.tt-col-left,
+		.tt-col-center,
+		.tt-col-right{
+			min-height: $holder_md;
+		}
+		.tt-btn{
+			top: 0px;
+		}
+		.tt-col-objects{
+			.tt-col__item:not(:first-child){
+				margin-left: 27px;
+			}
+		}
+	}
+	@include media-breakpoint-down(sm) {
+		padding-left: 20px;
+		padding-right: 20px;
+		.tt-col-left,
+		.tt-col-center,
+		.tt-col-right{
+			min-height: $holder_sm;
+		}
+	}
+}
+#js-init-sticky{
+	min-height: $holder_lg;
+	&.fixed{
+		.tt-holder-wrapper{
+			position: fixed;
+			top: 0;
+			width: 100%;
+			z-index: 31;
+			left: 0;
+		}
+		.tt-holder{
+			min-height:78px;
+			transition: min-height .5s;
+		}
+		.tt-holder-wrapper{
+			box-shadow: 0 0 15px rgba(48, 52, 66, 0.1);
+		}
+	}
+	.tt-holder-wrapper{
+		background-color: #ffffff;
+	}
+	@include media-breakpoint-down(md) {
+		min-height: $holder_md;
+		&.fixed{
+			.tt-holder{
+				min-height:$holder_md;
+			}
+		}
+	}
+	@include media-breakpoint-down(sm) {
+		min-height: $holder_sm;
+		&.fixed{
+			.tt-holder{
+				min-height:$holder_sm;
+			}
+		}
+	}
+}
+
+body.mm-open{
+	#js-init-sticky{
+		&.fixed{
+			.tt-holder-wrapper{
+				box-shadow: none;
+			}
+		}
+	}
+}
+
+
+@include media-breakpoint-down(sm) {
+	.tt-holder{
+		.tt-col-objects{
+			.tt-col__item:not(:first-child){
+				margin-left: 16px;
+			}
+		}
+	}
+}

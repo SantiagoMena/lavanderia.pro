@@ -1,0 +1,136 @@
+/*
+	Img Box
+*/
+.img-box__wrapper{
+	margin-top: -47px;
+	.img-box{
+		margin-top: 54px;
+	}
+	@include media-breakpoint-down(md) {
+		margin-top: -40px;
+		.img-box{
+			margin-top: 40px;
+		}
+	}
+}
+.img-box__img{
+	position: relative;
+	a{
+		display: block;
+		position: relative;
+		overflow: hidden;
+		&:before{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			z-index: 2;
+			display: block;
+			content: '';
+			width: 0;
+			height: 0;
+			background: rgba(255,255,255,.2);
+			transform: translate(-50%,-50%);
+			opacity: 0;
+			pointer-events: none;
+		}
+		&:hover:before{
+			animation: circle .75s;
+		}
+
+	}
+}
+.img-box__label{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+	width: 80px;
+	height: 80px;
+	min-width: 80px;
+	background: $gradient_color;
+	border-radius: 50%;
+	color: #ffffff;
+	font-size: 36px;
+	line-height: 1;
+	position: absolute;
+	z-index: 2;
+	bottom: -19px;
+	left: 18px;
+	pointer-events:none;
+}
+.img-box__title{
+	font-size: 28px;
+	line-height: 38px;
+	font-family: $default_font2;
+	font-weight: 600;
+	color: $default_color02;
+	margin: 31px 0 4px 0;
+	transition: color 0.2s ease 0s;
+	position: relative;
+	display: inline-block;
+	&:before{
+		content: '';
+		display: block;
+		position: absolute;
+		bottom: 5px;
+		width: 0%;
+		height: 2px;
+		margin: auto;
+		left: 0;
+		right: 0;
+		background-color: #52b765;
+		transition: width .2s linear;
+	}
+	&:hover{
+		color: $default_color;
+		&:before{
+			width: 100%;
+		}
+	}
+	& + *{
+		margin-top: 0;
+	}
+}
+.img-box{
+	display: block;
+	color: $default_text_color;
+	.tt-btn{
+		margin-top: 23px;
+		@media (min-width: 1024px){
+			.button,
+			.mask{
+				padding-left: 33px;
+				padding-right: 33px;
+			}
+		}
+	}
+}
+@include media-breakpoint-down(lg) {
+	.img-box__title{
+		font-size: 25px;
+		line-height: 35px;
+		&:before{
+			bottom: 4px;
+		}
+	}
+}
+@include media-breakpoint-down(md) {
+	.img-box__label{
+		width: 60px;
+		height: 60px;
+		min-width: 60px;
+		font-size: 26px;
+	}
+	.img-box__title{
+		font-size: 22px;
+		line-height: 30px;
+		margin: 28px 0 4px 0;
+	}
+	.img-box{
+		.tt-btn{
+			margin-top: 11px;
+		}
+	}
+}

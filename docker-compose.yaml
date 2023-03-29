@@ -1,0 +1,20 @@
+version: '3.9'
+services:
+    # php:
+    #     container_name: seace.php-fpm
+    #     build: ./php-fpm
+    #     volumes:
+    #         - .:/var/www/app
+    #         - ./logs/app:/var/www/app/var/log:cached
+    #     restart: always
+
+    nginx:
+        container_name: lavanderia.pro.nginx
+        build: ./nginx
+        ports:
+            - "89:80"
+        # depends_on: 
+        #     - php
+        volumes:
+            - ./logs/nginx:/var/log/nginx:cached
+            - ./build:/var/www/app
