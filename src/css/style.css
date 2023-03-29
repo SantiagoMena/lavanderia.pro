@@ -8230,73 +8230,73 @@ body.mm-open #js-init-sticky.fixed .tt-holder-wrapper {
 }
 
 .bubble-1 {
-  bottom: -51.8px;
-  left: 56%;
-  -webkit-animation: bubble-animation 4.5s infinite ease-in -1.51s;
-  animation: bubble-animation 4.5s infinite ease-in -1.51s;
+  bottom: -108.2px;
+  left: 2%;
+  -webkit-animation: bubble-animation 4.5s infinite ease-in -5.68s;
+  animation: bubble-animation 4.5s infinite ease-in -5.68s;
 }
 
 .bubble-2 {
-  bottom: -78.2px;
-  left: 58%;
-  -webkit-animation: bubble-animation 4.5s infinite ease-in -7.72s;
-  animation: bubble-animation 4.5s infinite ease-in -7.72s;
+  bottom: -81.8px;
+  left: 66%;
+  -webkit-animation: bubble-animation 4.5s infinite ease-in -6.21s;
+  animation: bubble-animation 4.5s infinite ease-in -6.21s;
 }
 
 .bubble-3 {
-  bottom: -3.8px;
-  left: 54%;
-  -webkit-animation: bubble-animation 4.5s infinite ease-in -4.26s;
-  animation: bubble-animation 4.5s infinite ease-in -4.26s;
+  bottom: -26.6px;
+  left: 25%;
+  -webkit-animation: bubble-animation 4.5s infinite ease-in -4.79s;
+  animation: bubble-animation 4.5s infinite ease-in -4.79s;
 }
 
 .bubble-4 {
-  bottom: -63.8px;
-  left: 48%;
-  -webkit-animation: bubble-animation 4.5s infinite ease-in -3.67s;
-  animation: bubble-animation 4.5s infinite ease-in -3.67s;
+  bottom: -1.4px;
+  left: 26%;
+  -webkit-animation: bubble-animation 4.5s infinite ease-in -6.71s;
+  animation: bubble-animation 4.5s infinite ease-in -6.71s;
 }
 
 .bubble-5 {
-  bottom: -54.2px;
-  left: 33%;
-  -webkit-animation: bubble-animation 4.5s infinite ease-in -4.29s;
-  animation: bubble-animation 4.5s infinite ease-in -4.29s;
+  bottom: -80.6px;
+  left: 23%;
+  -webkit-animation: bubble-animation 4.5s infinite ease-in -2.52s;
+  animation: bubble-animation 4.5s infinite ease-in -2.52s;
 }
 
 .bubble-6 {
-  bottom: -116.6px;
-  left: 46%;
-  -webkit-animation: bubble-animation 4.5s infinite ease-in -7.45s;
-  animation: bubble-animation 4.5s infinite ease-in -7.45s;
+  bottom: -87.8px;
+  left: 3%;
+  -webkit-animation: bubble-animation 4.5s infinite ease-in -2.66s;
+  animation: bubble-animation 4.5s infinite ease-in -2.66s;
 }
 
 .bubble-7 {
-  bottom: -2.6px;
-  left: 50%;
-  -webkit-animation: bubble-animation 4.5s infinite ease-in -4.39s;
-  animation: bubble-animation 4.5s infinite ease-in -4.39s;
+  bottom: -72.2px;
+  left: 61%;
+  -webkit-animation: bubble-animation 4.5s infinite ease-in -5.33s;
+  animation: bubble-animation 4.5s infinite ease-in -5.33s;
 }
 
 .bubble-8 {
-  bottom: -6.2px;
-  left: 49%;
-  -webkit-animation: bubble-animation 4.5s infinite ease-in -1.7s;
-  animation: bubble-animation 4.5s infinite ease-in -1.7s;
+  bottom: -98.6px;
+  left: 48%;
+  -webkit-animation: bubble-animation 4.5s infinite ease-in -6.77s;
+  animation: bubble-animation 4.5s infinite ease-in -6.77s;
 }
 
 .bubble-9 {
-  bottom: -12.2px;
-  left: 87%;
-  -webkit-animation: bubble-animation 4.5s infinite ease-in -4.48s;
-  animation: bubble-animation 4.5s infinite ease-in -4.48s;
+  bottom: -98.6px;
+  left: 46%;
+  -webkit-animation: bubble-animation 4.5s infinite ease-in -0.6s;
+  animation: bubble-animation 4.5s infinite ease-in -0.6s;
 }
 
 .bubble-10 {
-  bottom: -53px;
-  left: 73%;
-  -webkit-animation: bubble-animation 4.5s infinite ease-in -2.55s;
-  animation: bubble-animation 4.5s infinite ease-in -2.55s;
+  bottom: -113px;
+  left: 9%;
+  -webkit-animation: bubble-animation 4.5s infinite ease-in -7.28s;
+  animation: bubble-animation 4.5s infinite ease-in -7.28s;
 }
 
 @-webkit-keyframes bubble-animation {
