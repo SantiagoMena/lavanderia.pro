@@ -17,4 +17,4 @@ services:
         #     - php
         volumes:
             - ./logs/nginx:/var/log/nginx:cached
-            - ./website/build:/var/www/app
+            - ./lavanderia.pro/website/build:/var/www/app
