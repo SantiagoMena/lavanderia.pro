@@ -17,4 +17,4 @@ services:
         #     - php
         volumes:
             - ./logs/nginx:/var/log/nginx:cached
-            - ./build:/var/www/app
+            - ./website/build:/var/www/app
