@@ -28,9 +28,6 @@ func NewMongoDatabase(uri string, db string) Database {
 }
 
 func Mongodb(uri string, database string) (*mongo.Database, *mongo.Client) {
-	// uri := os.Getenv("MONGODB_URI")
-	// database := os.Getenv("MONGODB_DB")
-
 	if uri == "" {
 		log.Fatal("You must set your 'MONGODB_URI' environmental variable. See\n\t https://www.mongodb.com/docs/drivers/go/current/usage-examples/#environment-variable")
 	}
@@ -45,8 +42,6 @@ func Mongodb(uri string, database string) (*mongo.Database, *mongo.Client) {
 }
 
 func (db database) FindAll(collection string) (*mongo.Cursor, error) {
-	// databaseConnect, client := Mongodb()
-
 	laundryDb := db.mongo.Collection(collection)
 
 	result, err := laundryDb.Find(context.Background(), bson.D{})
