@@ -1,2 +1,5 @@
 run: 
-	go run main.go
+	go run ./cmd/lavanderia/main.go
+
+test:
+	go test ./cmd/lavanderia ./internal/lavanderia/controllers ./internal/lavanderia/databases ./internal/lavanderia/repositories
