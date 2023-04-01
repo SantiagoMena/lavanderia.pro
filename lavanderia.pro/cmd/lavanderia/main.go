@@ -17,6 +17,19 @@ func main() {
 
 	r := gin.Default()
 	r.GET("/laundries", controllers.Laundries)
+	r.GET("/ping", Ping)
 
 	r.Run()
+}
+
+func Ping(c *gin.Context) {
+	type status struct {
+		Status string `json:"status"`
+	}
+
+	statusObj := status{
+		Status: "ok",
+	}
+
+	c.JSON(200, statusObj)
 }
