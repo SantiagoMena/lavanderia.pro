@@ -20,8 +20,6 @@ func FindAllLaundries() []types.Laundry {
 		log.Panic(err)
 	}
 
-	log.Panic(laundriesDb)
-
 	for laundriesDb.Next(context.TODO()) {
 		var laundry types.Laundry
 
