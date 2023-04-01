@@ -10,10 +10,20 @@ import (
 
 var collection = "laundry"
 
-func FindAllLaundries() ([]types.Laundry, error) {
+type LaundryRepository struct {
+	database databases.Database
+}
+
+func NewLaundryRepository(database databases.Database) *LaundryRepository {
+	return &LaundryRepository{
+		database: database,
+	}
+}
+
+func (laundryRepository *LaundryRepository) FindAllLaundries() ([]types.Laundry, error) {
 	laundries := []types.Laundry{}
 
-	laundriesDb, err := databases.FindAll(collection)
+	laundriesDb, err := laundryRepository.database.FindAll(collection)
 
 	if err != nil {
 		return nil, err

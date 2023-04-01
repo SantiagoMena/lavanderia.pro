@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/databases"
+	"os"
 	"testing"
 )
 
@@ -14,12 +15,17 @@ func TestFindAllLaundries(t *testing.T) {
 	if err := godotenv.Load("../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
+	uri := os.Getenv("MONGODB_URI")
+	database := os.Getenv("MONGODB_DB")
 
-	laundries, err := FindAllLaundries()
+	mongo := databases.NewMongoDatabase(uri, database)
+
+	laundries, err := NewLaundryRepository(mongo).FindAllLaundries()
 
 	laundriesExpect := []types.Laundry{}
 
-	laundriesDb, err := databases.FindAll(collection)
+	mongo2 := databases.NewMongoDatabase(uri, database)
+	laundriesDb, err := mongo2.FindAll("laundry")
 
 	if err != nil {
 		fmt.Println(err)
