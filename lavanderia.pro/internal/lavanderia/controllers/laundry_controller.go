@@ -9,7 +9,7 @@ import (
 func Laundries(c *gin.Context) {
 	laundries, err := repositories.FindAllLaundries()
 
-	if(err != nil) {
+	if err != nil {
 		c.JSON(500, "Internal server error")
 	}
 

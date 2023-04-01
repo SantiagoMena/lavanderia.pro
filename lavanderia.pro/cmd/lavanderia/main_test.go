@@ -8,10 +8,12 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"lavanderia.pro/internal/lavanderia/routers"
 )
 
 func TestMain(t *testing.T) {
-	router := setupRouter()
+	router := routers.SetupRouter()
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/ping", nil)
