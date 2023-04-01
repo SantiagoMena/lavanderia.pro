@@ -10,14 +10,20 @@ import (
 	"lavanderia.pro/internal/lavanderia/controllers"
 )
 
+func setupRouter() *gin.Engine {
+	r := gin.Default()
+	r.GET("/ping", Ping)
+	r.GET("/laundries", controllers.Laundries)
+
+	return r
+}
+
 func main() {
 	if err := godotenv.Load("../../.env"); err != nil {
 		log.Println("No .env file found")
 	}
 
-	r := gin.Default()
-	r.GET("/laundries", controllers.Laundries)
-	r.GET("/ping", Ping)
+	r := setupRouter()
 
 	r.Run()
 }
