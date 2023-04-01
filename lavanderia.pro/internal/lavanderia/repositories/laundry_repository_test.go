@@ -12,7 +12,7 @@ import (
 
 func TestFindAllLaundries(t *testing.T) {
 	if err := godotenv.Load("../../../.env.test"); err != nil {
-		fmt.Println("No .env file found")
+		fmt.Println("No .env.test file found")
 	}
 
 	laundries, err := FindAllLaundries()
