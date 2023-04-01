@@ -1,6 +1,6 @@
 FROM golang:1.20-alpine
 
-WORKDIR /app/cmd
+WORKDIR /app/cmd/lavanderia
 
 COPY go.mod ./
 COPY go.sum ./
@@ -11,6 +11,6 @@ COPY *.go ./
 
 # RUN go build -o /lavanderia.pro
 
-EXPOSE 1002
+EXPOSE 8080
 
 CMD [ "go", "run", "." ]

@@ -1,13 +1,37 @@
 package repositories
 
-import "lavanderia.pro/api/types"
+import (
+	"context"
+	"log"
 
-var laundries = []types.Laundry{
-	{ID: "1", Name: "Laundry #1", Lat: 0.123, Long: 0.321},
-	{ID: "2", Name: "Laundry #2", Lat: 0.123, Long: 0.321},
-	{ID: "3", Name: "Laundry #3", Lat: 0.123, Long: 0.321},
-}
+	"lavanderia.pro/api/types"
+
+	"lavanderia.pro/internal/lavanderia/databases"
+)
+
+var collection = "laundry"
 
 func FindAllLaundries() []types.Laundry {
+	laundries := []types.Laundry{}
+
+	laundriesDb, err := databases.FindAll(collection)
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	log.Panic(laundriesDb)
+
+	for laundriesDb.Next(context.TODO()) {
+		var laundry types.Laundry
+
+		if err := laundriesDb.Decode(&laundry); err != nil {
+			log.Panic(err)
+
+		}
+
+		laundries = append(laundries, laundry)
+	}
+
 	return laundries
 }

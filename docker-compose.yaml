@@ -5,8 +5,10 @@ services:
         build: ./lavanderia.pro
         volumes:
             - ./lavanderia.pro/:/app
-        ports:
-            - "1002:1002"
+        depends_on: 
+            - mongodb
+        # ports:
+        #     - "8080:8080"
 
     nginx:
         container_name: lavanderia.pro.nginx
@@ -19,3 +21,9 @@ services:
         volumes:
             - ./logs/nginx:/var/log/nginx:cached
             - ./lavanderia.pro/website/build:/var/www/app
+    mongodb:
+        image: mongo
+        ports:
+        - "27018:27017" 
+        # volumes:
+        # - ${LOCAL_VOLUME}/mongodb:/data/db
