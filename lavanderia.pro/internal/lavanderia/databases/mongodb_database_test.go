@@ -1,13 +1,9 @@
 package databases
 
 import (
-	// "encoding/json"
 	"fmt"
-	"github.com/stretchr/testify/assert"
-	// "io/ioutil"
-	// "net/http"
-	// "net/http/httptest"
 	"github.com/joho/godotenv"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 

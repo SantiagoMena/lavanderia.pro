@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"log"
 
 	"lavanderia.pro/api/types"
 
@@ -11,25 +10,24 @@ import (
 
 var collection = "laundry"
 
-func FindAllLaundries() []types.Laundry {
+func FindAllLaundries() ([]types.Laundry, error) {
 	laundries := []types.Laundry{}
 
 	laundriesDb, err := databases.FindAll(collection)
 
 	if err != nil {
-		log.Panic(err)
+		return nil, err
 	}
 
 	for laundriesDb.Next(context.TODO()) {
 		var laundry types.Laundry
 
 		if err := laundriesDb.Decode(&laundry); err != nil {
-			log.Panic(err)
-
+			return nil, err
 		}
 
 		laundries = append(laundries, laundry)
 	}
 
-	return laundries
+	return laundries, nil
 }

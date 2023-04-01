@@ -7,5 +7,11 @@ import (
 )
 
 func Laundries(c *gin.Context) {
-	c.JSON(200, repositories.FindAllLaundries())
+	laundries, err := repositories.FindAllLaundries()
+
+	if(err != nil) {
+		c.JSON(500, "Internal server error")
+	}
+
+	c.JSON(200, laundries)
 }
