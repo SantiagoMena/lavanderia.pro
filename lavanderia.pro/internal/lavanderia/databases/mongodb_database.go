@@ -22,12 +22,6 @@ func Mongodb() (*mongo.Database, *mongo.Client) {
 	if err != nil {
 		panic(err)
 	}
-	// defer func() {
-	// 	if err := client.Disconnect(context.TODO()); err != nil {
-	// 		panic(err)
-	// 	}
-	// }()
-
 	databaseConnect := client.Database(database)
 
 	return databaseConnect, client
