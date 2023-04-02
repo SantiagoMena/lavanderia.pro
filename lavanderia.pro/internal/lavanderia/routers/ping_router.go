@@ -1,10 +1,6 @@
 package routers
 
 import (
-	// "log"
-
-	// "github.com/joho/godotenv"
-
 	"net/http"
 
 	"github.com/gin-gonic/gin"

@@ -30,20 +30,13 @@ func main() {
 	fx.New(
 		fx.Provide(config.NewConfig),
 		fx.Provide(databases.NewMongoDatabase),
-		fx.Provide(repositories.NewLaundryRepository),
-		fx.Provide(controllers.NewLaundryController),
-		fx.Provide(controllers.NewPingController),
+		repositories.Module,
+		controllers.Module,
 		fx.Provide(provideGinEngine),
-		// fx.Provide(routers.NewLaundryRouter),
+		routers.Module,
 		fx.Invoke(
 			startServer,
-			routers.NewLaundryRouter,
-			routers.NewPingRouter,
 		),
-		// fx.Invoke(func(g *gin.Engine) {
-		// 	r := g.Default()
-		// 	r.Run()
-		// }),
 	).Run()
 }
 
@@ -58,10 +51,6 @@ func startServer(ginEngine *gin.Engine, lifecycle fx.Lifecycle) {
 		Addr:    ":" + port,
 		Handler: ginEngine,
 	}
-
-	// ginEngine.GET("/ping", func(c *gin.Context) {
-	// 	c.String(http.StatusOK, "pong")
-	// })
 
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
