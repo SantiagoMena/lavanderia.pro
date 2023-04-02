@@ -1,17 +1,20 @@
 package controllers
 
-import (
-	"github.com/gin-gonic/gin"
-)
+type status struct {
+	Status string `json:"status"`
+}
 
-func Ping(c *gin.Context) {
-	type status struct {
-		Status string `json:"status"`
-	}
+type PingController struct {
+}
 
+func NewPingController() *PingController {
+	return &PingController{}
+}
+
+func (controller PingController) Ping() (status, error) {
 	statusObj := status{
 		Status: "ok",
 	}
 
-	c.JSON(200, statusObj)
+	return statusObj, nil
 }

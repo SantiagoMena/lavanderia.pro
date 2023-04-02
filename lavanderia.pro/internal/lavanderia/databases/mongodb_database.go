@@ -7,6 +7,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"lavanderia.pro/internal/lavanderia/config"
 )
 
 type Database interface {
@@ -18,8 +20,8 @@ type database struct {
 	client mongo.Client
 }
 
-func NewMongoDatabase(uri string, db string) Database {
-	mongoDb, mongoClient := Mongodb(uri, db)
+func NewMongoDatabase(config *config.Config) Database {
+	mongoDb, mongoClient := Mongodb(config.MongodbUri, config.MongodbDb)
 
 	return database{
 		mongo:  *mongoDb,

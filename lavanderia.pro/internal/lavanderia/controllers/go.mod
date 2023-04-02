@@ -8,9 +8,11 @@ replace lavanderia.pro/internal/lavanderia/repositories => ../repositories
 
 require (
 	github.com/gin-gonic/gin v1.9.0
+	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.8.1
+	lavanderia.pro/internal/lavanderia/config v0.0.0-00010101000000-000000000000
+	lavanderia.pro/internal/lavanderia/databases v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/repositories v0.0.0-00010101000000-000000000000
-	lavanderia.pro/internal/lavanderia/routers v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -50,9 +52,10 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lavanderia.pro/api/types v0.0.0-00010101000000-000000000000 // indirect
-	lavanderia.pro/internal/lavanderia/databases v0.0.0-00010101000000-000000000000 // indirect
 )
 
 replace lavanderia.pro/internal/lavanderia/routers => ../routers
 
 replace lavanderia.pro/internal/lavanderia/databases => ../databases
+
+replace lavanderia.pro/internal/lavanderia/config => ../config

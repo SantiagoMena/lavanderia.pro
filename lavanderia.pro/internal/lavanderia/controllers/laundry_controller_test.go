@@ -6,20 +6,37 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	// "io/ioutil"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	// "lavanderia.pro/cmd/lavanderia"
+	"lavanderia.pro/internal/lavanderia/config"
+
+	"encoding/json"
+	"lavanderia.pro/internal/lavanderia/databases"
+	"lavanderia.pro/internal/lavanderia/repositories"
 	"testing"
 )
 
 func TestLaundries(t *testing.T) {
 	if err := godotenv.Load("../../../.env.test"); err != nil {
-		fmt.Println("No .env file found")
+		fmt.Println("No .env.test file found")
 	}
 
+	config := config.NewConfig()
+	database := databases.NewMongoDatabase(config)
+	repository := repositories.NewLaundryRepository(database)
+	controller := NewLaundryController(repository)
+
 	router := gin.Default()
-	router.GET("/laundries", Laundries)
+	laundries, err := controller.Laundries()
+	router.GET("/laundries", func(c *gin.Context) {
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		} else {
+			c.JSON(http.StatusOK, laundries)
+		}
+	})
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/laundries", nil)
@@ -27,14 +44,14 @@ func TestLaundries(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	// bodySb, err := ioutil.ReadAll(w.Body)
-	// if err != nil {
-	// 	t.Fatalf("Error reading body: %v\n", err)
-	// }
+	bodySb, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		t.Fatalf("Error reading body: %v\n", err)
+	}
 
-	// var decodedResponse interface{}
-	// err = json.Unmarshal(bodySb, &decodedResponse)
-	// if err != nil {
-	// 	t.Fatalf("Cannot decode response <%p> from server. Err: %v", bodySb, err)
-	// }
+	var decodedResponse interface{}
+	err = json.Unmarshal(bodySb, &decodedResponse)
+	if err != nil {
+		t.Fatalf("Cannot decode response <%p> from server. Err: %v", bodySb, err)
+	}
 }

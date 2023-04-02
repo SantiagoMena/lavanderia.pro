@@ -1,24 +1,24 @@
 package controllers
 
 import (
-	"os"
-
-	"lavanderia.pro/internal/lavanderia/databases"
+	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/repositories"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Laundries(c *gin.Context) {
-	uri := os.Getenv("MONGODB_URI")
-	database := os.Getenv("MONGODB_DB")
-	Mongodb := databases.NewMongoDatabase(uri, database)
-	LaundryRepository := repositories.NewLaundryRepository(Mongodb)
+type LaundryController struct {
+	c                 *gin.Context
+	LaundryRepository *repositories.LaundryRepository
+}
 
-	laundries, err := LaundryRepository.FindAllLaundries()
-	if err != nil {
-		c.JSON(500, "Internal server error")
+func NewLaundryController(LaundryRepository *repositories.LaundryRepository) *LaundryController {
+	return &LaundryController{
+		LaundryRepository: LaundryRepository,
 	}
+}
 
-	c.JSON(200, laundries)
+func (controller LaundryController) Laundries() ([]types.Laundry, error) {
+	laundries, err := controller.LaundryRepository.FindAllLaundries()
+	return laundries, err
 }
