@@ -26,6 +26,15 @@ func main() {
 	// r := routers.SetupRouter()
 
 	// r.Run()
+	RunServer()
+}
+
+// func registerService(ginEngine *gin.Engine, userSvcRouter usersvc.Router) {
+// 	gGroup := ginEngine.Group("api/v1")
+// 	userSvcRouter.Register(gGroup)
+// }
+
+func RunServer() {
 
 	fx.New(
 		fx.Provide(config.NewConfig),
@@ -39,11 +48,6 @@ func main() {
 		),
 	).Run()
 }
-
-// func registerService(ginEngine *gin.Engine, userSvcRouter usersvc.Router) {
-// 	gGroup := ginEngine.Group("api/v1")
-// 	userSvcRouter.Register(gGroup)
-// }
 
 func startServer(ginEngine *gin.Engine, lifecycle fx.Lifecycle) {
 	port := "8080"

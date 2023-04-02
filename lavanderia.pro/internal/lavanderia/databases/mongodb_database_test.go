@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	"os"
+	"lavanderia.pro/internal/lavanderia/config"
 	"testing"
 )
 
@@ -13,10 +13,9 @@ func TestFindAll(t *testing.T) {
 		fmt.Println("No .env.test file found")
 	}
 
-	uri := os.Getenv("MONGODB_URI")
-	database := os.Getenv("MONGODB_DB")
+	config := config.NewConfig()
 
-	mongo := NewMongoDatabase(uri, database)
+	mongo := NewMongoDatabase(config)
 
 	cursor, err := mongo.FindAll("COLLECTION")
 
