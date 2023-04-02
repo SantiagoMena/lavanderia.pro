@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/controllers"
+	"lavanderia.pro/internal/lavanderia/controllers/handlers/laundry"
 	"lavanderia.pro/internal/lavanderia/databases"
 	"lavanderia.pro/internal/lavanderia/repositories"
 	"lavanderia.pro/internal/lavanderia/routers"
@@ -40,6 +41,7 @@ func MakeApp() *fx.App {
 		controllers.Module,
 		fx.Provide(provideGinEngine),
 		routers.Module,
+		laundry.Module,
 		fx.Invoke(
 			startServer,
 		),

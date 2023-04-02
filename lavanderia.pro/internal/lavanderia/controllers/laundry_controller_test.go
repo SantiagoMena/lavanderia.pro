@@ -13,6 +13,7 @@ import (
 	"lavanderia.pro/internal/lavanderia/config"
 
 	"encoding/json"
+	"lavanderia.pro/internal/lavanderia/controllers/handlers/laundry"
 	"lavanderia.pro/internal/lavanderia/databases"
 	"lavanderia.pro/internal/lavanderia/repositories"
 	"testing"
@@ -26,10 +27,10 @@ func TestLaundries(t *testing.T) {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repository := repositories.NewLaundryRepository(database)
-	controller := NewLaundryController(repository)
+	handler := laundry.NewGetLaundriesHandler(repository)
 
 	router := gin.Default()
-	laundries, err := controller.Laundries()
+	laundries, err := handler.Handle()
 	router.GET("/laundries", func(c *gin.Context) {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)

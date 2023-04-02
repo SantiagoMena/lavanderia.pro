@@ -2,23 +2,20 @@ package controllers
 
 import (
 	"lavanderia.pro/api/types"
-	"lavanderia.pro/internal/lavanderia/repositories"
-
-	"github.com/gin-gonic/gin"
+	"lavanderia.pro/internal/lavanderia/controllers/handlers/laundry"
 )
 
 type LaundryController struct {
-	c                 *gin.Context
-	LaundryRepository *repositories.LaundryRepository
+	GetLaundriesHandler *laundry.GetLaundriesHandler
 }
 
-func NewLaundryController(LaundryRepository *repositories.LaundryRepository) *LaundryController {
+func NewLaundryController(GetLaundriesHandler *laundry.GetLaundriesHandler) *LaundryController {
 	return &LaundryController{
-		LaundryRepository: LaundryRepository,
+		GetLaundriesHandler: GetLaundriesHandler,
 	}
 }
 
 func (controller LaundryController) Laundries() ([]types.Laundry, error) {
-	laundries, err := controller.LaundryRepository.FindAllLaundries()
+	laundries, err := controller.GetLaundriesHandler.Handle()
 	return laundries, err
 }
