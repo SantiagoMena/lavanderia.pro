@@ -23,20 +23,17 @@ func main() {
 		log.Println("No .env file found")
 	}
 
-	// r := routers.SetupRouter()
-
-	// r.Run()
 	RunServer()
 }
 
-// func registerService(ginEngine *gin.Engine, userSvcRouter usersvc.Router) {
-// 	gGroup := ginEngine.Group("api/v1")
-// 	userSvcRouter.Register(gGroup)
-// }
-
 func RunServer() {
+	app := MakeApp()
 
-	fx.New(
+	app.Run()
+}
+
+func MakeApp() *fx.App {
+	return fx.New(
 		fx.Provide(config.NewConfig),
 		fx.Provide(databases.NewMongoDatabase),
 		repositories.Module,
@@ -46,7 +43,7 @@ func RunServer() {
 		fx.Invoke(
 			startServer,
 		),
-	).Run()
+	)
 }
 
 func startServer(ginEngine *gin.Engine, lifecycle fx.Lifecycle) {

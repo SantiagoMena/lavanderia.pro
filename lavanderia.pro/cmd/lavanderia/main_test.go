@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	// "errors"
-	// "fmt"
 	"log"
 	"net/http"
 	"testing"
@@ -12,13 +10,7 @@ import (
 	"github.com/joho/godotenv"
 	"go.uber.org/fx"
 
-	// "github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"lavanderia.pro/internal/lavanderia/config"
-	"lavanderia.pro/internal/lavanderia/controllers"
-	"lavanderia.pro/internal/lavanderia/databases"
-	"lavanderia.pro/internal/lavanderia/repositories"
-	"lavanderia.pro/internal/lavanderia/routers"
 )
 
 func TestMain(t *testing.T) {
@@ -26,17 +18,9 @@ func TestMain(t *testing.T) {
 		log.Println("No .env.test file found")
 	}
 
-	app := fx.New(
-		fx.Provide(config.NewConfig),
-		fx.Provide(databases.NewMongoDatabase),
-		repositories.Module,
-		controllers.Module,
-		fx.Provide(provideGinEngine),
-		routers.Module,
-		fx.Invoke(
-			startServer,
-		),
-	)
+	app := MakeApp()
+	expectedApp := fx.New()
+	assert.IsType(t, expectedApp, app, "MakeApp() is not returning *fx.App")
 
 	// In a typical application, we could just use app.Run() here. Since we
 	// don't want this example to run forever, we'll use the more-explicit Start
