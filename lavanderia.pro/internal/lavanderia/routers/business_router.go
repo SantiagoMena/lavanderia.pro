@@ -20,7 +20,7 @@ func NewGetAllBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 	})
 }
 
-func NewPostBusinesssRouter(r *gin.Engine, controller *controllers.BusinessController) {
+func NewPostBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.POST("/business", func(c *gin.Context) {
 
 		var newBusiness types.Business
@@ -47,7 +47,7 @@ func NewPostBusinesssRouter(r *gin.Engine, controller *controllers.BusinessContr
 // 	ID string `uri:"id" binding:"required,uuid"`
 // }
 
-func NewDeleteBusinesssRouter(r *gin.Engine, controller *controllers.BusinessController) {
+func NewDeleteBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.DELETE("/business/:id", func(c *gin.Context) {
 		var business types.Business
 
@@ -109,6 +109,38 @@ func NewGetBusinessRouter(r *gin.Engine, controller *controllers.BusinessControl
 			c.JSON(http.StatusInternalServerError, err)
 		} else {
 			c.IndentedJSON(http.StatusCreated, businessDb)
+		}
+
+	})
+}
+
+func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthBusinessController) {
+	r.POST("/business/register", func(c *gin.Context) {
+
+		var newBusiness types.Business
+		var newAuth types.Auth
+
+		// Call BindJSON to bind the received JSON to
+		// newBusiness.
+		if errBusinessJson := c.ShouldBindBodyWith(&newBusiness, binding.JSON); errBusinessJson != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errBusinessJson})
+			return
+		}
+
+		// Call BindJSON to bind the received JSON to
+		// newAuth.
+		if errAuthJson := c.ShouldBindBodyWith(&newAuth, binding.JSON); errAuthJson != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errAuthJson})
+			return
+		}
+
+		// Handle Controller
+		business, errRegister := controller.RegisterBusiness(&newAuth, &newBusiness)
+
+		if errRegister != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
+		} else {
+			c.IndentedJSON(http.StatusCreated, business)
 		}
 
 	})

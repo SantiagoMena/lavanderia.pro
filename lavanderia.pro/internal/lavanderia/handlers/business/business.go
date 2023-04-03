@@ -8,4 +8,5 @@ var Module = fx.Options(
 	fx.Provide(NewDeleteBusinessHandler),
 	fx.Provide(NewUpdateBusinessHandler),
 	fx.Provide(NewGetBusinessHandler),
+	fx.Provide(NewRegisterBusinessHandler),
 )
