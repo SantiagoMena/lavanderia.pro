@@ -7,6 +7,8 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"lavanderia.pro/internal/lavanderia/databases"
 )
@@ -46,11 +48,14 @@ func (laundryRepository *LaundryRepository) FindAllLaundries() ([]types.Laundry,
 }
 
 func (laundryRepository *LaundryRepository) Create(laundry *types.Laundry) (types.Laundry, error) {
+	t := time.Now()
+	laundry.CreatedAt = &t
 
 	laundryDb, err := laundryRepository.database.Create("laundry", bson.D{
 		{Key: "name", Value: laundry.Name},
 		{Key: "lat", Value: laundry.Lat},
 		{Key: "long", Value: laundry.Long},
+		{Key: "created_at", Value: laundry.CreatedAt},
 	})
 
 	if err != nil {
@@ -60,10 +65,11 @@ func (laundryRepository *LaundryRepository) Create(laundry *types.Laundry) (type
 	insertedId := laundryDb.InsertedID.(primitive.ObjectID).Hex()
 
 	newLaundry := types.Laundry{
-		ID:   insertedId,
-		Name: laundry.Name,
-		Lat:  laundry.Lat,
-		Long: laundry.Long,
+		ID:        insertedId,
+		Name:      laundry.Name,
+		Lat:       laundry.Lat,
+		Long:      laundry.Long,
+		CreatedAt: laundry.CreatedAt,
 	}
 
 	return newLaundry, nil
