@@ -3,6 +3,7 @@ package business
 import (
 	"errors"
 
+	"golang.org/x/crypto/bcrypt"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/repositories"
 )
@@ -21,13 +22,23 @@ func NewRegisterBusinessHandler(repositoryAuth *repositories.AuthRepository, rep
 
 func (ch RegisterBusinessHandler) Handle(auth *types.Auth, business *types.Business) (types.Business, error) {
 	authFound, err := ch.repositoryAuth.GetByEmail(auth)
-	authEmpty := types.Auth{}
+	// authEmpty := types.Auth{}
 
-	if authFound != authEmpty {
+	// panic(authFound)
+	if len(authFound.Email) > 0 {
 		return types.Business{}, errors.New("auth already exists")
 	}
 
-	authDb, err := ch.repositoryAuth.Create(auth)
+	password, errPass := bcrypt.GenerateFromPassword(auth.Password, bcrypt.DefaultCost)
+
+	if errPass != nil {
+		return types.Business{}, errors.New("Error on encrypt password")
+	}
+
+	authDb, err := ch.repositoryAuth.Create(&types.Auth{
+		Email:    auth.Email,
+		Password: password,
+	})
 
 	businessDb, err := ch.repositoryBusiness.Create(&types.Business{
 		Auth:      authDb.ID,

@@ -56,10 +56,11 @@ func (authRepository *AuthRepository) Create(auth *types.Auth) (types.Auth, erro
 
 func (authRepository *AuthRepository) GetByEmail(auth *types.Auth) (types.Auth, error) {
 	filter := bson.D{{"email", auth.Email}}
+	var emptyAuth types.Auth
 
 	object, err := authRepository.database.FindOne(authCollection, filter)
 	if err != nil {
-		return types.Auth{}, err
+		return emptyAuth, err
 	}
 
 	var foundAuth types.Auth
@@ -68,9 +69,9 @@ func (authRepository *AuthRepository) GetByEmail(auth *types.Auth) (types.Auth, 
 	bson.Unmarshal(objectAuth, &foundAuth)
 
 	return types.Auth{
-		ID:         auth.ID,
-		Email:      auth.Email,
-		Password:   auth.Password,
+		ID:    auth.ID,
+		Email: auth.Email,
+		// Password:   auth.Password,
 		FacebookId: auth.FacebookId,
 		GoogleId:   auth.GoogleId,
 		AppleId:    auth.AppleId,
