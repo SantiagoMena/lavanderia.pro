@@ -92,11 +92,8 @@ func (laundryRepository *LaundryRepository) Delete(laundry *types.Laundry) (type
 		return types.Laundry{}, err
 	}
 
-	// insertedId := laundryDb.UpsertedID.(string) //.(primitive.ObjectID).Hex()
-	// var m bson.M
 	var deletedLaundry types.Laundry
 
-	// convert m to s
 	objectUpdt, _ := bson.Marshal(objectUpdated)
 	bson.Unmarshal(objectUpdt, &deletedLaundry)
 	deletedLaundry.DeletedAt = laundry.DeletedAt
@@ -123,14 +120,10 @@ func (laundryRepository *LaundryRepository) Update(laundry *types.Laundry) (type
 		return types.Laundry{}, err
 	}
 
-	// insertedId := laundryDb.UpsertedID.(string) //.(primitive.ObjectID).Hex()
-	// var m bson.M
 	var updatedLaundry types.Laundry
 
-	// convert m to s
 	objectUpdt, _ := bson.Marshal(objectUpdated)
 	bson.Unmarshal(objectUpdt, &updatedLaundry)
-	// updatedLaundry.DeletedAt = laundry.DeletedAt
 
 	return types.Laundry{
 		ID:        laundry.ID,
