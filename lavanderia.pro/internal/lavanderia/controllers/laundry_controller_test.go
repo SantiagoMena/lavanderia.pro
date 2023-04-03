@@ -43,6 +43,29 @@ func TestPostLaundries(t *testing.T) {
 	assert.NotEmpty(t, laundry.ID, "Laundry ID is empty")
 }
 
+func TestDeleteLaundry(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+	controller := MakeController()
+
+	laundry, err := controller.PostLaundry(&types.Laundry{
+		Name: "test",
+		Lat:  0.123,
+		Long: 0.123,
+	})
+
+	assert.Nil(t, err, "Error returns not nil on create laundry to delete")
+	assert.NotEmpty(t, laundry, "Laundry is empty on create laundry to delete")
+	assert.NotEmpty(t, laundry.ID, "Laundry ID is empty on create laundry to delete")
+
+	laundryDeleted, errDelete := controller.DeleteLaundry(&laundry)
+	assert.Nil(t, errDelete, "Error returns not nil on delete laundry")
+	assert.NotEmpty(t, laundryDeleted, "Laundry is empty on delete laundry")
+	assert.NotEmpty(t, laundryDeleted.ID, "Laundry ID is empty on delete laundry")
+	assert.NotEmpty(t, laundryDeleted.DeletedAt, "Laundry DeletedAt is empty on delete laundry")
+}
+
 func MakeController() *LaundryController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
