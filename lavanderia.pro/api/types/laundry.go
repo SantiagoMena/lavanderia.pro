@@ -2,7 +2,7 @@ package types
 
 import "time"
 
-type Laundry struct {
+type Business struct {
 	ID        string     `json:"id" bson:"_id,omitempty" uri:"id"`
 	Name      string     `json:"name"`
 	Lat       float64    `json:"lat"`

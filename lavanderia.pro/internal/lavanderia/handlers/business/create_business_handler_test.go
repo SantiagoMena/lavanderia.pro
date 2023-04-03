@@ -1,4 +1,4 @@
-package laundry
+package business
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 
+	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 
 	"lavanderia.pro/internal/lavanderia/databases"
@@ -13,23 +14,28 @@ import (
 	"testing"
 )
 
-func TestGetLaundriesHandle(t *testing.T) {
+func TestCreateHandle(t *testing.T) {
 	if err := godotenv.Load("../../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
-	handler := MakeGetLaundriesHandler()
+	handler := MakeCreateBusinessHandler()
 
-	laundries, err := handler.Handle()
+	business, err := handler.Handle(&types.Business{
+		Name: "test",
+		Lat:  0.123,
+		Long: 0.123,
+	})
 
 	assert.Nil(t, err, "Error returns not nil")
-	assert.NotEmpty(t, laundries, "Laundry is empty")
+	assert.NotEmpty(t, business, "Business is empty")
+	assert.NotEmpty(t, business.ID, "Business ID is empty")
 }
 
-func MakeGetLaundriesHandler() *GetLaundriesHandler {
+func MakeCreateBusinessHandler() *CreateBusinessHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
-	repository := repositories.NewLaundryRepository(database)
-	handler := NewGetLaundriesHandler(repository)
+	repository := repositories.NewBusinessRepository(database)
+	handler := NewCreateBusinessHandler(repository)
 
 	return handler
 }
