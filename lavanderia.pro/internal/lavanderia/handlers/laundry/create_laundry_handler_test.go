@@ -14,7 +14,7 @@ import (
 	"testing"
 )
 
-func TestHandle(t *testing.T) {
+func TestCreateHandle(t *testing.T) {
 	if err := godotenv.Load("../../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
