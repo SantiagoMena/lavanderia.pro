@@ -10,6 +10,7 @@ type LaundryController struct {
 	CreateLaundryHandler *laundry.CreateLaundryHandler
 	DeleteLaundryHandler *laundry.DeleteLaundryHandler
 	UpdateLaundryHandler *laundry.UpdateLaundryHandler
+	GetLaundryHandler    *laundry.GetLaundryHandler
 }
 
 func NewLaundryController(
@@ -17,12 +18,14 @@ func NewLaundryController(
 	CreateLaundryHandler *laundry.CreateLaundryHandler,
 	DeleteLaundryHandler *laundry.DeleteLaundryHandler,
 	UpdateLaundryHandler *laundry.UpdateLaundryHandler,
+	GetLaundryHandler *laundry.GetLaundryHandler,
 ) *LaundryController {
 	return &LaundryController{
 		GetLaundriesHandler:  GetLaundriesHandler,
 		CreateLaundryHandler: CreateLaundryHandler,
 		DeleteLaundryHandler: DeleteLaundryHandler,
 		UpdateLaundryHandler: UpdateLaundryHandler,
+		GetLaundryHandler:    GetLaundryHandler,
 	}
 }
 
@@ -56,6 +59,17 @@ func (controller LaundryController) DeleteLaundry(laundry *types.Laundry) (types
 func (controller LaundryController) UpdateLaundry(laundry *types.Laundry) (types.Laundry, error) {
 	// Handle Create Laundry
 	laundryDb, err := controller.UpdateLaundryHandler.Handle(laundry)
+
+	if err != nil {
+		return types.Laundry{}, err
+	}
+
+	return laundryDb, err
+}
+
+func (controller LaundryController) GetLaundry(laundry *types.Laundry) (types.Laundry, error) {
+	// Handle Create Laundry
+	laundryDb, err := controller.GetLaundryHandler.Handle(laundry)
 
 	if err != nil {
 		return types.Laundry{}, err

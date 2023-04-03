@@ -67,7 +67,7 @@ func NewDeleteLaundrysRouter(r *gin.Engine, controller *controllers.LaundryContr
 	})
 }
 
-func NewUpdateLaundrysRouter(r *gin.Engine, controller *controllers.LaundryController) {
+func NewUpdateLaundryRouter(r *gin.Engine, controller *controllers.LaundryController) {
 	r.PUT("/laundry/:id", func(c *gin.Context) {
 		var laundry types.Laundry
 
@@ -88,6 +88,27 @@ func NewUpdateLaundrysRouter(r *gin.Engine, controller *controllers.LaundryContr
 			c.JSON(http.StatusInternalServerError, err)
 		} else {
 			c.IndentedJSON(http.StatusCreated, updatedLaundry)
+		}
+
+	})
+}
+
+func NewGetLaundryRouter(r *gin.Engine, controller *controllers.LaundryController) {
+	r.GET("/laundry/:id", func(c *gin.Context) {
+		var laundry types.Laundry
+
+		if err := c.ShouldBindUri(&laundry); err != nil {
+			c.JSON(400, gin.H{"msg": err})
+			return
+		}
+
+		// Handle Controller
+		laundryDb, err := controller.GetLaundry(&laundry)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		} else {
+			c.IndentedJSON(http.StatusCreated, laundryDb)
 		}
 
 	})

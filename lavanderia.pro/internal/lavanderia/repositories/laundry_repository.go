@@ -134,3 +134,36 @@ func (laundryRepository *LaundryRepository) Update(laundry *types.Laundry) (type
 		UpdatedAt: laundry.UpdatedAt,
 	}, nil
 }
+
+func (laundryRepository *LaundryRepository) Get(laundry *types.Laundry) (types.Laundry, error) {
+	t := time.Now()
+	laundry.UpdatedAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(laundry.ID)
+
+	filter := bson.D{{"_id", id}}
+
+	objectUpdated, err := laundryRepository.database.FindOne(collection, filter)
+	if err != nil {
+		panic(err)
+	}
+
+	if err != nil {
+		return types.Laundry{}, err
+	}
+
+	var updatedLaundry types.Laundry
+
+	objectUpdt, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(objectUpdt, &updatedLaundry)
+
+	return types.Laundry{
+		ID:        laundry.ID,
+		Name:      laundry.Name,
+		Lat:       laundry.Lat,
+		Long:      laundry.Long,
+		CreatedAt: updatedLaundry.CreatedAt,
+		UpdatedAt: laundry.UpdatedAt,
+		DeletedAt: laundry.DeletedAt,
+	}, nil
+}

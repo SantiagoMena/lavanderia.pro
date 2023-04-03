@@ -16,6 +16,7 @@ type Database interface {
 	FindAll(collection string) (*mongo.Cursor, error)
 	Create(collection string, object bson.D) (*mongo.InsertOneResult, error)
 	UpdateOne(collection string, filter bson.D, update bson.D) (bson.M, error)
+	FindOne(collection string, filter bson.D) (bson.M, error)
 }
 
 type database struct {
@@ -116,4 +117,15 @@ func (db database) UpdateOne(collection string, filter bson.D, update bson.D) (b
 	// }()
 
 	return object, err
+}
+
+func (db database) FindOne(collection string, filter bson.D) (bson.M, error) {
+
+	laundryDb := db.mongo.Collection(collection)
+
+	var result bson.M
+
+	err := laundryDb.FindOne(context.TODO(), filter).Decode(&result)
+
+	return result, err
 }

@@ -109,6 +109,7 @@ func MakeController() *LaundryController {
 		laundry.NewCreateLaundryHandler(repository),
 		laundry.NewDeleteLaundryHandler(repository),
 		laundry.NewUpdateLaundryHandler(repository),
+		laundry.NewGetLaundryHandler(repository),
 	)
 	return controller
 }

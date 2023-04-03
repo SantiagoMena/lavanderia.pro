@@ -7,4 +7,5 @@ var Module = fx.Options(
 	fx.Provide(NewCreateLaundryHandler),
 	fx.Provide(NewDeleteLaundryHandler),
 	fx.Provide(NewUpdateLaundryHandler),
+	fx.Provide(NewGetLaundryHandler),
 )
