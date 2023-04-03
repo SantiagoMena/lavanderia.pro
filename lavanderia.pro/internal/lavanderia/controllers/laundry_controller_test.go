@@ -100,6 +100,35 @@ func TestUpdateLaundry(t *testing.T) {
 	assert.Equal(t, 0.321, laundryUpdated.Long, "Long not save properly")
 }
 
+func TestGetLaundry(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+	controller := MakeController()
+
+	laundry, err := controller.PostLaundry(&types.Laundry{
+		Name: "test",
+		Lat:  0.123,
+		Long: 0.123,
+	})
+
+	assert.Nil(t, err, "Error returns not nil on create laundry to delete")
+	assert.NotEmpty(t, laundry, "Laundry is empty on create laundry to delete")
+	assert.NotEmpty(t, laundry.ID, "Laundry ID is empty on create laundry to delete")
+	assert.Equal(t, "test", laundry.Name, "Name not saved properly")
+	assert.Equal(t, 0.123, laundry.Lat, "Lat not saved properly")
+	assert.Equal(t, 0.123, laundry.Long, "Long not saved properly")
+
+	laundryGotten, errGet := controller.GetLaundry(&laundry)
+	assert.Nil(t, errGet, "Error returns not nil on delete laundry")
+	assert.NotEmpty(t, laundryGotten, "Laundry is empty on delete laundry")
+	assert.NotEmpty(t, laundryGotten.ID, "Laundry ID is empty on delete laundry")
+	assert.NotEmpty(t, laundryGotten.UpdatedAt, "Laundry UpdatedAt is empty on delete laundry")
+	assert.Equal(t, "test", laundryGotten.Name, "Name not save properly")
+	assert.Equal(t, 0.123, laundryGotten.Lat, "Lat not save properly")
+	assert.Equal(t, 0.123, laundryGotten.Long, "Long not save properly")
+}
+
 func MakeController() *LaundryController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
