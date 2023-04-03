@@ -41,3 +41,36 @@ func NewPostLaundrysRouter(r *gin.Engine, controller *controllers.LaundryControl
 
 	})
 }
+
+// type LaundryId struct {
+// 	ID string `uri:"id" binding:"required,uuid"`
+// }
+
+func NewDeleteLaundrysRouter(r *gin.Engine, controller *controllers.LaundryController) {
+	r.DELETE("/laundry/:id", func(c *gin.Context) {
+		var laundry types.Laundry
+
+		if err := c.ShouldBindUri(&laundry); err != nil {
+			c.JSON(400, gin.H{"msg": err})
+			return
+		}
+
+		// var newLaundry types.Laundry
+
+		// Call BindJSON to bind the received JSON to
+		// newLaundry.
+		// if err := c.BindJSON(&laundry); err != nil {
+		// 	return
+		// }
+
+		// Handle Controller
+		deletedLaundry, err := controller.DeleteLaundry(&laundry)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		} else {
+			c.IndentedJSON(http.StatusCreated, deletedLaundry)
+		}
+
+	})
+}

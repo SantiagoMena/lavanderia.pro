@@ -47,6 +47,10 @@ func MakeController() *LaundryController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repository := repositories.NewLaundryRepository(database)
-	controller := NewLaundryController(laundry.NewGetLaundriesHandler(repository), laundry.NewCreateLaundryHandler(repository))
+	controller := NewLaundryController(
+		laundry.NewGetLaundriesHandler(repository),
+		laundry.NewCreateLaundryHandler(repository),
+		laundry.NewDeleteLaundryHandler(repository),
+	)
 	return controller
 }

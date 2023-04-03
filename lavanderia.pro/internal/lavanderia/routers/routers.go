@@ -5,5 +5,6 @@ import "go.uber.org/fx"
 var Module = fx.Invoke(
 	NewGetLaundriesRouter,
 	NewPostLaundrysRouter,
+	NewDeleteLaundrysRouter,
 	NewPingRouter,
 )

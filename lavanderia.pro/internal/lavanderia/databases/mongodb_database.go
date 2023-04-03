@@ -2,6 +2,7 @@ package databases
 
 import (
 	"context"
+	// "go/types"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,6 +15,7 @@ import (
 type Database interface {
 	FindAll(collection string) (*mongo.Cursor, error)
 	Create(collection string, object bson.D) (*mongo.InsertOneResult, error)
+	UpdateOne(collection string, filter bson.D, update bson.D) (bson.M, error)
 }
 
 type database struct {
@@ -53,11 +55,11 @@ func (db database) FindAll(collection string) (*mongo.Cursor, error) {
 		log.Panic(err)
 	}
 
-	defer func() {
-		if err := db.client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
+	// defer func() {
+	// 	if err := db.client.Disconnect(context.TODO()); err != nil {
+	// 		panic(err)
+	// 	}
+	// }()
 
 	return result, err
 }
@@ -72,11 +74,46 @@ func (db database) Create(collection string, object bson.D) (*mongo.InsertOneRes
 		log.Panic(err)
 	}
 
-	defer func() {
-		if err := db.client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
+	// defer func() {
+	// 	if err := db.client.Disconnect(context.TODO()); err != nil {
+	// 		panic(err)
+	// 	}
+	// }()
 
 	return result, err
+}
+
+func (db database) UpdateOne(collection string, filter bson.D, update bson.D) (bson.M, error) {
+
+	laundryDb := db.mongo.Collection(collection)
+
+	opts := options.FindOneAndUpdate().SetUpsert(true)
+	var object bson.M
+	err := laundryDb.FindOneAndUpdate(
+		context.TODO(),
+		filter,
+		update,
+		opts,
+	).Decode(&object)
+
+	if err != nil {
+		// ErrNoDocuments means that the filter did not match any documents in
+		// the collection.
+		if err == mongo.ErrNoDocuments {
+			return nil, err
+		}
+		log.Fatal(err)
+	}
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	// defer func() {
+	// 	if err := db.client.Disconnect(context.TODO()); err != nil {
+	// 		panic(err)
+	// 	}
+	// }()
+
+	return object, err
 }

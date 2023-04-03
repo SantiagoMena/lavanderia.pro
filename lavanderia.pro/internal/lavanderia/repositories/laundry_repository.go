@@ -3,13 +3,12 @@ package repositories
 import (
 	"context"
 
-	"lavanderia.pro/api/types"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/databases"
 )
 
@@ -73,4 +72,34 @@ func (laundryRepository *LaundryRepository) Create(laundry *types.Laundry) (type
 	}
 
 	return newLaundry, nil
+}
+
+func (laundryRepository *LaundryRepository) Delete(laundry *types.Laundry) (types.Laundry, error) {
+	t := time.Now()
+	laundry.DeletedAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(laundry.ID)
+
+	filter := bson.D{{"_id", id}}
+	update := bson.D{{"$set", bson.D{{"deleted_at", laundry.DeletedAt}}}}
+
+	objectUpdated, err := laundryRepository.database.UpdateOne(collection, filter, update)
+	if err != nil {
+		panic(err)
+	}
+
+	if err != nil {
+		return types.Laundry{}, err
+	}
+
+	// insertedId := laundryDb.UpsertedID.(string) //.(primitive.ObjectID).Hex()
+	// var m bson.M
+	var deletedLaundry types.Laundry
+
+	// convert m to s
+	objectUpdt, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(objectUpdt, &deletedLaundry)
+	deletedLaundry.DeletedAt = laundry.DeletedAt
+
+	return deletedLaundry, nil
 }
