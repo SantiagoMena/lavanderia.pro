@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/controllers"
 )
@@ -54,15 +55,6 @@ func NewDeleteLaundrysRouter(r *gin.Engine, controller *controllers.LaundryContr
 			c.JSON(400, gin.H{"msg": err})
 			return
 		}
-
-		// var newLaundry types.Laundry
-
-		// Call BindJSON to bind the received JSON to
-		// newLaundry.
-		// if err := c.BindJSON(&laundry); err != nil {
-		// 	return
-		// }
-
 		// Handle Controller
 		deletedLaundry, err := controller.DeleteLaundry(&laundry)
 
@@ -70,6 +62,32 @@ func NewDeleteLaundrysRouter(r *gin.Engine, controller *controllers.LaundryContr
 			c.JSON(http.StatusInternalServerError, err)
 		} else {
 			c.IndentedJSON(http.StatusCreated, deletedLaundry)
+		}
+
+	})
+}
+
+func NewUpdateLaundrysRouter(r *gin.Engine, controller *controllers.LaundryController) {
+	r.PUT("/laundry/:id", func(c *gin.Context) {
+		var laundry types.Laundry
+
+		if err := c.ShouldBindUri(&laundry); err != nil {
+			c.JSON(400, gin.H{"msg": err})
+			return
+		}
+
+		if errJson := c.ShouldBindBodyWith(&laundry, binding.JSON); errJson != nil {
+			c.JSON(400, gin.H{"msg": errJson})
+			return
+		}
+
+		// Handle Controller
+		updatedLaundry, err := controller.UpdateLaundry(&laundry)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		} else {
+			c.IndentedJSON(http.StatusCreated, updatedLaundry)
 		}
 
 	})

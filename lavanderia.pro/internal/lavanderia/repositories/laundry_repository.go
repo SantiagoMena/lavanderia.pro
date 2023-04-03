@@ -103,3 +103,41 @@ func (laundryRepository *LaundryRepository) Delete(laundry *types.Laundry) (type
 
 	return deletedLaundry, nil
 }
+
+func (laundryRepository *LaundryRepository) Update(laundry *types.Laundry) (types.Laundry, error) {
+	t := time.Now()
+	laundry.UpdatedAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(laundry.ID)
+
+	filter := bson.D{{"_id", id}}
+	update := bson.D{
+		{"$set", bson.D{{"name", laundry.Name}, {"lat", laundry.Lat}, {"long", laundry.Long}}}}
+
+	objectUpdated, err := laundryRepository.database.UpdateOne(collection, filter, update)
+	if err != nil {
+		panic(err)
+	}
+
+	if err != nil {
+		return types.Laundry{}, err
+	}
+
+	// insertedId := laundryDb.UpsertedID.(string) //.(primitive.ObjectID).Hex()
+	// var m bson.M
+	var updatedLaundry types.Laundry
+
+	// convert m to s
+	objectUpdt, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(objectUpdt, &updatedLaundry)
+	// updatedLaundry.DeletedAt = laundry.DeletedAt
+
+	return types.Laundry{
+		ID:        laundry.ID,
+		Name:      laundry.Name,
+		Lat:       laundry.Lat,
+		Long:      laundry.Long,
+		CreatedAt: updatedLaundry.CreatedAt,
+		UpdatedAt: laundry.UpdatedAt,
+	}, nil
+}

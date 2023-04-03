@@ -6,5 +6,6 @@ var Module = fx.Invoke(
 	NewGetLaundriesRouter,
 	NewPostLaundrysRouter,
 	NewDeleteLaundrysRouter,
+	NewUpdateLaundrysRouter,
 	NewPingRouter,
 )
