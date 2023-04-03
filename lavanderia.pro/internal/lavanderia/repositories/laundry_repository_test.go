@@ -45,3 +45,23 @@ func TestFindAllLaundries(t *testing.T) {
 	assert.Equal(t, err, nil, "FindAllLAundries() returns error")
 	assert.NotNil(t, laundries, laundriesExpect, "FindAllLAundries() returns nil result")
 }
+
+func TestCreateLaundry(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	config := config.NewConfig()
+
+	mongo := databases.NewMongoDatabase(config)
+
+	laundry, err := NewLaundryRepository(mongo).Create(&types.Laundry{
+		Name: "test",
+		Lat:  0.123,
+		Long: 0.123,
+	})
+
+	assert.Equal(t, err, nil, "Create() returns error")
+	assert.NotNil(t, laundry, "FindAllLAundries() returns nil result")
+	assert.NotEmpty(t, laundry.CreatedAt, "CreatedAt is empty")
+}
