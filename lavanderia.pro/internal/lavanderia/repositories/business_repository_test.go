@@ -41,8 +41,8 @@ func TestFindAllBusiness(t *testing.T) {
 		businessExpect = append(businessExpect, business)
 	}
 
-	assert.Equal(t, err, nil, "FindAllLAundries() returns error")
-	assert.NotNil(t, business, businessExpect, "FindAllLAundries() returns nil result")
+	assert.Equal(t, err, nil, "FindAllBusiness() returns error")
+	assert.NotNil(t, business, businessExpect, "FindAllBusiness() returns nil result")
 }
 
 func TestCreateBusiness(t *testing.T) {
@@ -61,7 +61,7 @@ func TestCreateBusiness(t *testing.T) {
 	})
 
 	assert.Equal(t, err, nil, "Create() returns error")
-	assert.NotNil(t, business, "FindAllLAundries() returns nil result")
+	assert.NotNil(t, business, "FindAllBusiness() returns nil result")
 	assert.NotEmpty(t, business.CreatedAt, "CreatedAt is empty")
 }
 

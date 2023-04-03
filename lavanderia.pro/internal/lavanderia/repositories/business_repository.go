@@ -12,7 +12,7 @@ import (
 	"lavanderia.pro/internal/lavanderia/databases"
 )
 
-var businesscollection = "business"
+var businessCollection = "business"
 
 type BusinessRepository struct {
 	database databases.Database
@@ -25,23 +25,27 @@ func NewBusinessRepository(database databases.Database) *BusinessRepository {
 }
 
 func (businessRepository *BusinessRepository) FindAllBusiness() ([]types.Business, error) {
-	businessMap := []types.Business{}
+	// businessMap := []types.Business{}
 
-	businessDb, err := businessRepository.database.FindAll(businesscollection)
+	businessDb, err := businessRepository.database.FindAll(businessCollection)
 
 	if err != nil {
 		return nil, err
 	}
 
-	for businessDb.Next(context.TODO()) {
-		var business types.Business
-
-		if err := businessDb.Decode(&business); err != nil {
-			return nil, err
-		}
-
-		businessMap = append(businessMap, business)
+	var businessMap []types.Business
+	if err = businessDb.All(context.TODO(), &businessMap); err != nil {
+		panic(err)
 	}
+	// for businessDb.Next(context.TODO()) {
+	// 	var business types.Business
+
+	// 	if err := businessDb.Decode(&business); err != nil {
+	// 		return nil, err
+	// 	}
+
+	// 	businessMap = append(businessMap, business)
+	// }
 
 	return businessMap, nil
 }
@@ -86,7 +90,7 @@ func (businessRepository *BusinessRepository) Delete(business *types.Business) (
 	filter := bson.D{{"_id", id}}
 	update := bson.D{{"$set", bson.D{{"deleted_at", business.DeletedAt}}}}
 
-	objectUpdated, err := businessRepository.database.UpdateOne(businesscollection, filter, update)
+	objectUpdated, err := businessRepository.database.UpdateOne(businessCollection, filter, update)
 	if err != nil {
 		panic(err)
 	}
@@ -114,7 +118,7 @@ func (businessRepository *BusinessRepository) Update(business *types.Business) (
 	update := bson.D{
 		{"$set", bson.D{{"name", business.Name}, {"lat", business.Lat}, {"long", business.Long}}}}
 
-	objectUpdated, err := businessRepository.database.UpdateOne(businesscollection, filter, update)
+	objectUpdated, err := businessRepository.database.UpdateOne(businessCollection, filter, update)
 	if err != nil {
 		panic(err)
 	}
@@ -146,7 +150,7 @@ func (businessRepository *BusinessRepository) Get(business *types.Business) (typ
 
 	filter := bson.D{{"_id", id}}
 
-	objectUpdated, err := businessRepository.database.FindOne(businesscollection, filter)
+	objectUpdated, err := businessRepository.database.FindOne(businessCollection, filter)
 	if err != nil {
 		return types.Business{}, err
 	}

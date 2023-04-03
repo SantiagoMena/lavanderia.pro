@@ -19,10 +19,10 @@ func TestGetAllBusinessHandle(t *testing.T) {
 	}
 	handler := MakeGetAllBusinessHandler()
 
-	business, err := handler.Handle()
+	allBusiness, err := handler.Handle()
 
 	assert.Nil(t, err, "Error returns not nil")
-	assert.NotEmpty(t, business, "Business is empty")
+	assert.NotEmpty(t, allBusiness, "Business is empty")
 }
 
 func MakeGetAllBusinessHandler() *GetAllBusinessHandler {
