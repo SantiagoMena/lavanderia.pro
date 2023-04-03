@@ -6,4 +6,4 @@ test:
 			./internal/lavanderia/controllers \
 			./internal/lavanderia/databases \
 			./internal/lavanderia/repositories \
-			./internal/lavanderia/handlers/laundry
+			./internal/lavanderia/handlers/business

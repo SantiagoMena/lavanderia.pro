@@ -1,4 +1,4 @@
-package laundry
+package business
 
 import (
 	"fmt"
@@ -18,24 +18,24 @@ func TestCreateHandle(t *testing.T) {
 	if err := godotenv.Load("../../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
-	handler := MakeCreateLaundryHandler()
+	handler := MakeCreateBusinessHandler()
 
-	laundry, err := handler.Handle(&types.Laundry{
+	business, err := handler.Handle(&types.Business{
 		Name: "test",
 		Lat:  0.123,
 		Long: 0.123,
 	})
 
 	assert.Nil(t, err, "Error returns not nil")
-	assert.NotEmpty(t, laundry, "Laundry is empty")
-	assert.NotEmpty(t, laundry.ID, "Laundry ID is empty")
+	assert.NotEmpty(t, business, "Business is empty")
+	assert.NotEmpty(t, business.ID, "Business ID is empty")
 }
 
-func MakeCreateLaundryHandler() *CreateLaundryHandler {
+func MakeCreateBusinessHandler() *CreateBusinessHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
-	repository := repositories.NewLaundryRepository(database)
-	handler := NewCreateLaundryHandler(repository)
+	repository := repositories.NewBusinessRepository(database)
+	handler := NewCreateBusinessHandler(repository)
 
 	return handler
 }

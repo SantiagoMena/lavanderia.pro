@@ -48,9 +48,9 @@ func Mongodb(uri string, database string) (*mongo.Database, *mongo.Client) {
 }
 
 func (db database) FindAll(collection string) (*mongo.Cursor, error) {
-	laundryDb := db.mongo.Collection(collection)
+	businessDb := db.mongo.Collection(collection)
 
-	result, err := laundryDb.Find(context.Background(), bson.D{})
+	result, err := businessDb.Find(context.Background(), bson.D{})
 
 	if err != nil {
 		log.Panic(err)
@@ -66,10 +66,10 @@ func (db database) FindAll(collection string) (*mongo.Cursor, error) {
 }
 
 func (db database) Create(collection string, object bson.D) (*mongo.InsertOneResult, error) {
-	laundryDb := db.mongo.Collection(collection)
+	businessDb := db.mongo.Collection(collection)
 
-	// result, err := laundryDb.Find(context.Background(), bson.D{})
-	result, err := laundryDb.InsertOne(context.TODO(), object)
+	// result, err := businessDb.Find(context.Background(), bson.D{})
+	result, err := businessDb.InsertOne(context.TODO(), object)
 
 	if err != nil {
 		log.Panic(err)
@@ -86,11 +86,11 @@ func (db database) Create(collection string, object bson.D) (*mongo.InsertOneRes
 
 func (db database) UpdateOne(collection string, filter bson.D, update bson.D) (bson.M, error) {
 
-	laundryDb := db.mongo.Collection(collection)
+	businessDb := db.mongo.Collection(collection)
 
 	opts := options.FindOneAndUpdate().SetUpsert(true)
 	var object bson.M
-	err := laundryDb.FindOneAndUpdate(
+	err := businessDb.FindOneAndUpdate(
 		context.TODO(),
 		filter,
 		update,
@@ -121,11 +121,11 @@ func (db database) UpdateOne(collection string, filter bson.D, update bson.D) (b
 
 func (db database) FindOne(collection string, filter bson.D) (bson.M, error) {
 
-	laundryDb := db.mongo.Collection(collection)
+	businessDb := db.mongo.Collection(collection)
 
 	var result bson.M
 
-	err := laundryDb.FindOne(context.TODO(), filter).Decode(&result)
+	err := businessDb.FindOne(context.TODO(), filter).Decode(&result)
 
 	return result, err
 }

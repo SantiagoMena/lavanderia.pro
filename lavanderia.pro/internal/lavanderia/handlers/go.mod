@@ -8,4 +8,4 @@ replace lavanderia.pro/api/types => ../../../../../api/types
 
 replace lavanderia.pro/internal/lavanderia/config => ../../config
 
-replace lavanderia.pro/internal/lavanderia/handlers/laundry => ./laundry
+replace lavanderia.pro/internal/lavanderia/handlers/business => ./business
