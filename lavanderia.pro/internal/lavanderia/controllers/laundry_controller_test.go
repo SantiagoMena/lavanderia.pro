@@ -124,9 +124,9 @@ func TestGetLaundry(t *testing.T) {
 	assert.NotEmpty(t, laundryGotten, "Laundry is empty on delete laundry")
 	assert.NotEmpty(t, laundryGotten.ID, "Laundry ID is empty on delete laundry")
 	assert.NotEmpty(t, laundryGotten.UpdatedAt, "Laundry UpdatedAt is empty on delete laundry")
-	assert.Equal(t, "test", laundryGotten.Name, "Name not save properly")
-	assert.Equal(t, 0.123, laundryGotten.Lat, "Lat not save properly")
-	assert.Equal(t, 0.123, laundryGotten.Long, "Long not save properly")
+	assert.Equal(t, "test", laundryGotten.Name, "Name not get properly")
+	assert.Equal(t, 0.123, laundryGotten.Lat, "Lat not get properly")
+	assert.Equal(t, 0.123, laundryGotten.Long, "Long not get properly")
 }
 
 func MakeController() *LaundryController {
