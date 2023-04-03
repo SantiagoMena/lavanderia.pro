@@ -8,8 +8,8 @@ import (
 
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
-	"lavanderia.pro/internal/lavanderia/controllers/handlers/laundry"
 	"lavanderia.pro/internal/lavanderia/databases"
+	"lavanderia.pro/internal/lavanderia/handlers/laundry"
 	"lavanderia.pro/internal/lavanderia/repositories"
 	"testing"
 )

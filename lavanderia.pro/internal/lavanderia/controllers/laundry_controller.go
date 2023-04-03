@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"lavanderia.pro/api/types"
-	"lavanderia.pro/internal/lavanderia/controllers/handlers/laundry"
+	"lavanderia.pro/internal/lavanderia/handlers/laundry"
 )
 
 type LaundryController struct {
