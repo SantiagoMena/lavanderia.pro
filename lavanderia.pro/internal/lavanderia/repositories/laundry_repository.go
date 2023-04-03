@@ -5,6 +5,9 @@ import (
 
 	"lavanderia.pro/api/types"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
+
+	"go.mongodb.org/mongo-driver/bson"
 	"lavanderia.pro/internal/lavanderia/databases"
 )
 
@@ -40,4 +43,28 @@ func (laundryRepository *LaundryRepository) FindAllLaundries() ([]types.Laundry,
 	}
 
 	return laundries, nil
+}
+
+func (laundryRepository *LaundryRepository) Create(laundry *types.Laundry) (types.Laundry, error) {
+
+	laundryDb, err := laundryRepository.database.Create("laundry", bson.D{
+		{Key: "name", Value: laundry.Name},
+		{Key: "lat", Value: laundry.Lat},
+		{Key: "long", Value: laundry.Long},
+	})
+
+	if err != nil {
+		return types.Laundry{}, err
+	}
+
+	insertedId := laundryDb.InsertedID.(primitive.ObjectID).Hex()
+
+	newLaundry := types.Laundry{
+		ID:   insertedId,
+		Name: laundry.Name,
+		Lat:  laundry.Lat,
+		Long: laundry.Long,
+	}
+
+	return newLaundry, nil
 }

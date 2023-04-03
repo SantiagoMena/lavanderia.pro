@@ -13,6 +13,7 @@ import (
 
 type Database interface {
 	FindAll(collection string) (*mongo.Cursor, error)
+	Create(collection string, object bson.D) (*mongo.InsertOneResult, error)
 }
 
 type database struct {
@@ -47,6 +48,25 @@ func (db database) FindAll(collection string) (*mongo.Cursor, error) {
 	laundryDb := db.mongo.Collection(collection)
 
 	result, err := laundryDb.Find(context.Background(), bson.D{})
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	defer func() {
+		if err := db.client.Disconnect(context.TODO()); err != nil {
+			panic(err)
+		}
+	}()
+
+	return result, err
+}
+
+func (db database) Create(collection string, object bson.D) (*mongo.InsertOneResult, error) {
+	laundryDb := db.mongo.Collection(collection)
+
+	// result, err := laundryDb.Find(context.Background(), bson.D{})
+	result, err := laundryDb.InsertOne(context.TODO(), object)
 
 	if err != nil {
 		log.Panic(err)
