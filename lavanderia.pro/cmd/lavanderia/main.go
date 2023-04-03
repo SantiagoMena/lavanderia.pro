@@ -14,6 +14,7 @@ import (
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/controllers"
 	"lavanderia.pro/internal/lavanderia/databases"
+	"lavanderia.pro/internal/lavanderia/handlers/laundry"
 	"lavanderia.pro/internal/lavanderia/repositories"
 	"lavanderia.pro/internal/lavanderia/routers"
 )
@@ -23,30 +24,28 @@ func main() {
 		log.Println("No .env file found")
 	}
 
-	// r := routers.SetupRouter()
-
-	// r.Run()
 	RunServer()
 }
 
-// func registerService(ginEngine *gin.Engine, userSvcRouter usersvc.Router) {
-// 	gGroup := ginEngine.Group("api/v1")
-// 	userSvcRouter.Register(gGroup)
-// }
-
 func RunServer() {
+	app := MakeApp()
 
-	fx.New(
+	app.Run()
+}
+
+func MakeApp() *fx.App {
+	return fx.New(
 		fx.Provide(config.NewConfig),
 		fx.Provide(databases.NewMongoDatabase),
 		repositories.Module,
 		controllers.Module,
 		fx.Provide(provideGinEngine),
 		routers.Module,
+		laundry.Module,
 		fx.Invoke(
 			startServer,
 		),
-	).Run()
+	)
 }
 
 func startServer(ginEngine *gin.Engine, lifecycle fx.Lifecycle) {
