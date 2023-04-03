@@ -14,12 +14,12 @@ import (
 	"testing"
 )
 
-func TestGetHandle(t *testing.T) {
+func TestUpdateHandle(t *testing.T) {
 	if err := godotenv.Load("../../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
-	createHandler := MakeCreateLaundryToUpdateHandler()
-	updateHandler := MakeUpdateLaundryHandler()
+	createHandler := MakeCreateLaundryToGetHandler()
+	getHandler := MakeGetLaundryHandler()
 
 	laundry, err := createHandler.Handle(&types.Laundry{
 		Name: "test to update",
@@ -27,35 +27,28 @@ func TestGetHandle(t *testing.T) {
 		Long: 0.123,
 	})
 
-	laundryUpdated, errUpdate := updateHandler.Handle(&types.Laundry{
-		Name: "test updated",
-		Lat:  0.321,
-		Long: 0.321,
-	})
+	laundryGotten, errGet := getHandler.Handle(&laundry)
 
 	assert.Nil(t, err, "Error on create laundry")
-	assert.Nil(t, errUpdate, "Error on updated laundry")
+	assert.Nil(t, errGet, "Error on updated laundry")
 	assert.NotEmpty(t, laundry, "Laundry is empty on create")
-	assert.NotEmpty(t, laundryUpdated, "Laundry is empty on delete")
+	assert.NotEmpty(t, laundryGotten, "Laundry is empty on get")
 	assert.NotEmpty(t, laundry.ID, "Laundry ID created is empty")
 	assert.Equal(t, "test to update", laundry.Name, "Laundry name not created properly")
 	assert.Equal(t, 0.123, laundry.Lat, "Laundry lat not created properly")
 	assert.Equal(t, 0.123, laundry.Long, "Laundry long not created properly")
-	assert.Equal(t, "test updated", laundryUpdated.Name, "Laundry name not updated")
-	assert.Equal(t, 0.321, laundryUpdated.Lat, "Laundry lat not updated")
-	assert.Equal(t, 0.321, laundryUpdated.Long, "Laundry long not updated")
 }
 
-func MakeUpdateLaundryHandler() *UpdateLaundryHandler {
+func MakeGetLaundryHandler() *GetLaundryHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repository := repositories.NewLaundryRepository(database)
-	handler := NewUpdateLaundryHandler(repository)
+	handler := NewGetLaundryHandler(repository)
 
 	return handler
 }
 
-func MakeCreateLaundryToUpdateHandler() *CreateLaundryHandler {
+func MakeCreateLaundryToGetHandler() *CreateLaundryHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repository := repositories.NewLaundryRepository(database)
