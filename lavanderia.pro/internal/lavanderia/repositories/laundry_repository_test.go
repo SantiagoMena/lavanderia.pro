@@ -94,3 +94,32 @@ func TestDeleteLaundry(t *testing.T) {
 	assert.NotEmpty(t, laundryDeleted.ID, "ID is empty")
 
 }
+
+func TestGetLaundry(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	config := config.NewConfig()
+
+	mongo := databases.NewMongoDatabase(config)
+
+	laundry, err := NewLaundryRepository(mongo).Create(&types.Laundry{
+		Name: "test",
+		Lat:  0.321,
+		Long: 0.321,
+	})
+
+	assert.Equal(t, err, nil, "Create() returns error")
+	assert.NotNil(t, laundry, "Create() returns nil result")
+	assert.NotEmpty(t, laundry.CreatedAt, "CreatedAt is empty")
+	assert.NotEmpty(t, laundry.ID, "ID is empty")
+
+	laundryGotten, errDelete := NewLaundryRepository(mongo).Get(&laundry)
+
+	assert.Equal(t, errDelete, nil, "Delete() returns error")
+	assert.NotNil(t, laundryGotten, "Delete() returns nil result")
+	assert.NotEmpty(t, laundryGotten.CreatedAt, "CreatedAt is empty")
+	assert.NotEmpty(t, laundryGotten.ID, "ID is empty")
+
+}
