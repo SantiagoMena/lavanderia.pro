@@ -145,7 +145,7 @@ func (businessRepository *BusinessRepository) Get(business *types.Business) (typ
 
 	objectUpdated, err := businessRepository.database.FindOne(collection, filter)
 	if err != nil {
-		panic(err)
+		return types.Business{}, err
 	}
 
 	if err != nil {
