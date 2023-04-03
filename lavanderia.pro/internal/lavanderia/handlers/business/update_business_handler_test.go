@@ -19,7 +19,7 @@ func TestGetHandle(t *testing.T) {
 		fmt.Println("No .env.test file found")
 	}
 	createHandler := MakeCreateBusinessToUpdateHandler()
-	updateHandler := MakeUpdateBusinessHandler()
+	updateHandler := MakeRegisterBusinessHandler()
 
 	business, err := createHandler.Handle(&types.Business{
 		Name: "test to update",
@@ -46,11 +46,12 @@ func TestGetHandle(t *testing.T) {
 	assert.Equal(t, 0.321, businessUpdated.Long, "Business long not updated")
 }
 
-func MakeUpdateBusinessHandler() *UpdateBusinessHandler {
+func MakeRegisterBusinessHandler() *UpdateBusinessHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
-	repository := repositories.NewBusinessRepository(database)
-	handler := NewUpdateBusinessHandler(repository)
+	repositoryBusiness := repositories.NewBusinessRepository(database)
+	// repositoryAuth := repositories.NewAuthRepository(database)
+	handler := NewUpdateBusinessHandler(repositoryBusiness)
 
 	return handler
 }
