@@ -6,22 +6,22 @@ import (
 	"lavanderia.pro/internal/lavanderia/handlers/business"
 )
 
-type AuthBusinessController struct {
+type AuthController struct {
 	RegisterBusinessHandler *business.RegisterBusinessHandler
 	LoginHandler            *auth.LoginHandler
 }
 
-func NewAuthBusinessController(
+func NewAuthController(
 	RegisterBusinessHandler *business.RegisterBusinessHandler,
 	LoginHandler *auth.LoginHandler,
-) *AuthBusinessController {
-	return &AuthBusinessController{
+) *AuthController {
+	return &AuthController{
 		RegisterBusinessHandler: RegisterBusinessHandler,
 		LoginHandler:            LoginHandler,
 	}
 }
 
-func (controller AuthBusinessController) RegisterBusiness(auth *types.Auth, business *types.Business) (types.Business, error) {
+func (controller AuthController) RegisterBusiness(auth *types.Auth, business *types.Business) (types.Business, error) {
 	// Handle Create Business
 	businessDb, err := controller.RegisterBusinessHandler.Handle(auth, business)
 
@@ -32,7 +32,7 @@ func (controller AuthBusinessController) RegisterBusiness(auth *types.Auth, busi
 	return businessDb, err
 }
 
-func (controller AuthBusinessController) Login(auth *types.Auth) (*types.JWT, error) {
+func (controller AuthController) Login(auth *types.Auth) (*types.JWT, error) {
 	// Handle Create Business
 	authDb, err := controller.LoginHandler.Handle(auth)
 

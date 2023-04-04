@@ -23,7 +23,7 @@ func TestRegisterBusiness(t *testing.T) {
 		fmt.Println("No .env.test file found")
 	}
 
-	controller := MakeAuthBusinessController()
+	controller := MakeAuthController()
 
 	pwd := []byte("PwD")
 	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
@@ -54,7 +54,7 @@ func TestLogin(t *testing.T) {
 		fmt.Println("No .env.test file found")
 	}
 
-	controller := MakeAuthBusinessController()
+	controller := MakeAuthController()
 
 	pwd := []byte("PwD")
 	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
@@ -85,12 +85,12 @@ func TestLogin(t *testing.T) {
 	assert.NotEmpty(t, businessLogged, "Business Logged is empty")
 }
 
-func MakeAuthBusinessController() *AuthBusinessController {
+func MakeAuthController() *AuthController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryAuth := repositories.NewAuthRepository(database)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
-	controller := NewAuthBusinessController(
+	controller := NewAuthController(
 		business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness),
 		auth.NewLoginHandler(repositoryAuth, repositoryBusiness),
 	)

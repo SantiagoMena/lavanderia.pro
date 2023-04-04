@@ -114,7 +114,7 @@ func NewGetBusinessRouter(r *gin.Engine, controller *controllers.BusinessControl
 	})
 }
 
-func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthBusinessController) {
+func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthController) {
 	r.POST("/business/register", func(c *gin.Context) {
 
 		var newBusiness types.Business
@@ -146,7 +146,7 @@ func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthBu
 	})
 }
 
-func NewPostLoginRouter(r *gin.Engine, controller *controllers.AuthBusinessController) {
+func NewPostLoginRouter(r *gin.Engine, controller *controllers.AuthController) {
 	r.POST("/business/login", func(c *gin.Context) {
 		var newAuth types.Auth
 
