@@ -23,12 +23,12 @@ func NewLoginBusinessHandler(
 	}
 }
 
-func (ch LoginBusinessHandler) Handle(auth *types.Auth) (types.Auth, error) {
+func (ch LoginBusinessHandler) Handle(auth *types.Auth) (*types.JWT, error) {
 	authFound, err := ch.repositoryAuth.GetByEmail(&types.Auth{
 		Email: auth.Email,
 	})
 	if err != nil {
-		return types.Auth{}, errors.New("email incorrect")
+		return &types.JWT{}, errors.New("email incorrect")
 	}
 
 	hash := authFound.Password
@@ -37,14 +37,16 @@ func (ch LoginBusinessHandler) Handle(auth *types.Auth) (types.Auth, error) {
 	pass, er := validateCredentials([]byte(hash), []byte(password))
 
 	if er != nil {
-		return types.Auth{}, er
+		return &types.JWT{}, er
 	}
 
 	if pass != true {
-		return types.Auth{}, errors.New("password incorrect")
+		return &types.JWT{}, errors.New("password incorrect")
 	}
 
-	return authFound, nil
+	jwt, err := ch.repositoryAuth.CreateJWT(&authFound)
+
+	return jwt, nil
 }
 
 func validateCredentials(actualPasswordHash []byte, attemptedPassword []byte) (bool, error) {

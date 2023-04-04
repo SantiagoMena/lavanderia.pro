@@ -5,6 +5,7 @@ import (
 
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/bson"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/databases"
@@ -69,12 +70,70 @@ func (authRepository *AuthRepository) GetByEmail(auth *types.Auth) (types.Auth, 
 	bson.Unmarshal(objectAuth, &foundAuth)
 
 	return types.Auth{
+		ID:         foundAuth.ID,
+		Email:      foundAuth.Email,
+		Password:   foundAuth.Password,
+		FacebookId: foundAuth.FacebookId,
+		GoogleId:   foundAuth.GoogleId,
+		AppleId:    foundAuth.AppleId,
+		CreatedAt:  foundAuth.CreatedAt,
+	}, nil
+}
+
+func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, error) {
+	auth = &types.Auth{
 		ID:         auth.ID,
 		Email:      auth.Email,
-		Password:   foundAuth.Password,
-		FacebookId: auth.FacebookId,
 		GoogleId:   auth.GoogleId,
+		FacebookId: auth.FacebookId,
 		AppleId:    auth.AppleId,
-		CreatedAt:  auth.CreatedAt,
+	}
+
+	// mySigningKey := []byte(auth.Password)
+	mySigningKey := []byte("SECRET_JWT_SIGN_KEY")
+
+	type CustomClaims struct {
+		Auth *types.Auth `json:"auth"`
+		jwt.RegisteredClaims
+	}
+
+	tokenExpires := time.Now().Add(24 * time.Hour)
+	// Create claims while leaving out some of the optional fields
+	claims := CustomClaims{
+		auth,
+		jwt.RegisteredClaims{
+			// Also fixed dates can be used for the NumericDate
+			ExpiresAt: jwt.NewNumericDate(tokenExpires),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenSigned, errSignToken := token.SignedString(mySigningKey)
+
+	if errSignToken != nil {
+		return &types.JWT{}, errSignToken
+	}
+
+	type CustomClaimsRefresh struct {
+		jwt.RegisteredClaims
+	}
+
+	refreshTokenExpires := time.Now().Add(24 * time.Hour * 30)
+	claimsRefresh := CustomClaimsRefresh{
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(refreshTokenExpires),
+		},
+	}
+
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claimsRefresh)
+	refreshTokenSigned, errSignRefreshToken := refreshToken.SignedString(mySigningKey)
+
+	if errSignRefreshToken != nil {
+		return &types.JWT{}, errSignRefreshToken
+	}
+
+	return &types.JWT{
+		Token:        tokenSigned,
+		RefreshToken: refreshTokenSigned,
 	}, nil
 }
