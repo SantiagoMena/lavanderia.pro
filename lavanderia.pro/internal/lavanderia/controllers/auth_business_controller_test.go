@@ -10,6 +10,7 @@ import (
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
+	"lavanderia.pro/internal/lavanderia/handlers/auth"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
 	"lavanderia.pro/internal/lavanderia/repositories"
 	"strings"
@@ -31,7 +32,7 @@ func TestRegisterBusiness(t *testing.T) {
 	ti := time.Now()
 	email := []string{"new@", ti.String(), "test.com"}
 
-	auth := &types.Auth{
+	authRegister := &types.Auth{
 		Email:    strings.Join(email, ""),
 		Password: string(password),
 	}
@@ -42,7 +43,7 @@ func TestRegisterBusiness(t *testing.T) {
 		Long: 0.321,
 	}
 
-	business, err := controller.RegisterBusiness(auth, businessObj)
+	business, err := controller.RegisterBusiness(authRegister, businessObj)
 
 	assert.Nil(t, err, "Error returns not nil")
 	assert.NotEmpty(t, business, "Business is empty")
@@ -62,7 +63,7 @@ func TestLoginBusiness(t *testing.T) {
 	ti := time.Now()
 	email := []string{"new@", ti.String(), "test.com"}
 
-	auth := &types.Auth{
+	authLogin := &types.Auth{
 		Email:    strings.Join(email, ""),
 		Password: string(password),
 	}
@@ -73,12 +74,12 @@ func TestLoginBusiness(t *testing.T) {
 		Long: 0.321,
 	}
 
-	business, err := controller.RegisterBusiness(auth, businessObj)
+	business, err := controller.RegisterBusiness(authLogin, businessObj)
 
 	assert.Nil(t, err, "Error returns not nil")
 	assert.NotEmpty(t, business, "Business is empty")
 
-	businessLogged, errLogin := controller.LoginBusiness(auth)
+	businessLogged, errLogin := controller.LoginBusiness(authLogin)
 
 	assert.Nil(t, errLogin, "Error Login returns not nil")
 	assert.NotEmpty(t, businessLogged, "Business Logged is empty")
@@ -91,7 +92,7 @@ func MakeAuthBusinessController() *AuthBusinessController {
 	repositoryBusiness := repositories.NewBusinessRepository(database)
 	controller := NewAuthBusinessController(
 		business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness),
-		business.NewLoginBusinessHandler(repositoryAuth, repositoryBusiness),
+		auth.NewLoginBusinessHandler(repositoryAuth, repositoryBusiness),
 	)
 	return controller
 }

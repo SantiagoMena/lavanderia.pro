@@ -2,17 +2,18 @@ package controllers
 
 import (
 	"lavanderia.pro/api/types"
+	"lavanderia.pro/internal/lavanderia/handlers/auth"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
 )
 
 type AuthBusinessController struct {
 	RegisterBusinessHandler *business.RegisterBusinessHandler
-	LoginBusinessHandler    *business.LoginBusinessHandler
+	LoginBusinessHandler    *auth.LoginBusinessHandler
 }
 
 func NewAuthBusinessController(
 	RegisterBusinessHandler *business.RegisterBusinessHandler,
-	LoginBusinessHandler *business.LoginBusinessHandler,
+	LoginBusinessHandler *auth.LoginBusinessHandler,
 ) *AuthBusinessController {
 	return &AuthBusinessController{
 		RegisterBusinessHandler: RegisterBusinessHandler,

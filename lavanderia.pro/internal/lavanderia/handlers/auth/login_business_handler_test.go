@@ -1,4 +1,4 @@
-package business
+package auth
 
 import (
 	"fmt"
@@ -9,6 +9,7 @@ import (
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
+	"lavanderia.pro/internal/lavanderia/handlers/business"
 	"lavanderia.pro/internal/lavanderia/repositories"
 	"strings"
 	"testing"
@@ -55,12 +56,12 @@ func TestLoginHandle(t *testing.T) {
 
 }
 
-func MakeRegisterToLoginBusinessHandler() *RegisterBusinessHandler {
+func MakeRegisterToLoginBusinessHandler() *business.RegisterBusinessHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
 	repositoryAuth := repositories.NewAuthRepository(database)
-	handler := NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness)
+	handler := business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness)
 
 	return handler
 }

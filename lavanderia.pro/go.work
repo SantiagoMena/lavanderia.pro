@@ -9,4 +9,5 @@ use (
 	./internal/lavanderia/repositories
 	./internal/lavanderia/routers
 	./internal/lavanderia/handlers/business
+	./internal/lavanderia/handlers/auth
 )

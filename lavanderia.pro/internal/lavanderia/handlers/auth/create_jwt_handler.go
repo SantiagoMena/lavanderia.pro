@@ -13,7 +13,7 @@ func NewCreateJWTHandler(repository *repositories.AuthRepository) *CreateJWTHand
 	return &CreateJWTHandler{repository: repository}
 }
 
-func (ch CreateJWTHandler) Handle(auth *types.Auth) (types.JWT, error) {
+func (ch CreateJWTHandler) Handle(auth *types.Auth) (*types.JWT, error) {
 	jwt, err := ch.repository.CreateJWT(auth)
 
 	return jwt, err
