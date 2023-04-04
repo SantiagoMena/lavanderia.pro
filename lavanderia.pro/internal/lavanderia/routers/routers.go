@@ -3,6 +3,7 @@ package routers
 import "go.uber.org/fx"
 
 var Module = fx.Invoke(
+	NewPingRouter,
 	NewGetAllBusinessRouter,
 	// NewPostBusinessRouter,
 	NewDeleteBusinessRouter,
@@ -10,5 +11,5 @@ var Module = fx.Invoke(
 	NewGetBusinessRouter,
 	NewPostRegisterBusinessRouter,
 	NewPostLoginRouter,
-	NewPingRouter,
+	NewPostRefreshTokenRouter,
 )

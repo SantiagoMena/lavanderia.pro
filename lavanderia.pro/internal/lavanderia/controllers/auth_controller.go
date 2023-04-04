@@ -9,15 +9,18 @@ import (
 type AuthController struct {
 	RegisterBusinessHandler *business.RegisterBusinessHandler
 	LoginHandler            *auth.LoginHandler
+	RefreshTokenHandler     *auth.RefreshTokenHandler
 }
 
 func NewAuthController(
 	RegisterBusinessHandler *business.RegisterBusinessHandler,
 	LoginHandler *auth.LoginHandler,
+	RefreshTokenHandler *auth.RefreshTokenHandler,
 ) *AuthController {
 	return &AuthController{
 		RegisterBusinessHandler: RegisterBusinessHandler,
 		LoginHandler:            LoginHandler,
+		RefreshTokenHandler:     RefreshTokenHandler,
 	}
 }
 
@@ -41,4 +44,14 @@ func (controller AuthController) Login(auth *types.Auth) (*types.JWT, error) {
 	}
 
 	return authDb, err
+}
+
+func (controller AuthController) RefreshToken(token string) (*types.JWT, error) {
+	jwt, err := controller.RefreshTokenHandler.Handle(token)
+
+	if err != nil {
+		return &types.JWT{}, err
+	}
+
+	return jwt, err
 }

@@ -93,6 +93,7 @@ func MakeAuthController() *AuthController {
 	controller := NewAuthController(
 		business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness),
 		auth.NewLoginHandler(repositoryAuth, repositoryBusiness),
+		auth.NewRefreshTokenHandler(repositoryAuth),
 	)
 	return controller
 }

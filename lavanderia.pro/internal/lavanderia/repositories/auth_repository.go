@@ -147,12 +147,9 @@ func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, e
 		return &types.JWT{}, errSignToken
 	}
 
-	type CustomClaimsRefresh struct {
-		jwt.RegisteredClaims
-	}
-
 	refreshTokenExpires := time.Now().Add(24 * time.Hour * 30)
-	claimsRefresh := CustomClaimsRefresh{
+	claimsRefresh := CustomClaims{
+		auth,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(refreshTokenExpires),
 		},
@@ -183,16 +180,25 @@ func (authRepository *AuthRepository) RefreshJWT(refreshToken string) (*types.JW
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		authId := claims["id"].(string)
-		auth, errGetAuth := authRepository.GetById(authId)
+		auth, _ := claims["auth"]
+		authMap, _ := auth.(map[string]interface{})
+
+		// id, _ := authId.(string)
+
+		// fmt.Println(id)
+		// var authObj types.Auth
+		// json.Unmarshal([]byte(birdJson), &bird)
+
+		// panic(authId.id)
+		authObj, errGetAuth := authRepository.GetById(authMap["id"].(string))
 
 		if errGetAuth != nil {
 			return nil, errGetAuth
 		}
 
-		refresedToken, errRefresh := authRepository.CreateJWT(&auth)
+		refreshedToken, errRefresh := authRepository.CreateJWT(&authObj)
 
-		return refresedToken, errRefresh
+		return refreshedToken, errRefresh
 	} else {
 		return &types.JWT{}, err
 	}
