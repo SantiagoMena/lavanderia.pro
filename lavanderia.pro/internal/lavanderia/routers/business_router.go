@@ -114,7 +114,7 @@ func NewGetBusinessRouter(r *gin.Engine, controller *controllers.BusinessControl
 	})
 }
 
-func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthBusinessController) {
+func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthController) {
 	r.POST("/business/register", func(c *gin.Context) {
 
 		var newBusiness types.Business
@@ -141,6 +141,30 @@ func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthBu
 			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
 		} else {
 			c.IndentedJSON(http.StatusCreated, business)
+		}
+
+	})
+}
+
+func NewPostLoginRouter(r *gin.Engine, controller *controllers.AuthController) {
+	r.POST("/business/login", func(c *gin.Context) {
+		var newAuth types.Auth
+
+		// Call BindJSON to bind the received JSON to
+		// newAuth.
+		if errAuthJson := c.ShouldBindBodyWith(&newAuth, binding.JSON); errAuthJson != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errAuthJson})
+			return
+		}
+
+		// Handle Controller
+		business, errRegister := controller.Login(&newAuth)
+
+		if errRegister != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
+		} else {
+			// TODO: return JWT
+			c.IndentedJSON(http.StatusOK, business)
 		}
 
 	})

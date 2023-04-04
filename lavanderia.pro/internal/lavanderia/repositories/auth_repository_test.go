@@ -9,7 +9,9 @@ import (
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
+	"strings"
 	"testing"
+	"time"
 )
 
 func TestFindByEmail(t *testing.T) {
@@ -27,7 +29,7 @@ func TestFindByEmail(t *testing.T) {
 
 	auth, err := NewAuthRepository(mongo).Create(&types.Auth{
 		Email:    "new@test.com",
-		Password: password,
+		Password: string(password),
 	})
 
 	mongo2 := databases.NewMongoDatabase(config)
@@ -57,10 +59,42 @@ func TestCreateAuth(t *testing.T) {
 
 	auth, err := NewAuthRepository(mongo).Create(&types.Auth{
 		Email:    "new@test.com",
-		Password: password,
+		Password: string(password),
 	})
 
 	assert.Equal(t, err, nil, "Create() returns error")
 	assert.NotNil(t, auth, "FindAllBusiness() returns nil result")
 	assert.NotEmpty(t, auth.CreatedAt, "CreatedAt is empty")
+}
+
+func TestCreateJWT(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	config := config.NewConfig()
+
+	mongo := databases.NewMongoDatabase(config)
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	auth, err := NewAuthRepository(mongo).Create(&types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	})
+
+	assert.Equal(t, err, nil, "Create() returns error")
+	assert.NotNil(t, auth, "FindAllBusiness() returns nil result")
+	assert.NotEmpty(t, auth.CreatedAt, "CreatedAt is empty")
+
+	jwt, errJWT := NewAuthRepository(mongo).CreateJWT(&auth)
+	assert.Equal(t, errJWT, nil, "Create() returns error")
+	assert.NotNil(t, jwt, "Login() returns nil result")
+	assert.NotEmpty(t, jwt.Token, "Token is empty")
 }

@@ -29,7 +29,7 @@ func (ch RegisterBusinessHandler) Handle(auth *types.Auth, business *types.Busin
 		return types.Business{}, errors.New("auth already exists")
 	}
 
-	password, errPass := bcrypt.GenerateFromPassword(auth.Password, bcrypt.DefaultCost)
+	password, errPass := bcrypt.GenerateFromPassword([]byte(auth.Password), bcrypt.DefaultCost)
 
 	if errPass != nil {
 		return types.Business{}, errors.New("Error on encrypt password")
@@ -37,7 +37,7 @@ func (ch RegisterBusinessHandler) Handle(auth *types.Auth, business *types.Busin
 
 	authDb, err := ch.repositoryAuth.Create(&types.Auth{
 		Email:    auth.Email,
-		Password: password,
+		Password: string(password),
 	})
 
 	businessDb, err := ch.repositoryBusiness.Create(&types.Business{

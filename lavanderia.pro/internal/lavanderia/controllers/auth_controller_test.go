@@ -10,6 +10,7 @@ import (
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
+	"lavanderia.pro/internal/lavanderia/handlers/auth"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
 	"lavanderia.pro/internal/lavanderia/repositories"
 	"strings"
@@ -22,7 +23,7 @@ func TestRegisterBusiness(t *testing.T) {
 		fmt.Println("No .env.test file found")
 	}
 
-	controller := MakeAuthBusinessController()
+	controller := MakeAuthController()
 
 	pwd := []byte("PwD")
 	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
@@ -31,9 +32,9 @@ func TestRegisterBusiness(t *testing.T) {
 	ti := time.Now()
 	email := []string{"new@", ti.String(), "test.com"}
 
-	auth := &types.Auth{
+	authRegister := &types.Auth{
 		Email:    strings.Join(email, ""),
-		Password: password,
+		Password: string(password),
 	}
 
 	businessObj := &types.Business{
@@ -42,19 +43,56 @@ func TestRegisterBusiness(t *testing.T) {
 		Long: 0.321,
 	}
 
-	business, err := controller.RegisterBusiness(auth, businessObj)
+	business, err := controller.RegisterBusiness(authRegister, businessObj)
 
 	assert.Nil(t, err, "Error returns not nil")
 	assert.NotEmpty(t, business, "Business is empty")
 }
 
-func MakeAuthBusinessController() *AuthBusinessController {
+func TestLogin(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	controller := MakeAuthController()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	authLogin := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	businessObj := &types.Business{
+		Name: "test register",
+		Lat:  0.321,
+		Long: 0.321,
+	}
+
+	business, err := controller.RegisterBusiness(authLogin, businessObj)
+
+	assert.Nil(t, err, "Error returns not nil")
+	assert.NotEmpty(t, business, "Business is empty")
+
+	businessLogged, errLogin := controller.Login(authLogin)
+
+	assert.Nil(t, errLogin, "Error Login returns not nil")
+	assert.NotEmpty(t, businessLogged, "Business Logged is empty")
+}
+
+func MakeAuthController() *AuthController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryAuth := repositories.NewAuthRepository(database)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
-	controller := NewAuthBusinessController(
+	controller := NewAuthController(
 		business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness),
+		auth.NewLoginHandler(repositoryAuth, repositoryBusiness),
 	)
 	return controller
 }
