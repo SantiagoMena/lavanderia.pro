@@ -69,9 +69,9 @@ func (authRepository *AuthRepository) GetByEmail(auth *types.Auth) (types.Auth, 
 	bson.Unmarshal(objectAuth, &foundAuth)
 
 	return types.Auth{
-		ID:    auth.ID,
-		Email: auth.Email,
-		// Password:   auth.Password,
+		ID:         auth.ID,
+		Email:      auth.Email,
+		Password:   foundAuth.Password,
 		FacebookId: auth.FacebookId,
 		GoogleId:   auth.GoogleId,
 		AppleId:    auth.AppleId,

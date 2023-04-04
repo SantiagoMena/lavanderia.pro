@@ -33,7 +33,7 @@ func TestRegisterBusiness(t *testing.T) {
 
 	auth := &types.Auth{
 		Email:    strings.Join(email, ""),
-		Password: password,
+		Password: string(password),
 	}
 
 	businessObj := &types.Business{

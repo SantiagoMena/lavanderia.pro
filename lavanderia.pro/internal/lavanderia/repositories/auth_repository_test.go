@@ -27,7 +27,7 @@ func TestFindByEmail(t *testing.T) {
 
 	auth, err := NewAuthRepository(mongo).Create(&types.Auth{
 		Email:    "new@test.com",
-		Password: password,
+		Password: string(password),
 	})
 
 	mongo2 := databases.NewMongoDatabase(config)
@@ -57,7 +57,7 @@ func TestCreateAuth(t *testing.T) {
 
 	auth, err := NewAuthRepository(mongo).Create(&types.Auth{
 		Email:    "new@test.com",
-		Password: password,
+		Password: string(password),
 	})
 
 	assert.Equal(t, err, nil, "Create() returns error")

@@ -120,10 +120,6 @@ func (businessRepository *BusinessRepository) Update(business *types.Business) (
 
 	objectUpdated, err := businessRepository.database.UpdateOne(businessCollection, filter, update)
 	if err != nil {
-		panic(err)
-	}
-
-	if err != nil {
 		return types.Business{}, err
 	}
 
