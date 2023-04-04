@@ -48,6 +48,42 @@ func TestRegisterBusiness(t *testing.T) {
 	assert.NotEmpty(t, business, "Business is empty")
 }
 
+func TestLoginBusiness(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	controller := MakeAuthBusinessController()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	auth := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	businessObj := &types.Business{
+		Name: "test register",
+		Lat:  0.321,
+		Long: 0.321,
+	}
+
+	business, err := controller.RegisterBusiness(auth, businessObj)
+
+	assert.Nil(t, err, "Error returns not nil")
+	assert.NotEmpty(t, business, "Business is empty")
+
+	businessLogged, errLogin := controller.LoginBusiness(auth)
+
+	assert.Nil(t, errLogin, "Error Login returns not nil")
+	assert.NotEmpty(t, businessLogged, "Business Logged is empty")
+}
+
 func MakeAuthBusinessController() *AuthBusinessController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
@@ -55,6 +91,7 @@ func MakeAuthBusinessController() *AuthBusinessController {
 	repositoryBusiness := repositories.NewBusinessRepository(database)
 	controller := NewAuthBusinessController(
 		business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness),
+		business.NewLoginBusinessHandler(repositoryAuth, repositoryBusiness),
 	)
 	return controller
 }
