@@ -33,18 +33,6 @@ func (ch LoginBusinessHandler) Handle(auth *types.Auth) (types.Auth, error) {
 
 	hash := authFound.Password
 	password := auth.Password
-	// hashedPassword := []byte(auth.Password)
-
-	// p, errHash := bcrypt.GenerateFromPassword([]byte(auth.Password), bcrypt.DefaultCost)
-	// if errHash != nil {
-	// 	return types.Auth{}, errors.New("hash incorrect")
-	// }
-	// pass := string(p)
-
-	// errPass := bcrypt.CompareHashAndPassword(hashedPassword, authFound.Password)
-
-	// fmt.Println(bcrypt.CompareHashAndPassword(hashedPassword, authFound.Password))
-	// errCompare := bcrypt.CompareHashAndPassword([]byte(authFound.Password), p)
 
 	pass, er := validateCredentials([]byte(hash), []byte(password))
 
