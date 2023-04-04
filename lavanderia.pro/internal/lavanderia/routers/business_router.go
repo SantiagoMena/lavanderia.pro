@@ -146,7 +146,7 @@ func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthBu
 	})
 }
 
-func NewPostLoginBusinessRouter(r *gin.Engine, controller *controllers.AuthBusinessController) {
+func NewPostLoginRouter(r *gin.Engine, controller *controllers.AuthBusinessController) {
 	r.POST("/business/login", func(c *gin.Context) {
 		var newAuth types.Auth
 
@@ -158,7 +158,7 @@ func NewPostLoginBusinessRouter(r *gin.Engine, controller *controllers.AuthBusin
 		}
 
 		// Handle Controller
-		business, errRegister := controller.LoginBusiness(&newAuth)
+		business, errRegister := controller.Login(&newAuth)
 
 		if errRegister != nil {
 			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})

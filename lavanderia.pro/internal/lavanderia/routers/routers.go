@@ -9,6 +9,6 @@ var Module = fx.Invoke(
 	NewUpdateBusinessRouter,
 	NewGetBusinessRouter,
 	NewPostRegisterBusinessRouter,
-	NewPostLoginBusinessRouter,
+	NewPostLoginRouter,
 	NewPingRouter,
 )

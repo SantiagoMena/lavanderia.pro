@@ -20,8 +20,8 @@ func TestLoginHandle(t *testing.T) {
 	if err := godotenv.Load("../../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
-	createHandler := MakeRegisterToLoginBusinessHandler()
-	loginHandler := MakeLoginBusinessHandler()
+	createHandler := MakeRegisterToLoginHandler()
+	loginHandler := MakeLoginHandler()
 
 	pwd := []byte("PwD")
 	// password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
@@ -56,7 +56,7 @@ func TestLoginHandle(t *testing.T) {
 
 }
 
-func MakeRegisterToLoginBusinessHandler() *business.RegisterBusinessHandler {
+func MakeRegisterToLoginHandler() *business.RegisterBusinessHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
@@ -66,12 +66,12 @@ func MakeRegisterToLoginBusinessHandler() *business.RegisterBusinessHandler {
 	return handler
 }
 
-func MakeLoginBusinessHandler() *LoginBusinessHandler {
+func MakeLoginHandler() *LoginHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
 	repositoryAuth := repositories.NewAuthRepository(database)
-	handler := NewLoginBusinessHandler(repositoryAuth, repositoryBusiness)
+	handler := NewLoginHandler(repositoryAuth, repositoryBusiness)
 
 	return handler
 }

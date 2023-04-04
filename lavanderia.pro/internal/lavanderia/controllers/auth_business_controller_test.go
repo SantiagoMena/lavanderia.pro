@@ -49,7 +49,7 @@ func TestRegisterBusiness(t *testing.T) {
 	assert.NotEmpty(t, business, "Business is empty")
 }
 
-func TestLoginBusiness(t *testing.T) {
+func TestLogin(t *testing.T) {
 	if err := godotenv.Load("../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
@@ -79,7 +79,7 @@ func TestLoginBusiness(t *testing.T) {
 	assert.Nil(t, err, "Error returns not nil")
 	assert.NotEmpty(t, business, "Business is empty")
 
-	businessLogged, errLogin := controller.LoginBusiness(authLogin)
+	businessLogged, errLogin := controller.Login(authLogin)
 
 	assert.Nil(t, errLogin, "Error Login returns not nil")
 	assert.NotEmpty(t, businessLogged, "Business Logged is empty")
@@ -92,7 +92,7 @@ func MakeAuthBusinessController() *AuthBusinessController {
 	repositoryBusiness := repositories.NewBusinessRepository(database)
 	controller := NewAuthBusinessController(
 		business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness),
-		auth.NewLoginBusinessHandler(repositoryAuth, repositoryBusiness),
+		auth.NewLoginHandler(repositoryAuth, repositoryBusiness),
 	)
 	return controller
 }

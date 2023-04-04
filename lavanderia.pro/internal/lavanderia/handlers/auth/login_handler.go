@@ -8,22 +8,22 @@ import (
 	"lavanderia.pro/internal/lavanderia/repositories"
 )
 
-type LoginBusinessHandler struct {
+type LoginHandler struct {
 	repositoryAuth     *repositories.AuthRepository
 	repositoryBusiness *repositories.BusinessRepository
 }
 
-func NewLoginBusinessHandler(
+func NewLoginHandler(
 	repositoryAuth *repositories.AuthRepository,
 	repositoryBusiness *repositories.BusinessRepository,
-) *LoginBusinessHandler {
-	return &LoginBusinessHandler{
+) *LoginHandler {
+	return &LoginHandler{
 		repositoryAuth:     repositoryAuth,
 		repositoryBusiness: repositoryBusiness,
 	}
 }
 
-func (ch LoginBusinessHandler) Handle(auth *types.Auth) (*types.JWT, error) {
+func (ch LoginHandler) Handle(auth *types.Auth) (*types.JWT, error) {
 	authFound, err := ch.repositoryAuth.GetByEmail(&types.Auth{
 		Email: auth.Email,
 	})

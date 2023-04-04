@@ -8,16 +8,16 @@ import (
 
 type AuthBusinessController struct {
 	RegisterBusinessHandler *business.RegisterBusinessHandler
-	LoginBusinessHandler    *auth.LoginBusinessHandler
+	LoginHandler            *auth.LoginHandler
 }
 
 func NewAuthBusinessController(
 	RegisterBusinessHandler *business.RegisterBusinessHandler,
-	LoginBusinessHandler *auth.LoginBusinessHandler,
+	LoginHandler *auth.LoginHandler,
 ) *AuthBusinessController {
 	return &AuthBusinessController{
 		RegisterBusinessHandler: RegisterBusinessHandler,
-		LoginBusinessHandler:    LoginBusinessHandler,
+		LoginHandler:            LoginHandler,
 	}
 }
 
@@ -32,9 +32,9 @@ func (controller AuthBusinessController) RegisterBusiness(auth *types.Auth, busi
 	return businessDb, err
 }
 
-func (controller AuthBusinessController) LoginBusiness(auth *types.Auth) (*types.JWT, error) {
+func (controller AuthBusinessController) Login(auth *types.Auth) (*types.JWT, error) {
 	// Handle Create Business
-	authDb, err := controller.LoginBusinessHandler.Handle(auth)
+	authDb, err := controller.LoginHandler.Handle(auth)
 
 	if err != nil {
 		return &types.JWT{}, err
