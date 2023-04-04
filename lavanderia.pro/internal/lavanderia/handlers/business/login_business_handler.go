@@ -61,7 +61,6 @@ func (ch LoginBusinessHandler) Handle(auth *types.Auth) (types.Auth, error) {
 
 func validateCredentials(actualPasswordHash []byte, attemptedPassword []byte) (bool, error) {
 	if err := bcrypt.CompareHashAndPassword(actualPasswordHash, attemptedPassword); err != nil {
-		panic(err.Error() + "-1-" + string(actualPasswordHash) + "-2-" + string(attemptedPassword))
 		return false, nil
 	}
 
