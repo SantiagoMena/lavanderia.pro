@@ -1,6 +1,9 @@
 package repositories
 
 import (
+	"fmt"
+	"os"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"time"
@@ -55,6 +58,36 @@ func (authRepository *AuthRepository) Create(auth *types.Auth) (types.Auth, erro
 	return newAuth, nil
 }
 
+func (authRepository *AuthRepository) GetById(id string) (types.Auth, error) {
+	var emptyAuth types.Auth
+	ObjectID, errOBjIdFromHex := primitive.ObjectIDFromHex(id)
+
+	if errOBjIdFromHex != nil {
+		return emptyAuth, errOBjIdFromHex
+	}
+	filter := bson.D{{"_id", ObjectID}}
+
+	object, err := authRepository.database.FindOne(authCollection, filter)
+	if err != nil {
+		return emptyAuth, err
+	}
+
+	var foundAuth types.Auth
+
+	objectAuth, _ := bson.Marshal(object)
+	bson.Unmarshal(objectAuth, &foundAuth)
+
+	return types.Auth{
+		ID:         foundAuth.ID,
+		Email:      foundAuth.Email,
+		Password:   foundAuth.Password,
+		FacebookId: foundAuth.FacebookId,
+		GoogleId:   foundAuth.GoogleId,
+		AppleId:    foundAuth.AppleId,
+		CreatedAt:  foundAuth.CreatedAt,
+	}, nil
+}
+
 func (authRepository *AuthRepository) GetByEmail(auth *types.Auth) (types.Auth, error) {
 	filter := bson.D{{"email", auth.Email}}
 	var emptyAuth types.Auth
@@ -90,7 +123,7 @@ func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, e
 	}
 
 	// mySigningKey := []byte(auth.Password)
-	mySigningKey := []byte("SECRET_JWT_SIGN_KEY")
+	mySigningKey := []byte(os.Getenv("SECRET_JWT"))
 
 	type CustomClaims struct {
 		Auth *types.Auth `json:"auth"`
@@ -136,4 +169,87 @@ func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, e
 		Token:        tokenSigned,
 		RefreshToken: refreshTokenSigned,
 	}, nil
+}
+
+func (authRepository *AuthRepository) RefreshJWT(refreshToken string) (*types.JWT, error) {
+	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(os.Getenv("SECRET_JWT")), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		authId := claims["id"].(string)
+		auth, errGetAuth := authRepository.GetById(authId)
+
+		if errGetAuth != nil {
+			return nil, errGetAuth
+		}
+
+		refresedToken, errRefresh := authRepository.CreateJWT(&auth)
+
+		return refresedToken, errRefresh
+	} else {
+		return &types.JWT{}, err
+	}
+
+	// auth = &types.Auth{
+	// 	ID:         auth.ID,
+	// 	Email:      auth.Email,
+	// 	GoogleId:   auth.GoogleId,
+	// 	FacebookId: auth.FacebookId,
+	// 	AppleId:    auth.AppleId,
+	// }
+
+	// // mySigningKey := []byte(auth.Password)
+	// mySigningKey := []byte(os.Getenv("SECRET_JWT"))
+
+	// type CustomClaims struct {
+	// 	Auth *types.Auth `json:"auth"`
+	// 	jwt.RegisteredClaims
+	// }
+
+	// tokenExpires := time.Now().Add(24 * time.Hour)
+	// // Create claims while leaving out some of the optional fields
+	// claims := CustomClaims{
+	// 	auth,
+	// 	jwt.RegisteredClaims{
+	// 		// Also fixed dates can be used for the NumericDate
+	// 		ExpiresAt: jwt.NewNumericDate(tokenExpires),
+	// 	},
+	// }
+
+	// token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	// tokenSigned, errSignToken := token.SignedString(mySigningKey)
+
+	// if errSignToken != nil {
+	// 	return &types.JWT{}, errSignToken
+	// }
+
+	// type CustomClaimsRefresh struct {
+	// 	jwt.RegisteredClaims
+	// }
+
+	// refreshTokenExpires := time.Now().Add(24 * time.Hour * 30)
+	// claimsRefresh := CustomClaimsRefresh{
+	// 	jwt.RegisteredClaims{
+	// 		ExpiresAt: jwt.NewNumericDate(refreshTokenExpires),
+	// 	},
+	// }
+
+	// refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claimsRefresh)
+	// refreshTokenSigned, errSignRefreshToken := refreshToken.SignedString(mySigningKey)
+
+	// if errSignRefreshToken != nil {
+	// 	return &types.JWT{}, errSignRefreshToken
+	// }
+
+	// return &types.JWT{
+	// 	Token:        tokenSigned,
+	// 	RefreshToken: refreshTokenSigned,
+	// }, nil
 }
