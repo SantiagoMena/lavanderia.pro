@@ -14,6 +14,7 @@ func NewCreateBusinessHandler(repository *repositories.BusinessRepository) *Crea
 }
 
 func (ch CreateBusinessHandler) Handle(business *types.Business) (types.Business, error) {
+
 	businessDb, err := ch.repository.Create(business)
 
 	return businessDb, err

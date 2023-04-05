@@ -11,7 +11,9 @@ import (
 
 func NewGetAllBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.GET("/business", func(c *gin.Context) {
-		business, err := controller.GetAllBusiness()
+		authId := c.MustGet("auth")
+
+		business, err := controller.GetAllBusinessByAuth(authId.(string))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
 		} else {

@@ -25,8 +25,6 @@ func NewBusinessRepository(database databases.Database) *BusinessRepository {
 }
 
 func (businessRepository *BusinessRepository) FindAllBusiness() ([]types.Business, error) {
-	// businessMap := []types.Business{}
-
 	businessDb, err := businessRepository.database.FindAll(businessCollection)
 
 	if err != nil {
@@ -37,15 +35,6 @@ func (businessRepository *BusinessRepository) FindAllBusiness() ([]types.Busines
 	if err = businessDb.All(context.TODO(), &businessMap); err != nil {
 		panic(err)
 	}
-	// for businessDb.Next(context.TODO()) {
-	// 	var business types.Business
-
-	// 	if err := businessDb.Decode(&business); err != nil {
-	// 		return nil, err
-	// 	}
-
-	// 	businessMap = append(businessMap, business)
-	// }
 
 	return businessMap, nil
 }
@@ -161,4 +150,25 @@ func (businessRepository *BusinessRepository) Get(business *types.Business) (typ
 	bson.Unmarshal(objectUpdt, &foundBusiness)
 
 	return foundBusiness, nil
+}
+
+func (businessRepository *BusinessRepository) FindAllBusinessByAuth(auth string) ([]types.Business, error) {
+	// businessMap := []types.Business{}
+
+	authID, _ := primitive.ObjectIDFromHex(auth)
+
+	businessDb, err := businessRepository.database.FindAllFilter(businessCollection, bson.D{
+		{Key: "auth", Value: authID},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var businessMap []types.Business
+	if err = businessDb.All(context.TODO(), &businessMap); err != nil {
+		panic(err)
+	}
+
+	return businessMap, nil
 }

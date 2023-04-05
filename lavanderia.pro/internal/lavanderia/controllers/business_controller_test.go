@@ -139,6 +139,7 @@ func MakeController() *BusinessController {
 		business.NewDeleteBusinessHandler(repository),
 		business.NewUpdateBusinessHandler(repository),
 		business.NewGetBusinessHandler(repository),
+		business.NewGetAllBusinessByAuthHandler(repository),
 	)
 	return controller
 }
