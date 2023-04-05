@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -126,6 +127,7 @@ func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, e
 	mySigningKey := []byte(os.Getenv("SECRET_JWT"))
 
 	type CustomClaims struct {
+		Type string      `json:"type"`
 		Auth *types.Auth `json:"auth"`
 		jwt.RegisteredClaims
 	}
@@ -133,6 +135,7 @@ func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, e
 	tokenExpires := time.Now().Add(24 * time.Hour)
 	// Create claims while leaving out some of the optional fields
 	claims := CustomClaims{
+		"token",
 		auth,
 		jwt.RegisteredClaims{
 			// Also fixed dates can be used for the NumericDate
@@ -149,6 +152,7 @@ func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, e
 
 	refreshTokenExpires := time.Now().Add(24 * time.Hour * 30)
 	claimsRefresh := CustomClaims{
+		"refresh_token",
 		auth,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(refreshTokenExpires),
@@ -180,16 +184,14 @@ func (authRepository *AuthRepository) RefreshJWT(refreshToken string) (*types.JW
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		tokenType, _ := claims["type"].(string)
+		if tokenType != "refresh_token" {
+			return &types.JWT{}, errors.New("token type error")
+		}
+
 		auth, _ := claims["auth"]
 		authMap, _ := auth.(map[string]interface{})
 
-		// id, _ := authId.(string)
-
-		// fmt.Println(id)
-		// var authObj types.Auth
-		// json.Unmarshal([]byte(birdJson), &bird)
-
-		// panic(authId.id)
 		authObj, errGetAuth := authRepository.GetById(authMap["id"].(string))
 
 		if errGetAuth != nil {
@@ -202,60 +204,4 @@ func (authRepository *AuthRepository) RefreshJWT(refreshToken string) (*types.JW
 	} else {
 		return &types.JWT{}, err
 	}
-
-	// auth = &types.Auth{
-	// 	ID:         auth.ID,
-	// 	Email:      auth.Email,
-	// 	GoogleId:   auth.GoogleId,
-	// 	FacebookId: auth.FacebookId,
-	// 	AppleId:    auth.AppleId,
-	// }
-
-	// // mySigningKey := []byte(auth.Password)
-	// mySigningKey := []byte(os.Getenv("SECRET_JWT"))
-
-	// type CustomClaims struct {
-	// 	Auth *types.Auth `json:"auth"`
-	// 	jwt.RegisteredClaims
-	// }
-
-	// tokenExpires := time.Now().Add(24 * time.Hour)
-	// // Create claims while leaving out some of the optional fields
-	// claims := CustomClaims{
-	// 	auth,
-	// 	jwt.RegisteredClaims{
-	// 		// Also fixed dates can be used for the NumericDate
-	// 		ExpiresAt: jwt.NewNumericDate(tokenExpires),
-	// 	},
-	// }
-
-	// token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	// tokenSigned, errSignToken := token.SignedString(mySigningKey)
-
-	// if errSignToken != nil {
-	// 	return &types.JWT{}, errSignToken
-	// }
-
-	// type CustomClaimsRefresh struct {
-	// 	jwt.RegisteredClaims
-	// }
-
-	// refreshTokenExpires := time.Now().Add(24 * time.Hour * 30)
-	// claimsRefresh := CustomClaimsRefresh{
-	// 	jwt.RegisteredClaims{
-	// 		ExpiresAt: jwt.NewNumericDate(refreshTokenExpires),
-	// 	},
-	// }
-
-	// refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claimsRefresh)
-	// refreshTokenSigned, errSignRefreshToken := refreshToken.SignedString(mySigningKey)
-
-	// if errSignRefreshToken != nil {
-	// 	return &types.JWT{}, errSignRefreshToken
-	// }
-
-	// return &types.JWT{
-	// 	Token:        tokenSigned,
-	// 	RefreshToken: refreshTokenSigned,
-	// }, nil
 }
