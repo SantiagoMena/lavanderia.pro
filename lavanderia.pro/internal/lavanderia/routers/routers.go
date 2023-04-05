@@ -5,7 +5,7 @@ import "go.uber.org/fx"
 var Module = fx.Invoke(
 	NewPingRouter,
 	NewGetAllBusinessRouter,
-	// NewPostBusinessRouter,
+	NewPostBusinessRouter,
 	NewDeleteBusinessRouter,
 	NewUpdateBusinessRouter,
 	NewGetBusinessRouter,
