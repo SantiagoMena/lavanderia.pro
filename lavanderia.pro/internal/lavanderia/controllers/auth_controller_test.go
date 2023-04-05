@@ -88,7 +88,7 @@ func TestLogin(t *testing.T) {
 func MakeAuthController() *AuthController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
-	repositoryAuth := repositories.NewAuthRepository(database)
+	repositoryAuth := repositories.NewAuthRepository(database, config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
 	controller := NewAuthController(
 		business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness),

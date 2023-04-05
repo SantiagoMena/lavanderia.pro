@@ -68,7 +68,7 @@ func MakeRegisterToLoginRefresh() *business.RegisterBusinessHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
-	repositoryAuth := repositories.NewAuthRepository(database)
+	repositoryAuth := repositories.NewAuthRepository(database, config)
 	handler := business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness)
 
 	return handler
@@ -78,7 +78,7 @@ func MakeLoginToRefreshHandler() *LoginHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
-	repositoryAuth := repositories.NewAuthRepository(database)
+	repositoryAuth := repositories.NewAuthRepository(database, config)
 	handler := NewLoginHandler(repositoryAuth, repositoryBusiness)
 
 	return handler
@@ -87,7 +87,7 @@ func MakeLoginToRefreshHandler() *LoginHandler {
 func MakeRefreshTokenHandler() *RefreshTokenHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
-	repositoryAuth := repositories.NewAuthRepository(database)
+	repositoryAuth := repositories.NewAuthRepository(database, config)
 	handler := NewRefreshTokenHandler(repositoryAuth)
 
 	return handler

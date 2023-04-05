@@ -3,7 +3,6 @@ package repositories
 import (
 	"errors"
 	"fmt"
-	"os"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/bson"
 	"lavanderia.pro/api/types"
+	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
 )
 
@@ -19,11 +19,13 @@ var authCollection = "auth"
 
 type AuthRepository struct {
 	database databases.Database
+	config   *config.Config
 }
 
-func NewAuthRepository(database databases.Database) *AuthRepository {
+func NewAuthRepository(database databases.Database, config *config.Config) *AuthRepository {
 	return &AuthRepository{
 		database: database,
+		config:   config,
 	}
 }
 
@@ -123,8 +125,7 @@ func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, e
 		AppleId:    auth.AppleId,
 	}
 
-	// mySigningKey := []byte(auth.Password)
-	mySigningKey := []byte(os.Getenv("SECRET_JWT"))
+	mySigningKey := []byte(authRepository.config.SecretJWT)
 
 	type CustomClaims struct {
 		Type string      `json:"type"`
@@ -180,7 +181,7 @@ func (authRepository *AuthRepository) RefreshJWT(refreshToken string) (*types.JW
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return []byte(os.Getenv("SECRET_JWT")), nil
+		return []byte(authRepository.config.SecretJWT), nil
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {

@@ -60,7 +60,7 @@ func MakeRegisterToLoginHandler() *business.RegisterBusinessHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
-	repositoryAuth := repositories.NewAuthRepository(database)
+	repositoryAuth := repositories.NewAuthRepository(database, config)
 	handler := business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness)
 
 	return handler
@@ -70,7 +70,7 @@ func MakeLoginHandler() *LoginHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
-	repositoryAuth := repositories.NewAuthRepository(database)
+	repositoryAuth := repositories.NewAuthRepository(database, config)
 	handler := NewLoginHandler(repositoryAuth, repositoryBusiness)
 
 	return handler
