@@ -82,7 +82,6 @@ func (controller BusinessController) GetBusiness(business *types.Business) (type
 }
 
 func (controller BusinessController) GetAllBusinessByAuth(authId string) ([]types.Business, error) {
-
 	business, err := controller.GetAllBusinessByAuthHandler.Handle(authId)
 	return business, err
 }
