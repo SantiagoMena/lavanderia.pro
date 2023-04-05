@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -23,6 +22,7 @@ func NewGetAllBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 
 func NewPostBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.POST("/business", func(c *gin.Context) {
+		authId := c.MustGet("auth")
 
 		var newBusiness types.Business
 
@@ -31,6 +31,8 @@ func NewPostBusinessRouter(r *gin.Engine, controller *controllers.BusinessContro
 		if err := c.BindJSON(&newBusiness); err != nil {
 			return
 		}
+
+		newBusiness.Auth = authId.(string)
 
 		// Handle Controller
 		business, err := controller.PostBusiness(&newBusiness)
@@ -72,8 +74,6 @@ func NewUpdateBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 	r.PUT("/business/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
 
-		// fmt.Println(authId)
-
 		var businessId types.Business
 
 		if err := c.ShouldBindUri(&businessId); err != nil {
@@ -87,11 +87,6 @@ func NewUpdateBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 			c.JSON(http.StatusForbidden, gin.H{"msg": errFind})
 			return
 		}
-
-		fmt.Println("businessFound")
-		fmt.Println(businessFound)
-		fmt.Println("authId")
-		fmt.Println(authId)
 
 		if string(businessFound.Auth) != authId {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
