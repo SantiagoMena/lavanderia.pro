@@ -5,13 +5,15 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
+	"lavanderia.pro/internal/lavanderia/handlers/auth"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
 	"lavanderia.pro/internal/lavanderia/repositories"
+	"strings"
 	"testing"
+	"time"
 )
 
 func TestGetAllBusiness(t *testing.T) {
@@ -139,6 +141,78 @@ func MakeController() *BusinessController {
 		business.NewDeleteBusinessHandler(repository),
 		business.NewUpdateBusinessHandler(repository),
 		business.NewGetBusinessHandler(repository),
+		business.NewGetAllBusinessByAuthHandler(repository),
 	)
+	return controller
+}
+
+func TestGetAllBusinessByAuth(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	controller := MakeController()
+	controllerAuth := MakeAuthForBusinessController()
+
+	pwd := []byte("PwD")
+
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	auth := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(pwd),
+	}
+
+	businessObj := &types.Business{
+		Name: "test register",
+		Lat:  0.321,
+		Long: 0.321,
+	}
+
+	businessRegistered, errRegister := controllerAuth.RegisterBusiness(auth, businessObj)
+	assert.Nil(t, errRegister, "Error returns not nil on register")
+	assert.NotEmpty(t, businessRegistered, "businessRegistered is empty on register")
+
+	businessLogged, errLogin := controllerAuth.Login(auth)
+	assert.Nil(t, errLogin, "Error returns not nil on login")
+	assert.NotEmpty(t, businessLogged, "businessLogged is empty on register")
+
+	business, err := controller.GetAllBusinessByAuth(businessLogged.Token)
+
+	assert.Nil(t, err, "Error returns not nil on create business to delete")
+	assert.NotEmpty(t, business, "Business is empty on create business to delete")
+}
+
+// func MakeController() *BusinessController {
+// 	config := config.NewConfig()
+// 	database := databases.NewMongoDatabase(config)
+// 	repository := repositories.NewBusinessRepository(database)
+// 	controller := NewBusinessController(
+// 		business.NewGetAllBusinessHandler(repository),
+// 		business.NewCreateBusinessHandler(repository),
+// 		business.NewDeleteBusinessHandler(repository),
+// 		business.NewUpdateBusinessHandler(repository),
+// 		business.NewGetBusinessHandler(repository),
+// 		business.NewGetAllBusinessByAuthHandler(repository),
+// 	)
+// 	return controller
+// }
+
+func MakeAuthForBusinessController() *AuthController {
+	config := config.NewConfig()
+	database := databases.NewMongoDatabase(config)
+	repositoryAuth := repositories.NewAuthRepository(database, config)
+	repositoryBusiness := repositories.NewBusinessRepository(database)
+	RegisterBusinessHandler := business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness)
+	LoginHandler := auth.NewLoginHandler(repositoryAuth, repositoryBusiness)
+	RefreshTokenHandler := auth.NewRefreshTokenHandler(repositoryAuth)
+
+	controller := NewAuthController(
+		RegisterBusinessHandler,
+		LoginHandler,
+		RefreshTokenHandler,
+	)
+
 	return controller
 }

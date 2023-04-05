@@ -6,11 +6,12 @@ import (
 )
 
 type BusinessController struct {
-	GetAllBusinessHandler *business.GetAllBusinessHandler
-	CreateBusinessHandler *business.CreateBusinessHandler
-	DeleteBusinessHandler *business.DeleteBusinessHandler
-	UpdateBusinessHandler *business.UpdateBusinessHandler
-	GetBusinessHandler    *business.GetBusinessHandler
+	GetAllBusinessHandler       *business.GetAllBusinessHandler
+	CreateBusinessHandler       *business.CreateBusinessHandler
+	DeleteBusinessHandler       *business.DeleteBusinessHandler
+	UpdateBusinessHandler       *business.UpdateBusinessHandler
+	GetBusinessHandler          *business.GetBusinessHandler
+	GetAllBusinessByAuthHandler *business.GetAllBusinessByAuthHandler
 }
 
 func NewBusinessController(
@@ -19,13 +20,15 @@ func NewBusinessController(
 	DeleteBusinessHandler *business.DeleteBusinessHandler,
 	UpdateBusinessHandler *business.UpdateBusinessHandler,
 	GetBusinessHandler *business.GetBusinessHandler,
+	GetAllBusinessByAuthHandler *business.GetAllBusinessByAuthHandler,
 ) *BusinessController {
 	return &BusinessController{
-		GetAllBusinessHandler: GetAllBusinessHandler,
-		CreateBusinessHandler: CreateBusinessHandler,
-		DeleteBusinessHandler: DeleteBusinessHandler,
-		UpdateBusinessHandler: UpdateBusinessHandler,
-		GetBusinessHandler:    GetBusinessHandler,
+		GetAllBusinessHandler:       GetAllBusinessHandler,
+		CreateBusinessHandler:       CreateBusinessHandler,
+		DeleteBusinessHandler:       DeleteBusinessHandler,
+		UpdateBusinessHandler:       UpdateBusinessHandler,
+		GetBusinessHandler:          GetBusinessHandler,
+		GetAllBusinessByAuthHandler: GetAllBusinessByAuthHandler,
 	}
 }
 
@@ -76,4 +79,9 @@ func (controller BusinessController) GetBusiness(business *types.Business) (type
 	}
 
 	return businessDb, err
+}
+
+func (controller BusinessController) GetAllBusinessByAuth(authId string) ([]types.Business, error) {
+	business, err := controller.GetAllBusinessByAuthHandler.Handle(authId)
+	return business, err
 }

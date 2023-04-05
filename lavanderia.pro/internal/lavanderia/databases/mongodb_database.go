@@ -17,6 +17,7 @@ type Database interface {
 	Create(collection string, object bson.D) (*mongo.InsertOneResult, error)
 	UpdateOne(collection string, filter bson.D, update bson.D) (bson.M, error)
 	FindOne(collection string, filter bson.D) (bson.M, error)
+	FindAllFilter(collection string, filter bson.D) (*mongo.Cursor, error)
 }
 
 type database struct {
@@ -55,12 +56,6 @@ func (db database) FindAll(collection string) (*mongo.Cursor, error) {
 	if err != nil {
 		log.Panic(err)
 	}
-
-	// defer func() {
-	// 	if err := db.client.Disconnect(context.TODO()); err != nil {
-	// 		panic(err)
-	// 	}
-	// }()
 
 	return result, err
 }
@@ -126,6 +121,18 @@ func (db database) FindOne(collection string, filter bson.D) (bson.M, error) {
 	var result bson.M
 
 	err := businessDb.FindOne(context.TODO(), filter).Decode(&result)
+
+	return result, err
+}
+
+func (db database) FindAllFilter(collection string, filter bson.D) (*mongo.Cursor, error) {
+	businessDb := db.mongo.Collection(collection)
+
+	result, err := businessDb.Find(context.Background(), filter)
+
+	if err != nil {
+		log.Panic(err)
+	}
 
 	return result, err
 }
