@@ -65,7 +65,7 @@ func MakeUpdateBusinessHandler() *UpdateBusinessHandler {
 func MakeCreateBusinessToRegisterHandler() *RegisterBusinessHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
-	repositoryAuth := repositories.NewAuthRepository(database)
+	repositoryAuth := repositories.NewAuthRepository(database, config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
 	handler := NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness)
 

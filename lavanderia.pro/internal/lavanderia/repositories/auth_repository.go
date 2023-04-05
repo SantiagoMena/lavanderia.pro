@@ -1,6 +1,9 @@
 package repositories
 
 import (
+	"errors"
+	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"time"
@@ -8,6 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/bson"
 	"lavanderia.pro/api/types"
+	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
 )
 
@@ -15,11 +19,13 @@ var authCollection = "auth"
 
 type AuthRepository struct {
 	database databases.Database
+	config   *config.Config
 }
 
-func NewAuthRepository(database databases.Database) *AuthRepository {
+func NewAuthRepository(database databases.Database, config *config.Config) *AuthRepository {
 	return &AuthRepository{
 		database: database,
+		config:   config,
 	}
 }
 
@@ -53,6 +59,36 @@ func (authRepository *AuthRepository) Create(auth *types.Auth) (types.Auth, erro
 	}
 
 	return newAuth, nil
+}
+
+func (authRepository *AuthRepository) GetById(id string) (types.Auth, error) {
+	var emptyAuth types.Auth
+	ObjectID, errOBjIdFromHex := primitive.ObjectIDFromHex(id)
+
+	if errOBjIdFromHex != nil {
+		return emptyAuth, errOBjIdFromHex
+	}
+	filter := bson.D{{"_id", ObjectID}}
+
+	object, err := authRepository.database.FindOne(authCollection, filter)
+	if err != nil {
+		return emptyAuth, err
+	}
+
+	var foundAuth types.Auth
+
+	objectAuth, _ := bson.Marshal(object)
+	bson.Unmarshal(objectAuth, &foundAuth)
+
+	return types.Auth{
+		ID:         foundAuth.ID,
+		Email:      foundAuth.Email,
+		Password:   foundAuth.Password,
+		FacebookId: foundAuth.FacebookId,
+		GoogleId:   foundAuth.GoogleId,
+		AppleId:    foundAuth.AppleId,
+		CreatedAt:  foundAuth.CreatedAt,
+	}, nil
 }
 
 func (authRepository *AuthRepository) GetByEmail(auth *types.Auth) (types.Auth, error) {
@@ -89,10 +125,10 @@ func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, e
 		AppleId:    auth.AppleId,
 	}
 
-	// mySigningKey := []byte(auth.Password)
-	mySigningKey := []byte("SECRET_JWT_SIGN_KEY")
+	mySigningKey := []byte(authRepository.config.SecretJWT)
 
 	type CustomClaims struct {
+		Type string      `json:"type"`
 		Auth *types.Auth `json:"auth"`
 		jwt.RegisteredClaims
 	}
@@ -100,6 +136,7 @@ func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, e
 	tokenExpires := time.Now().Add(24 * time.Hour)
 	// Create claims while leaving out some of the optional fields
 	claims := CustomClaims{
+		"token",
 		auth,
 		jwt.RegisteredClaims{
 			// Also fixed dates can be used for the NumericDate
@@ -114,12 +151,10 @@ func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, e
 		return &types.JWT{}, errSignToken
 	}
 
-	type CustomClaimsRefresh struct {
-		jwt.RegisteredClaims
-	}
-
 	refreshTokenExpires := time.Now().Add(24 * time.Hour * 30)
-	claimsRefresh := CustomClaimsRefresh{
+	claimsRefresh := CustomClaims{
+		"refresh_token",
+		auth,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(refreshTokenExpires),
 		},
@@ -136,4 +171,38 @@ func (authRepository *AuthRepository) CreateJWT(auth *types.Auth) (*types.JWT, e
 		Token:        tokenSigned,
 		RefreshToken: refreshTokenSigned,
 	}, nil
+}
+
+func (authRepository *AuthRepository) RefreshJWT(refreshToken string) (*types.JWT, error) {
+	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(authRepository.config.SecretJWT), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		tokenType, _ := claims["type"].(string)
+		if tokenType != "refresh_token" {
+			return &types.JWT{}, errors.New("token type error")
+		}
+
+		auth, _ := claims["auth"]
+		authMap, _ := auth.(map[string]interface{})
+
+		authObj, errGetAuth := authRepository.GetById(authMap["id"].(string))
+
+		if errGetAuth != nil {
+			return nil, errGetAuth
+		}
+
+		refreshedToken, errRefresh := authRepository.CreateJWT(&authObj)
+
+		return refreshedToken, errRefresh
+	} else {
+		return &types.JWT{}, err
+	}
 }

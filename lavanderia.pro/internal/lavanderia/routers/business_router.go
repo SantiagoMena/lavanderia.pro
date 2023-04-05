@@ -146,26 +146,26 @@ func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthCo
 	})
 }
 
-func NewPostLoginRouter(r *gin.Engine, controller *controllers.AuthController) {
-	r.POST("/business/login", func(c *gin.Context) {
-		var newAuth types.Auth
+// func NewPostLoginRouter(r *gin.Engine, controller *controllers.AuthController) {
+// 	r.POST("/business/login", func(c *gin.Context) {
+// 		var newAuth types.Auth
 
-		// Call BindJSON to bind the received JSON to
-		// newAuth.
-		if errAuthJson := c.ShouldBindBodyWith(&newAuth, binding.JSON); errAuthJson != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": errAuthJson})
-			return
-		}
+// 		// Call BindJSON to bind the received JSON to
+// 		// newAuth.
+// 		if errAuthJson := c.ShouldBindBodyWith(&newAuth, binding.JSON); errAuthJson != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{"msg": errAuthJson})
+// 			return
+// 		}
 
-		// Handle Controller
-		business, errRegister := controller.Login(&newAuth)
+// 		// Handle Controller
+// 		business, errRegister := controller.Login(&newAuth)
 
-		if errRegister != nil {
-			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
-		} else {
-			// TODO: return JWT
-			c.IndentedJSON(http.StatusOK, business)
-		}
+// 		if errRegister != nil {
+// 			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
+// 		} else {
+// 			// TODO: return JWT
+// 			c.IndentedJSON(http.StatusOK, business)
+// 		}
 
-	})
-}
+// 	})
+// }

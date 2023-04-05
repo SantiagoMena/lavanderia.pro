@@ -6,22 +6,24 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 
+	"strings"
+	"testing"
+	"time"
+
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
 	"lavanderia.pro/internal/lavanderia/repositories"
-	"strings"
-	"testing"
-	"time"
 )
 
-func TestLoginHandle(t *testing.T) {
+func TestRefreshTokenHandle(t *testing.T) {
 	if err := godotenv.Load("../../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
-	createHandler := MakeRegisterToLoginHandler()
-	loginHandler := MakeLoginHandler()
+	createHandler := MakeRegisterToLoginRefresh()
+	loginHandler := MakeLoginToRefreshHandler()
+	refreshTokenHandler := MakeRefreshTokenHandler()
 
 	pwd := []byte("PwD")
 	// password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
@@ -51,12 +53,18 @@ func TestLoginHandle(t *testing.T) {
 		Password: string(pwd),
 	})
 	assert.Nil(t, errLogin, "Error on login business")
-	// assert.Equal(t, errLogin, errors.New("auth already exists"), "Error auth already exists not work")
-	assert.NotEmpty(t, businessLogin, "Business Login Empty")
+	assert.NotEmpty(t, businessLogin, "Login Empty")
+	assert.NotEmpty(t, businessLogin.Token, "Login Token Empty")
+	assert.NotEmpty(t, businessLogin.RefreshToken, "Login RefreshToken Empty")
 
+	refreshToken, errRefresh := refreshTokenHandler.Handle(businessLogin.RefreshToken)
+	assert.Nil(t, errRefresh, "Error on login business")
+	assert.NotEmpty(t, refreshToken, "Refresh Empty")
+	assert.NotEmpty(t, refreshToken.Token, "Refresh Token Empty")
+	assert.NotEmpty(t, refreshToken.RefreshToken, "Refresh RefreshToken Empty")
 }
 
-func MakeRegisterToLoginHandler() *business.RegisterBusinessHandler {
+func MakeRegisterToLoginRefresh() *business.RegisterBusinessHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
@@ -66,12 +74,21 @@ func MakeRegisterToLoginHandler() *business.RegisterBusinessHandler {
 	return handler
 }
 
-func MakeLoginHandler() *LoginHandler {
+func MakeLoginToRefreshHandler() *LoginHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
 	repositoryAuth := repositories.NewAuthRepository(database, config)
 	handler := NewLoginHandler(repositoryAuth, repositoryBusiness)
+
+	return handler
+}
+
+func MakeRefreshTokenHandler() *RefreshTokenHandler {
+	config := config.NewConfig()
+	database := databases.NewMongoDatabase(config)
+	repositoryAuth := repositories.NewAuthRepository(database, config)
+	handler := NewRefreshTokenHandler(repositoryAuth)
 
 	return handler
 }
