@@ -28,6 +28,7 @@ func TestGetHandle(t *testing.T) {
 	})
 
 	businessUpdated, errUpdate := updateHandler.Handle(&types.Business{
+		ID:   business.ID,
 		Name: "test updated",
 		Lat:  0.321,
 		Long: 0.321,
