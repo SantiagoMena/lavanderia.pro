@@ -10,4 +10,5 @@ use (
 	./internal/lavanderia/routers
 	./internal/lavanderia/handlers/business
 	./internal/lavanderia/handlers/auth
+	./internal/lavanderia/middlewares
 )

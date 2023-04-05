@@ -206,3 +206,31 @@ func (authRepository *AuthRepository) RefreshJWT(refreshToken string) (*types.JW
 		return &types.JWT{}, err
 	}
 }
+
+func (authRepository *AuthRepository) GetAuthByToken(authToken string) (*types.Auth, error) {
+	token, err := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return &types.Auth{}, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(authRepository.config.SecretJWT), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		tokenType, _ := claims["type"].(string)
+		if tokenType != "token" {
+			return &types.Auth{}, errors.New("token type error")
+		}
+
+		auth, _ := claims["auth"]
+		authMap, _ := auth.(map[string]interface{})
+
+		authObj, errGetAuth := authRepository.GetById(authMap["id"].(string))
+
+		return &authObj, errGetAuth
+	} else {
+		return &types.Auth{}, err
+	}
+}

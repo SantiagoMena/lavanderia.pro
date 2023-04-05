@@ -7,7 +7,7 @@ type Business struct {
 	Name      string     `json:"name"`
 	Lat       float64    `json:"lat"`
 	Long      float64    `json:"long"`
-	Auth      string     `json:"-" bson:"-"`
+	Auth      string     `json:"auth" bson:"auth"`
 	CreatedAt *time.Time `json:"created_at,omitempty" bson:"created_at"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty" bson:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at,omitempty" bson:"deleted_at"`
