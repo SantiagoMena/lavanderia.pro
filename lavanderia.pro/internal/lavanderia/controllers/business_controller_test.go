@@ -123,7 +123,7 @@ func TestGetBusiness(t *testing.T) {
 	assert.Nil(t, errGet, "Error returns not nil on delete business")
 	assert.NotEmpty(t, businessGotten, "Business is empty on delete business")
 	assert.NotEmpty(t, businessGotten.ID, "Business ID is empty on delete business")
-	assert.NotEmpty(t, businessGotten.UpdatedAt, "Business UpdatedAt is empty on delete business")
+	assert.NotEmpty(t, businessGotten.CreatedAt, "Business CreatedAt is empty on delete business")
 	assert.Equal(t, "test", businessGotten.Name, "Name not get properly")
 	assert.Equal(t, 0.123, businessGotten.Lat, "Lat not get properly")
 	assert.Equal(t, 0.123, businessGotten.Long, "Long not get properly")

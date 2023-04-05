@@ -160,14 +160,5 @@ func (businessRepository *BusinessRepository) Get(business *types.Business) (typ
 	objectUpdt, _ := bson.Marshal(objectBusiness)
 	bson.Unmarshal(objectUpdt, &foundBusiness)
 
-	return types.Business{
-		ID:        foundBusiness.ID,
-		Name:      foundBusiness.Name,
-		Auth:      foundBusiness.Auth,
-		Lat:       foundBusiness.Lat,
-		Long:      foundBusiness.Long,
-		CreatedAt: foundBusiness.CreatedAt,
-		UpdatedAt: foundBusiness.UpdatedAt,
-		DeletedAt: foundBusiness.DeletedAt,
-	}, nil
+	return foundBusiness, nil
 }
