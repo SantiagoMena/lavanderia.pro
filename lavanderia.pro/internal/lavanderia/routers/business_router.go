@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +14,7 @@ func NewGetAllBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 	r.GET("/business", func(c *gin.Context) {
 		business, err := controller.GetAllBusiness()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
 		} else {
 			c.JSON(http.StatusOK, business)
 		}
@@ -35,7 +36,7 @@ func NewPostBusinessRouter(r *gin.Engine, controller *controllers.BusinessContro
 		business, err := controller.PostBusiness(&newBusiness)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
 		} else {
 			c.IndentedJSON(http.StatusCreated, business)
 		}
@@ -59,7 +60,7 @@ func NewDeleteBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 		deletedBusiness, err := controller.DeleteBusiness(&business)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
 		} else {
 			c.IndentedJSON(http.StatusCreated, deletedBusiness)
 		}
@@ -69,20 +70,62 @@ func NewDeleteBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 
 func NewUpdateBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.PUT("/business/:id", func(c *gin.Context) {
-		var business types.Business
+		authId := c.MustGet("auth")
 
-		if err := c.ShouldBindUri(&business); err != nil {
-			c.JSON(400, gin.H{"msg": err})
+		// fmt.Println(authId)
+
+		var businessId types.Business
+
+		if err := c.ShouldBindUri(&businessId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
 			return
 		}
 
-		if errJson := c.ShouldBindBodyWith(&business, binding.JSON); errJson != nil {
-			c.JSON(400, gin.H{"msg": errJson})
+		// Find Business and Check Auth
+		businessFound, errFind := controller.GetBusiness(&businessId)
+		if errFind != nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": errFind})
 			return
+		}
+
+		fmt.Println("businessFound")
+		fmt.Println(businessFound)
+		fmt.Println("authId")
+		fmt.Println(authId)
+
+		if string(businessFound.Auth) != authId {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		var business types.Business
+		if errJson := c.ShouldBindBodyWith(&business, binding.JSON); errJson != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errJson})
+			return
+		}
+
+		Name := businessFound.Name
+		if len(business.Name) > 0 {
+			Name = business.Name
+		}
+
+		Lat := businessFound.Lat
+		if len(business.Name) > 0 {
+			Lat = business.Lat
+		}
+
+		Long := businessFound.Long
+		if len(business.Name) > 0 {
+			Long = business.Long
 		}
 
 		// Handle Controller
-		updatedBusiness, err := controller.UpdateBusiness(&business)
+		updatedBusiness, err := controller.UpdateBusiness(&types.Business{
+			ID:   businessFound.ID,
+			Name: Name,
+			Lat:  Lat,
+			Long: Long,
+		})
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)
@@ -145,27 +188,3 @@ func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthCo
 
 	})
 }
-
-// func NewPostLoginRouter(r *gin.Engine, controller *controllers.AuthController) {
-// 	r.POST("/business/login", func(c *gin.Context) {
-// 		var newAuth types.Auth
-
-// 		// Call BindJSON to bind the received JSON to
-// 		// newAuth.
-// 		if errAuthJson := c.ShouldBindBodyWith(&newAuth, binding.JSON); errAuthJson != nil {
-// 			c.JSON(http.StatusBadRequest, gin.H{"msg": errAuthJson})
-// 			return
-// 		}
-
-// 		// Handle Controller
-// 		business, errRegister := controller.Login(&newAuth)
-
-// 		if errRegister != nil {
-// 			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
-// 		} else {
-// 			// TODO: return JWT
-// 			c.IndentedJSON(http.StatusOK, business)
-// 		}
-
-// 	})
-// }

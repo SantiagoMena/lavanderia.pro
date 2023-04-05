@@ -146,7 +146,7 @@ func (businessRepository *BusinessRepository) Get(business *types.Business) (typ
 
 	filter := bson.D{{"_id", id}}
 
-	objectUpdated, err := businessRepository.database.FindOne(businessCollection, filter)
+	objectBusiness, err := businessRepository.database.FindOne(businessCollection, filter)
 	if err != nil {
 		return types.Business{}, err
 	}
@@ -155,18 +155,10 @@ func (businessRepository *BusinessRepository) Get(business *types.Business) (typ
 		return types.Business{}, err
 	}
 
-	var updatedBusiness types.Business
+	var foundBusiness types.Business
 
-	objectUpdt, _ := bson.Marshal(objectUpdated)
-	bson.Unmarshal(objectUpdt, &updatedBusiness)
+	objectUpdt, _ := bson.Marshal(objectBusiness)
+	bson.Unmarshal(objectUpdt, &foundBusiness)
 
-	return types.Business{
-		ID:        business.ID,
-		Name:      business.Name,
-		Lat:       business.Lat,
-		Long:      business.Long,
-		CreatedAt: updatedBusiness.CreatedAt,
-		UpdatedAt: business.UpdatedAt,
-		DeletedAt: business.DeletedAt,
-	}, nil
+	return foundBusiness, nil
 }
