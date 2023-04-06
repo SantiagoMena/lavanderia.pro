@@ -38,7 +38,7 @@ func (controller BusinessController) GetAllBusiness() ([]types.Business, error) 
 }
 
 func (controller BusinessController) PostBusiness(business *types.Business) (types.Business, error) {
-	// // Handle Create Business
+	// Handle Create Business
 	businessDb, err := controller.CreateBusinessHandler.Handle(business)
 
 	if err != nil {

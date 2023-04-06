@@ -17,4 +17,5 @@ var Module = fx.Invoke(
 	NewDeleteProductRouter,
 	NewGetProductRouter,
 	NewUpdateProductRouter,
+	NewPostRegisterClientRouter,
 )
