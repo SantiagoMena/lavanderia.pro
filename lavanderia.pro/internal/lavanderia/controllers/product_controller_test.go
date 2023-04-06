@@ -86,6 +86,8 @@ func MakeProductController() *ProductController {
 	controller := NewProductController(
 		product.NewCreateProductHandler(repository),
 		product.NewGetAllProductsByBusinessHandler(repository),
+		product.NewDeleteProductHandler(repository),
+		product.NewGetProductHandler(repository),
 	)
 
 	return controller

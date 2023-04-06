@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/controllers"
 )
@@ -26,12 +27,12 @@ func NewPostProductRouter(
 		// Find Business and Check Auth
 		businessFound, errFind := businessController.GetBusiness(&businessId)
 		if errFind != nil {
-			c.JSON(http.StatusForbidden, gin.H{"msg": errFind.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": errFind.Error()})
 			return
 		}
 
 		if string(businessFound.Auth) != authId {
-			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "permissions denied"})
 			return
 		}
 
@@ -39,6 +40,7 @@ func NewPostProductRouter(
 		// Call BindJSON to bind the received JSON to
 		// newProduct.
 		if err := c.BindJSON(&productObject); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
 			return
 		}
 
@@ -73,6 +75,58 @@ func NewGetProductsByBusinessRouter(
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+		} else {
+			c.IndentedJSON(http.StatusOK, products)
+		}
+	})
+}
+
+func NewDeleteProductRouter(
+	r *gin.Engine,
+	productController *controllers.ProductController,
+	businessController *controllers.BusinessController,
+) {
+	r.DELETE("/product/:id", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+		var productId types.Product
+
+		if err := c.ShouldBindUri(&productId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+			return
+		}
+
+		// Find Business and Check Auth
+		productFound, errFind := productController.GetProduct(&productId)
+		if errFind != nil {
+			c.JSON(http.StatusNotFound, gin.H{"msg": errFind.Error()})
+			return
+		}
+
+		var unmarshalObjecth types.Product
+
+		// convert m to s
+		marshalObject, _ := bson.Marshal(productFound)
+		bson.Unmarshal(marshalObject, &unmarshalObjecth)
+
+		// Find Business and Check Auth
+		businessFound, errFindBusiness := businessController.GetBusiness(&types.Business{
+			ID: unmarshalObjecth.Business,
+		})
+
+		if errFindBusiness != nil {
+			c.JSON(http.StatusNotFound, gin.H{"msg": errFindBusiness.Error()})
+			return
+		}
+
+		if string(businessFound.Auth) != authId {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		products, err := productController.DeleteProduct(&productId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
 		} else {
 			c.IndentedJSON(http.StatusOK, products)
 		}

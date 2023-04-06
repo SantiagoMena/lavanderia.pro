@@ -32,8 +32,8 @@ func SetAuthJWT(authRepository *repositories.AuthRepository) gin.HandlerFunc {
 		if len(token) > 1 {
 			auth, errAuth := authRepository.GetAuthByToken(token[1])
 			if errAuth != nil {
-				c.JSON(http.StatusForbidden, gin.H{"msg": errAuth.Error()})
-				return
+				c.IndentedJSON(http.StatusForbidden, gin.H{"msg": errAuth.Error()})
+				c.Abort()
 			}
 			c.Set("auth", auth.ID)
 
