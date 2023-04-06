@@ -68,3 +68,24 @@ func (productRepository *ProductRepository) Create(product *types.Product) (type
 
 	return newProduct, nil
 }
+
+func (businessRepository *ProductRepository) FindAllProductsByBusiness(business string) ([]types.Business, error) {
+	// businessMap := []types.Business{}
+
+	businessId, _ := primitive.ObjectIDFromHex(business)
+
+	businessDb, err := businessRepository.database.FindAllFilter(productCollection, bson.D{
+		{Key: "business", Value: businessId},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var businessMap []types.Business
+	if err = businessDb.All(context.TODO(), &businessMap); err != nil {
+		panic(err)
+	}
+
+	return businessMap, nil
+}
