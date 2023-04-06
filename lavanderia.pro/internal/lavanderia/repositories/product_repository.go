@@ -87,7 +87,7 @@ func (productRepository *ProductRepository) GetAllProductsByBusiness(business st
 
 	var productsMap []types.Product
 	if err = productsDb.All(context.TODO(), &productsMap); err != nil {
-		panic(err)
+		return []types.Product{}, err
 	}
 
 	return productsMap, nil

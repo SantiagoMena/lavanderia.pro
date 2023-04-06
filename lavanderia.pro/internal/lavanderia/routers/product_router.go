@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -26,12 +27,12 @@ func NewPostProductRouter(
 		// Find Business and Check Auth
 		businessFound, errFind := businessController.GetBusiness(&businessId)
 		if errFind != nil {
-			c.JSON(http.StatusForbidden, gin.H{"msg": errFind.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": errFind.Error()})
 			return
 		}
 
 		if string(businessFound.Auth) != authId {
-			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "permissions denied"})
 			return
 		}
 
@@ -39,6 +40,7 @@ func NewPostProductRouter(
 		// Call BindJSON to bind the received JSON to
 		// newProduct.
 		if err := c.BindJSON(&productObject); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
 			return
 		}
 
@@ -76,7 +78,6 @@ func NewGetProductsByBusinessRouter(
 		} else {
 			c.IndentedJSON(http.StatusOK, products)
 		}
-
 	})
 }
 
@@ -91,14 +92,14 @@ func NewDeleteProductRouter(
 
 		if err := c.ShouldBindUri(&productId); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
-			return
+			c.Abort()
 		}
 
 		// Find Business and Check Auth
 		productFound, errFind := productController.GetProduct(&productId)
 		if errFind != nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": errFind})
-			return
+			c.Abort()
 		}
 
 		// Find Business and Check Auth
@@ -106,23 +107,26 @@ func NewDeleteProductRouter(
 			ID: productFound.Business,
 		})
 
-		if errFindBusiness != nil {
-			c.JSON(http.StatusForbidden, gin.H{"msg": errFindBusiness})
-			return
-		}
+		fmt.Println(businessFound)
+		fmt.Println(errFindBusiness)
+		fmt.Println(authId)
+		// if errFindBusiness != nil {
+		// 	c.JSON(http.StatusForbidden, gin.H{"msg": errFindBusiness})
+		// 	c.Abort()
+		// }
 
-		if string(businessFound.Auth) != authId {
-			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
-			return
-		}
+		// if string(businessFound.Auth) != authId {
+		// 	c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+		// 	c.Abort()
+		// }
 
-		products, err := productController.GetAllProductsByBusiness(string(productId.ID))
+		// products, err := productController.GetAllProductsByBusiness(string(productId.ID))
 
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
-		} else {
-			c.IndentedJSON(http.StatusOK, products)
-		}
+		// if err != nil {
+		// 	c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+		// } else {
+		// 	c.IndentedJSON(http.StatusOK, products)
+		// }
 
 	})
 }
