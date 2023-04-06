@@ -54,7 +54,7 @@ func TestCreateProduct(t *testing.T) {
 	assert.NotEmpty(t, business.CreatedAt, "CreatedAt is empty")
 }
 
-func TestFindAllProductsByBusiness(t *testing.T) {
+func TestGetAllProductsByBusiness(t *testing.T) {
 	if err := godotenv.Load("../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}

@@ -6,14 +6,17 @@ import (
 )
 
 type ProductController struct {
-	CreateProductHandler *product.CreateProductHandler
+	CreateProductHandler            *product.CreateProductHandler
+	GetAllProductsByBusinessHandler *product.GetAllProductsByBusinessHandler
 }
 
 func NewProductController(
 	CreateProductHandler *product.CreateProductHandler,
+	GetAllProductsByBusinessHandler *product.GetAllProductsByBusinessHandler,
 ) *ProductController {
 	return &ProductController{
-		CreateProductHandler: CreateProductHandler,
+		CreateProductHandler:            CreateProductHandler,
+		GetAllProductsByBusinessHandler: GetAllProductsByBusinessHandler,
 	}
 }
 
@@ -26,4 +29,15 @@ func (controller ProductController) PostProduct(product *types.Product) (types.P
 	}
 
 	return productDb, err
+}
+
+func (controller ProductController) GetAllProductsByBusiness(business string) ([]types.Product, error) {
+	// Handle Create Product
+	productsDb, err := controller.GetAllProductsByBusinessHandler.Handle(business)
+
+	if err != nil {
+		return []types.Product{}, err
+	}
+
+	return productsDb, err
 }

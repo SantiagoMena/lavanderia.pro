@@ -69,7 +69,7 @@ func (productRepository *ProductRepository) Create(product *types.Product) (type
 	return newProduct, nil
 }
 
-func (businessRepository *ProductRepository) FindAllProductsByBusiness(business string) ([]types.Business, error) {
+func (businessRepository *ProductRepository) GetAllProductsByBusiness(business string) ([]types.Product, error) {
 	// businessMap := []types.Business{}
 
 	businessId, _ := primitive.ObjectIDFromHex(business)
@@ -82,7 +82,7 @@ func (businessRepository *ProductRepository) FindAllProductsByBusiness(business 
 		return nil, err
 	}
 
-	var businessMap []types.Business
+	var businessMap []types.Product
 	if err = businessDb.All(context.TODO(), &businessMap); err != nil {
 		panic(err)
 	}
