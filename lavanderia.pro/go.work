@@ -4,11 +4,13 @@ use (
 	.
 	./api/types
 	./cmd/lavanderia
+	./internal/lavanderia/config
 	./internal/lavanderia/controllers
 	./internal/lavanderia/databases
+	./internal/lavanderia/handlers/auth
+	./internal/lavanderia/handlers/business
+	./internal/lavanderia/handlers/product
+	./internal/lavanderia/middlewares
 	./internal/lavanderia/repositories
 	./internal/lavanderia/routers
-	./internal/lavanderia/handlers/business
-	./internal/lavanderia/handlers/auth
-	./internal/lavanderia/middlewares
 )
