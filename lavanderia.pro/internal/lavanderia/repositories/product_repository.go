@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
@@ -72,8 +73,12 @@ func (productRepository *ProductRepository) Create(product *types.Product) (type
 func (businessRepository *ProductRepository) GetAllProductsByBusiness(business string) ([]types.Product, error) {
 	// businessMap := []types.Business{}
 
+	fmt.Println("business")
+	fmt.Println(business)
 	businessId, _ := primitive.ObjectIDFromHex(business)
 
+	fmt.Println("businessId")
+	fmt.Println(businessId)
 	businessDb, err := businessRepository.database.FindAllFilter(productCollection, bson.D{
 		{Key: "business", Value: businessId},
 	})
