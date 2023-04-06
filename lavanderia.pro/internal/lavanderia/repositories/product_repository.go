@@ -141,3 +141,44 @@ func (productRepository *ProductRepository) Get(product *types.Product) (types.P
 
 	return foundProduct, nil
 }
+
+func (productRepository *ProductRepository) Update(product *types.Product) (types.Product, error) {
+	t := time.Now()
+	product.UpdatedAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(product.ID)
+
+	filter := bson.D{{"_id", id}}
+	update := bson.D{{"$set", bson.D{
+		{"name", product.Name},
+		{"price", product.Price},
+		{"updated_at", product.UpdatedAt},
+	}}}
+
+	updatedProduct, err := productRepository.database.UpdateOne(productCollection, filter, update)
+
+	if err != nil {
+		return types.Product{}, err
+	}
+
+	// Unmarshal
+	var updatedProductUnmarshal types.Product
+	productUpdatedObj, _ := bson.Marshal(updatedProduct)
+	bson.Unmarshal(productUpdatedObj, &updatedProductUnmarshal)
+	productId, _ := primitive.ObjectIDFromHex(updatedProductUnmarshal.ID)
+
+	productUpdatedFound, errFind := productRepository.database.FindOne(productCollection, bson.D{
+		{"_id", productId},
+	})
+
+	if errFind != nil {
+		return types.Product{}, errFind
+	}
+
+	// Unmarshal
+	var productUnmarshal types.Product
+	productMarshal, _ := bson.Marshal(productUpdatedFound)
+	bson.Unmarshal(productMarshal, &productUnmarshal)
+
+	return productUnmarshal, nil
+}
