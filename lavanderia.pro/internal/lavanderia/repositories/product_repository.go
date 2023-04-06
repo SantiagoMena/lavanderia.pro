@@ -79,6 +79,7 @@ func (productRepository *ProductRepository) GetAllProductsByBusiness(business st
 	fmt.Println(businessId)
 	productsDb, err := productRepository.database.FindAllFilter(productCollection, bson.D{
 		{Key: "business", Value: businessId},
+		{Key: "deleted_at", Value: nil},
 	})
 
 	if err != nil {
@@ -122,7 +123,10 @@ func (productRepository *ProductRepository) Get(product *types.Product) (types.P
 
 	id, _ := primitive.ObjectIDFromHex(product.ID)
 
-	filter := bson.D{{"_id", id}}
+	filter := bson.D{
+		{Key: "_id", Value: id},
+		{Key: "deleted_at", Value: nil},
+	}
 
 	objectProduct, err := productRepository.database.FindOne(productCollection, filter)
 

@@ -25,7 +25,11 @@ func NewBusinessRepository(database databases.Database) *BusinessRepository {
 }
 
 func (businessRepository *BusinessRepository) FindAllBusiness() ([]types.Business, error) {
-	businessDb, err := businessRepository.database.FindAll(businessCollection)
+	filter := bson.D{
+		{Key: "deleted_at", Value: nil},
+	}
+
+	businessDb, err := businessRepository.database.FindAllFilter(businessCollection, filter)
 
 	if err != nil {
 		return nil, err
@@ -133,7 +137,10 @@ func (businessRepository *BusinessRepository) Get(business *types.Business) (typ
 
 	id, _ := primitive.ObjectIDFromHex(business.ID)
 
-	filter := bson.D{{"_id", id}}
+	filter := bson.D{
+		{Key: "_id", Value: id},
+		{Key: "deleted_at", Value: nil},
+	}
 
 	objectBusiness, err := businessRepository.database.FindOne(businessCollection, filter)
 	if err != nil {
