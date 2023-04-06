@@ -161,3 +161,66 @@ func NewGetProductRouter(
 
 	})
 }
+
+func NewUpdateProductRouter(
+	r *gin.Engine,
+	productController *controllers.ProductController,
+	businessController *controllers.BusinessController,
+) {
+	r.PUT("/product/:id", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		var productId types.Product
+
+		if err := c.ShouldBindUri(&productId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
+			return
+		}
+
+		// Find Product and Check Auth
+		productFound, errFindProduct := productController.GetProduct(&productId)
+		if errFindProduct != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": errFindProduct.Error()})
+			return
+		}
+
+		businessFound, errFindBusiness := businessController.GetBusiness(&types.Business{
+			ID: productFound.Business,
+		})
+
+		if errFindBusiness != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": errFindBusiness.Error()})
+			return
+		}
+
+		if string(businessFound.Auth) != authId {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		var productObject types.Product
+		// Call BindJSON to bind the received JSON to
+		// newProduct.
+		if err := c.BindJSON(&productObject); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
+			return
+		}
+
+		if string(businessFound.Auth) != authId {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		productObject.Business = businessFound.ID
+
+		// Handle Controller
+		product, err := productController.PostProduct(&productObject)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+		} else {
+			c.IndentedJSON(http.StatusCreated, product)
+		}
+
+	})
+}

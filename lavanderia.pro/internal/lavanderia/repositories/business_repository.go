@@ -174,7 +174,7 @@ func (businessRepository *BusinessRepository) FindAllBusinessByAuth(auth string)
 
 	var businessMap []types.Business
 	if err = businessDb.All(context.TODO(), &businessMap); err != nil {
-		panic(err)
+		return []types.Business{}, err
 	}
 
 	return businessMap, nil
