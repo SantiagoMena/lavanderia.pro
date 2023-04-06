@@ -115,3 +115,25 @@ func (productRepository *ProductRepository) Delete(product *types.Product) (type
 
 	return deletedProduct, nil
 }
+
+func (productRepository *ProductRepository) Get(product *types.Product) (types.Product, error) {
+	t := time.Now()
+	product.UpdatedAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(product.ID)
+
+	filter := bson.D{{"_id", id}}
+
+	objectProduct, err := productRepository.database.FindOne(productCollection, filter)
+
+	if err != nil {
+		return types.Product{}, err
+	}
+
+	var foundProduct types.Product
+
+	objectUpdt, _ := bson.Marshal(objectProduct)
+	bson.Unmarshal(objectUpdt, &foundProduct)
+
+	return foundProduct, nil
+}

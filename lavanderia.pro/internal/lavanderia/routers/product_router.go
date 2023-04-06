@@ -79,3 +79,50 @@ func NewGetProductsByBusinessRouter(
 
 	})
 }
+
+func NewDeleteProductRouter(
+	r *gin.Engine,
+	productController *controllers.ProductController,
+	businessController *controllers.BusinessController,
+) {
+	r.DELETE("/product/:id", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+		var productId types.Product
+
+		if err := c.ShouldBindUri(&productId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
+			return
+		}
+
+		// Find Business and Check Auth
+		productFound, errFind := productController.GetProduct(&productId)
+		if errFind != nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": errFind})
+			return
+		}
+
+		// Find Business and Check Auth
+		businessFound, errFindBusiness := businessController.GetBusiness(&types.Business{
+			ID: productFound.Business,
+		})
+
+		if errFindBusiness != nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": errFindBusiness})
+			return
+		}
+
+		if string(businessFound.Auth) != authId {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		products, err := productController.GetAllProductsByBusiness(string(productId.ID))
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+		} else {
+			c.IndentedJSON(http.StatusOK, products)
+		}
+
+	})
+}

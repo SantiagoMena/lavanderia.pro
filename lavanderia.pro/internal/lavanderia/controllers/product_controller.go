@@ -52,3 +52,13 @@ func (controller ProductController) DeleteBusiness(product *types.Product) (type
 
 	return productDb, err
 }
+
+func (controller ProductController) GetProduct(product *types.Product) (types.Product, error) {
+	productDb, err := controller.GetProduct(product)
+
+	if err != nil {
+		return types.Product{}, err
+	}
+
+	return productDb, err
+}
