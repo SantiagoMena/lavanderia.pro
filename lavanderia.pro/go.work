@@ -10,6 +10,7 @@ use (
 	./internal/lavanderia/handlers/auth
 	./internal/lavanderia/handlers/business
 	./internal/lavanderia/handlers/product
+	./internal/lavanderia/handlers/client
 	./internal/lavanderia/middlewares
 	./internal/lavanderia/repositories
 	./internal/lavanderia/routers

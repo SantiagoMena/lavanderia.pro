@@ -8,19 +8,19 @@ import (
 	"lavanderia.pro/internal/lavanderia/repositories"
 )
 
-type RegisterClientsHandler struct {
+type RegisterClientHandler struct {
 	repositoryAuth   *repositories.AuthRepository
 	repositoryClient *repositories.ClientRepository
 }
 
-func NewRegisterClientsHandler(repositoryAuth *repositories.AuthRepository, repositoryClient *repositories.ClientRepository) *RegisterClientsHandler {
-	return &RegisterClientsHandler{
+func NewRegisterClientHandler(repositoryAuth *repositories.AuthRepository, repositoryClient *repositories.ClientRepository) *RegisterClientHandler {
+	return &RegisterClientHandler{
 		repositoryAuth:   repositoryAuth,
 		repositoryClient: repositoryClient,
 	}
 }
 
-func (ch RegisterClientsHandler) Handle(auth *types.Auth, business *types.Client) (types.Client, error) {
+func (ch RegisterClientHandler) Handle(auth *types.Auth, business *types.Client) (types.Client, error) {
 	authFound, err := ch.repositoryAuth.GetByEmail(auth)
 
 	// panic(authFound)
