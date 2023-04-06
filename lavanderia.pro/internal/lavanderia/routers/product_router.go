@@ -133,3 +133,31 @@ func NewDeleteProductRouter(
 
 	})
 }
+
+func NewGetProductRouter(
+	r *gin.Engine,
+	productController *controllers.ProductController,
+) {
+	r.GET("/product/:id", func(c *gin.Context) {
+		var productId types.Product
+
+		if err := c.ShouldBindUri(&productId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+			return
+		}
+
+		// Find Business and Check Auth
+		productFound, errFind := productController.GetProduct(&productId)
+		if errFind != nil {
+			c.JSON(http.StatusNotFound, gin.H{"msg": errFind.Error()})
+			return
+		}
+
+		if errFind != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": errFind.Error()})
+		} else {
+			c.IndentedJSON(http.StatusOK, productFound)
+		}
+
+	})
+}

@@ -122,7 +122,10 @@ func (productRepository *ProductRepository) Get(product *types.Product) (types.P
 
 	id, _ := primitive.ObjectIDFromHex(product.ID)
 
-	filter := bson.D{{"_id", id}}
+	filter := bson.D{
+		{"_id", id},
+		{"deleted_at", nil},
+	}
 
 	objectProduct, err := productRepository.database.FindOne(productCollection, filter)
 
