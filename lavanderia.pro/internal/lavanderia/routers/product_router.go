@@ -26,7 +26,7 @@ func NewPostProductRouter(
 		// Find Business and Check Auth
 		businessFound, errFind := businessController.GetBusiness(&businessId)
 		if errFind != nil {
-			c.JSON(http.StatusForbidden, gin.H{"msg": errFind})
+			c.JSON(http.StatusForbidden, gin.H{"msg": errFind.Error()})
 			return
 		}
 
