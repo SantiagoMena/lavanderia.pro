@@ -70,27 +70,48 @@ func (productRepository *ProductRepository) Create(product *types.Product) (type
 	return newProduct, nil
 }
 
-func (businessRepository *ProductRepository) GetAllProductsByBusiness(business string) ([]types.Product, error) {
-	// businessMap := []types.Business{}
-
+func (productRepository *ProductRepository) GetAllProductsByBusiness(business string) ([]types.Product, error) {
 	fmt.Println("business")
 	fmt.Println(business)
 	businessId, _ := primitive.ObjectIDFromHex(business)
 
 	fmt.Println("businessId")
 	fmt.Println(businessId)
-	businessDb, err := businessRepository.database.FindAllFilter(productCollection, bson.D{
+	productsDb, err := productRepository.database.FindAllFilter(productCollection, bson.D{
 		{Key: "business", Value: businessId},
 	})
 
 	if err != nil {
-		return nil, err
+		return []types.Product{}, err
 	}
 
-	var businessMap []types.Product
-	if err = businessDb.All(context.TODO(), &businessMap); err != nil {
+	var productsMap []types.Product
+	if err = productsDb.All(context.TODO(), &productsMap); err != nil {
 		panic(err)
 	}
 
-	return businessMap, nil
+	return productsMap, nil
+}
+
+func (productRepository *ProductRepository) Delete(product *types.Product) (types.Product, error) {
+	t := time.Now()
+	product.DeletedAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(product.ID)
+
+	filter := bson.D{{"_id", id}}
+	update := bson.D{{"$set", bson.D{{"deleted_at", product.DeletedAt}}}}
+
+	objectUpdated, err := productRepository.database.UpdateOne(productCollection, filter, update)
+	if err != nil {
+		return types.Product{}, err
+	}
+
+	var deletedProduct types.Product
+
+	objectUpdt, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(objectUpdt, &deletedProduct)
+	deletedProduct.DeletedAt = product.DeletedAt
+
+	return deletedProduct, nil
 }
