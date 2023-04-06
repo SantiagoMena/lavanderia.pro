@@ -29,9 +29,9 @@ func TestPostProduct(t *testing.T) {
 	})
 
 	assert.Nil(t, err, "Error returns not nil")
-	assert.NotEmpty(t, productCreated, "Business is empty")
-	assert.NotEmpty(t, productCreated.ID, "Business ID is empty")
-	assert.NotEmpty(t, productCreated.CreatedAt, "Business CreatedAt is empty")
+	assert.NotEmpty(t, productCreated, "Product is empty")
+	assert.NotEmpty(t, productCreated.ID, "Product ID is empty")
+	assert.NotEmpty(t, productCreated.CreatedAt, "Product CreatedAt is empty")
 }
 
 func TestGetAllProductsByBusiness(t *testing.T) {
@@ -79,6 +79,34 @@ func TestGetAllProductsByBusiness(t *testing.T) {
 	assert.NotEmpty(t, productsFound, "productsFound is empty")
 }
 
+func TestUpdateProduct(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+	controller := MakeProductController()
+
+	productCreated, err := controller.PostProduct(&types.Product{
+		Name:  "test",
+		Price: 0.123,
+	})
+
+	assert.Nil(t, err, "Error returns not nil")
+	assert.NotEmpty(t, productCreated, "Product is empty")
+	assert.NotEmpty(t, productCreated.ID, "Product ID is empty")
+	assert.NotEmpty(t, productCreated.CreatedAt, "Product CreatedAt is empty")
+
+	productCreated.Price = 0.789
+	productCreated.Name = "UPDATED"
+	productUpdated, errUpdate := controller.UpdateProduct(&productCreated)
+
+	assert.Nil(t, errUpdate, "Error returns not nil")
+	assert.NotEmpty(t, productUpdated, "Product is empty")
+	assert.NotEmpty(t, productUpdated.ID, "Product ID is empty")
+	assert.NotEmpty(t, productUpdated.UpdatedAt, "Product UpdatedAt is empty")
+	assert.Equal(t, 0.789, productUpdated.Price, "Product Price is not updated")
+	assert.Equal(t, "UPDATED", productUpdated.Name, "Product Name is not updated")
+}
+
 func MakeProductController() *ProductController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
@@ -88,6 +116,7 @@ func MakeProductController() *ProductController {
 		product.NewGetAllProductsByBusinessHandler(repository),
 		product.NewDeleteProductHandler(repository),
 		product.NewGetProductHandler(repository),
+		product.NewUpdateProductHandler(repository),
 	)
 
 	return controller

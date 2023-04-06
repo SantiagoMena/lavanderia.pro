@@ -10,6 +10,7 @@ type ProductController struct {
 	GetAllProductsByBusinessHandler *product.GetAllProductsByBusinessHandler
 	DeleteProductHandler            *product.DeleteProductHandler
 	GetProductHandler               *product.GetProductHandler
+	UpdateProductHandler            *product.UpdateProductHandler
 }
 
 func NewProductController(
@@ -17,12 +18,14 @@ func NewProductController(
 	GetAllProductsByBusinessHandler *product.GetAllProductsByBusinessHandler,
 	DeleteProductHandler *product.DeleteProductHandler,
 	GetProductHandler *product.GetProductHandler,
+	UpdateProductHandler *product.UpdateProductHandler,
 ) *ProductController {
 	return &ProductController{
 		CreateProductHandler:            CreateProductHandler,
 		GetAllProductsByBusinessHandler: GetAllProductsByBusinessHandler,
 		DeleteProductHandler:            DeleteProductHandler,
 		GetProductHandler:               GetProductHandler,
+		UpdateProductHandler:            UpdateProductHandler,
 	}
 }
 
@@ -58,6 +61,16 @@ func (controller ProductController) DeleteProduct(product *types.Product) (types
 
 func (controller ProductController) GetProduct(product *types.Product) (types.Product, error) {
 	productDb, err := controller.GetProductHandler.Handle(product)
+
+	if err != nil {
+		return types.Product{}, err
+	}
+
+	return productDb, err
+}
+
+func (controller ProductController) UpdateProduct(product *types.Product) (types.Product, error) {
+	productDb, err := controller.UpdateProductHandler.Handle(product)
 
 	if err != nil {
 		return types.Product{}, err

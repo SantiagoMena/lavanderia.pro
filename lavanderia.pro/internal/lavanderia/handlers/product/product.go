@@ -7,4 +7,5 @@ var Module = fx.Options(
 	fx.Provide(NewGetAllProductsByBusinessHandler),
 	fx.Provide(NewDeleteProductHandler),
 	fx.Provide(NewGetProductHandler),
+	fx.Provide(NewUpdateProductHandler),
 )
