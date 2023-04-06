@@ -7,4 +7,5 @@ var Module = fx.Options(
 	fx.Provide(NewAuthController),
 	fx.Provide(NewPingController),
 	fx.Provide(NewProductController),
+	fx.Provide(NewClientController),
 )

@@ -12,6 +12,7 @@ import (
 	"lavanderia.pro/internal/lavanderia/databases"
 	"lavanderia.pro/internal/lavanderia/handlers/auth"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
+	"lavanderia.pro/internal/lavanderia/handlers/client"
 	"lavanderia.pro/internal/lavanderia/repositories"
 	"strings"
 	"testing"
@@ -134,10 +135,12 @@ func MakeAuthController() *AuthController {
 	database := databases.NewMongoDatabase(config)
 	repositoryAuth := repositories.NewAuthRepository(database, config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
+	repositoryClient := repositories.NewClientRepository(database)
 	controller := NewAuthController(
 		business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness),
 		auth.NewLoginHandler(repositoryAuth, repositoryBusiness),
 		auth.NewRefreshTokenHandler(repositoryAuth),
+		client.NewRegisterClientHandler(repositoryAuth, repositoryClient),
 	)
 	return controller
 }

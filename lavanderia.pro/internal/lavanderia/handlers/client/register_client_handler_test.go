@@ -21,8 +21,7 @@ func TestRegisterHandle(t *testing.T) {
 	if err := godotenv.Load("../../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
-	createHandler := MakeCreateBusinessToRegisterHandler()
-	// updateHandler := MakeUpdateBusinessHandler()
+	createHandler := MakeClientRegisterHandlerToTest()
 
 	pwd := []byte("PwD")
 	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
@@ -36,38 +35,27 @@ func TestRegisterHandle(t *testing.T) {
 		Password: string(password),
 	}
 
-	businessObj := &types.Business{
+	clientObj := &types.Client{
 		Name: "test register",
-		Lat:  0.321,
-		Long: 0.321,
 	}
 
-	businessRegistered, errRegister := createHandler.Handle(auth, businessObj)
+	clientRegistered, errRegister := createHandler.Handle(auth, clientObj)
 
-	assert.Nil(t, errRegister, "Error on register business")
-	assert.NotEmpty(t, businessRegistered, "Business is empty on register")
+	assert.Nil(t, errRegister, "Error on register client")
+	assert.NotEmpty(t, clientRegistered, "Client is empty on register")
 
-	businessRegisteredSameEmail, errRegisterSame := createHandler.Handle(auth, businessObj)
+	clientRegisteredSameEmail, errRegisterSame := createHandler.Handle(auth, clientObj)
 	assert.Equal(t, errRegisterSame, errors.New("auth already exists"), "Error auth already exists not work")
-	assert.Equal(t, types.Business{}, businessRegisteredSameEmail, "Error auth already exists return empty business")
+	assert.Equal(t, types.Client{}, clientRegisteredSameEmail, "Error auth already exists return empty client")
 
 }
 
-func MakeUpdateBusinessHandler() *UpdateBusinessHandler {
-	config := config.NewConfig()
-	database := databases.NewMongoDatabase(config)
-	repository := repositories.NewBusinessRepository(database)
-	handler := NewUpdateBusinessHandler(repository)
-
-	return handler
-}
-
-func MakeCreateBusinessToRegisterHandler() *RegisterBusinessHandler {
+func MakeClientRegisterHandlerToTest() *RegisterClientHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryAuth := repositories.NewAuthRepository(database, config)
-	repositoryBusiness := repositories.NewBusinessRepository(database)
-	handler := NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness)
+	repositoryClient := repositories.NewClientRepository(database)
+	handler := NewRegisterClientHandler(repositoryAuth, repositoryClient)
 
 	return handler
 }

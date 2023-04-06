@@ -4,23 +4,27 @@ import (
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/handlers/auth"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
+	"lavanderia.pro/internal/lavanderia/handlers/client"
 )
 
 type AuthController struct {
 	RegisterBusinessHandler *business.RegisterBusinessHandler
 	LoginHandler            *auth.LoginHandler
 	RefreshTokenHandler     *auth.RefreshTokenHandler
+	RegisterClientHandler   *client.RegisterClientHandler
 }
 
 func NewAuthController(
 	RegisterBusinessHandler *business.RegisterBusinessHandler,
 	LoginHandler *auth.LoginHandler,
 	RefreshTokenHandler *auth.RefreshTokenHandler,
+	RegisterClientHandler *client.RegisterClientHandler,
 ) *AuthController {
 	return &AuthController{
 		RegisterBusinessHandler: RegisterBusinessHandler,
 		LoginHandler:            LoginHandler,
 		RefreshTokenHandler:     RefreshTokenHandler,
+		RegisterClientHandler:   RegisterClientHandler,
 	}
 }
 
@@ -54,4 +58,15 @@ func (controller AuthController) RefreshToken(token string) (*types.JWT, error) 
 	}
 
 	return jwt, err
+}
+
+func (controller AuthController) RegisterClient(auth *types.Auth, client *types.Client) (types.Client, error) {
+	// Handle Create Business
+	clientDb, err := controller.RegisterClientHandler.Handle(auth, client)
+
+	if err != nil {
+		return types.Client{}, err
+	}
+
+	return clientDb, err
 }
