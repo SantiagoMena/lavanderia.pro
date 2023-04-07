@@ -86,6 +86,7 @@ func MakeAddressControllerForTest() *AddressController {
 
 	controller := NewAddressController(
 		address.NewCreateAddressHandler(addressRepository),
+		address.NewGetAddressHandler(addressRepository),
 	)
 
 	return controller
