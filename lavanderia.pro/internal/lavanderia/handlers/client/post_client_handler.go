@@ -2,7 +2,6 @@ package client
 
 import (
 	"errors"
-	"fmt"
 
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/repositories"
@@ -19,8 +18,6 @@ func NewPostClientHandler(clientRepository *repositories.ClientRepository) *Post
 }
 
 func (ch *PostClientHandler) Handle(client *types.Client) (types.Client, error) {
-	fmt.Println("client")
-	fmt.Println(client)
 
 	// find client by auth
 	clientFound, _ := ch.repository.GetClientByAuth(client)
