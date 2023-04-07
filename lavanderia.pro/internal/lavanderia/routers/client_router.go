@@ -46,7 +46,7 @@ func NewGetClientRouter(r *gin.Engine, controller *controllers.ClientController)
 		authId := c.MustGet("auth")
 
 		// Handle Controller
-		client, errRegister := controller.GetClient(&types.Client{
+		client, errRegister := controller.GetClientByAuth(&types.Client{
 			Auth: authId.(string),
 		})
 

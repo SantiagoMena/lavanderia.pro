@@ -30,7 +30,7 @@ func (controller ClientController) RegisterClient(auth *types.Auth, client *type
 	return clientDb, err
 }
 
-func (controller ClientController) GetClient(client *types.Client) (types.Client, error) {
+func (controller ClientController) GetClientByAuth(client *types.Client) (types.Client, error) {
 	clientDb, err := controller.GetClientHandler.Handle(client)
 
 	if err != nil {

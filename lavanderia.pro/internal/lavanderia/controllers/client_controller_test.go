@@ -87,7 +87,7 @@ func TestGetClient(t *testing.T) {
 	assert.Nil(t, errGetAuth, "Error returns not nil on getByEmail()")
 	assert.NotEmpty(t, authObject, "authObject is empty on getByEmail()")
 
-	clientGotten, errGet := controllerClient.GetClient(&types.Client{
+	clientGotten, errGet := controllerClient.GetClientByAuth(&types.Client{
 		Auth: authObject.ID,
 	})
 
