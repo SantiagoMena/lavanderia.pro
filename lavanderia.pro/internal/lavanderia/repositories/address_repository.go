@@ -82,7 +82,7 @@ func (addressRepository *AddressRepository) Get(address *types.Address) (*types.
 	return &foundAddress, nil
 }
 
-func (addressRepository *AddressRepository) Update(address *types.Address) (types.Address, error) {
+func (addressRepository *AddressRepository) Update(address *types.Address) (*types.Address, error) {
 	id, _ := primitive.ObjectIDFromHex(address.ID)
 	t := time.Now()
 	address.UpdatedAt = &t
@@ -98,7 +98,7 @@ func (addressRepository *AddressRepository) Update(address *types.Address) (type
 	objectUpdt, _ := bson.Marshal(objectAddress)
 	bson.Unmarshal(objectUpdt, &foundAddress)
 	if errFind != nil {
-		return types.Address{}, errors.New("object not found")
+		return &types.Address{}, errors.New("object not found")
 	}
 
 	update := bson.D{{"$set", bson.D{
@@ -114,7 +114,7 @@ func (addressRepository *AddressRepository) Update(address *types.Address) (type
 	addressUpdatedMongo, errUpdate := addressRepository.database.UpdateOne(addressCollection, filter, update)
 
 	if errUpdate != nil {
-		return types.Address{}, errors.New("error on update object")
+		return &types.Address{}, errors.New("error on update object")
 	}
 
 	var addressUpdated types.Address
@@ -127,5 +127,5 @@ func (addressRepository *AddressRepository) Update(address *types.Address) (type
 	addressFoundMarshal, _ := bson.Marshal(adressFound)
 	bson.Unmarshal(addressFoundMarshal, &addressFoundUnmarshal)
 
-	return addressFoundUnmarshal, errFind
+	return &addressFoundUnmarshal, errFind
 }

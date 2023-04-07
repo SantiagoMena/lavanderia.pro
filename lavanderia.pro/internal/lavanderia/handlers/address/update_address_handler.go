@@ -15,7 +15,7 @@ func NewUpdateAddressHandler(repository *repositories.AddressRepository) *Update
 	}
 }
 
-func (ch *UpdateAddressHandler) Handle(address *types.Address) (types.Address, error) {
+func (ch *UpdateAddressHandler) Handle(address *types.Address) (*types.Address, error) {
 	addressUpdated, err := ch.repository.Update(address)
 
 	return addressUpdated, err
