@@ -83,3 +83,28 @@ func NewPostClientRouter(r *gin.Engine, controller *controllers.ClientController
 
 	})
 }
+
+func NewPutClientRouter(r *gin.Engine, controller *controllers.ClientController) {
+	r.PUT("/client/profile", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		var client types.Client
+
+		if err := c.BindJSON(&client); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
+			return
+		}
+
+		client.Auth = authId.(string)
+
+		// Handle Controller
+		clientPosted, errPost := controller.UpdateClient(&client)
+
+		if errPost != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errPost.Error()})
+		} else {
+			c.IndentedJSON(http.StatusCreated, clientPosted)
+		}
+
+	})
+}
