@@ -22,29 +22,52 @@ func NewClientRepository(database databases.Database) *ClientRepository {
 	}
 }
 
-func (businessRepository *ClientRepository) Create(business *types.Client) (types.Client, error) {
+func (clientRepository *ClientRepository) Create(client *types.Client) (types.Client, error) {
 	t := time.Now()
-	business.CreatedAt = &t
+	client.CreatedAt = &t
 
-	authId, _ := primitive.ObjectIDFromHex(business.Auth)
+	authId, _ := primitive.ObjectIDFromHex(client.Auth)
 
-	businessDb, err := businessRepository.database.Create("business", bson.D{
-		{Key: "name", Value: business.Name},
+	clientDb, err := clientRepository.database.Create(clientCollection, bson.D{
+		{Key: "name", Value: client.Name},
 		{Key: "auth", Value: authId},
-		{Key: "created_at", Value: business.CreatedAt},
+		{Key: "created_at", Value: client.CreatedAt},
 	})
 
 	if err != nil {
 		return types.Client{}, err
 	}
 
-	insertedId := businessDb.InsertedID.(primitive.ObjectID).Hex()
+	insertedId := clientDb.InsertedID.(primitive.ObjectID).Hex()
 
 	newClient := types.Client{
 		ID:        insertedId,
-		Name:      business.Name,
-		CreatedAt: business.CreatedAt,
+		Name:      client.Name,
+		CreatedAt: client.CreatedAt,
 	}
 
 	return newClient, nil
+}
+
+func (clientRepository *ClientRepository) GetClientByAuth(client *types.Client) (types.Client, error) {
+	authId, _ := primitive.ObjectIDFromHex(client.Auth)
+
+	clientFound, errFind := clientRepository.database.FindOne(clientCollection, bson.D{
+		{Key: "auth", Value: authId},
+		{Key: "deleted_at", Value: nil},
+	})
+
+	if errFind != nil {
+		return types.Client{}, errFind
+	}
+
+	var clientUnmarshal types.Client
+	marshalObject, errMarshal := bson.Marshal(clientFound)
+	bson.Unmarshal(marshalObject, &clientUnmarshal)
+
+	if errMarshal != nil {
+		return types.Client{}, errFind
+	}
+
+	return clientUnmarshal, nil
 }
