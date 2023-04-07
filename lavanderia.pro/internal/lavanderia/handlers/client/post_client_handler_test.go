@@ -45,7 +45,7 @@ func TestPostClient(t *testing.T) {
 	assert.Nil(t, errRegister, "Error on register client")
 	assert.NotEmpty(t, clientRegistered, "Client is empty on register")
 
-	clientPosted, errPost := handler.PostClient(&clientRegistered)
+	clientPosted, errPost := handler.Handle(&clientRegistered)
 
 	assert.NotNil(t, errPost, "Error on post client")
 	assert.Empty(t, clientPosted, "Client Posted Empty")

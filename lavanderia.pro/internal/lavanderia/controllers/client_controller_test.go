@@ -107,6 +107,7 @@ func MakeClientControllerForTest() *ClientController {
 	controller := NewClientController(
 		client.NewRegisterClientHandler(authRepository, clientRepository),
 		client.NewGetClientHandler(authRepository, clientRepository),
+		client.NewPostClientHandler(clientRepository),
 	)
 
 	return controller

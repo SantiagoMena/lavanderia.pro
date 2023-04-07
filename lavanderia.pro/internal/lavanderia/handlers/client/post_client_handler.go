@@ -17,7 +17,7 @@ func NewPostClientHandler(clientRepository *repositories.ClientRepository) *Post
 	}
 }
 
-func (ch *PostClientHandler) PostClient(client *types.Client) (*types.Client, error) {
+func (ch *PostClientHandler) Handle(client *types.Client) (*types.Client, error) {
 	// find client by auth
 	clientFound, _ := ch.repository.GetClientByAuth(client)
 	emptyClient := types.Client{}
