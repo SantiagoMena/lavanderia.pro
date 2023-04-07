@@ -8,4 +8,5 @@ var Module = fx.Options(
 	fx.Provide(NewPingController),
 	fx.Provide(NewProductController),
 	fx.Provide(NewClientController),
+	fx.Provide(NewAddressController),
 )

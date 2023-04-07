@@ -14,6 +14,7 @@ import (
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/controllers"
 	"lavanderia.pro/internal/lavanderia/databases"
+	"lavanderia.pro/internal/lavanderia/handlers/address"
 	"lavanderia.pro/internal/lavanderia/handlers/auth"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
 	"lavanderia.pro/internal/lavanderia/handlers/client"
@@ -49,6 +50,7 @@ func MakeApp() *fx.App {
 		business.Module,
 		product.Module,
 		client.Module,
+		address.Module,
 		auth.Module,
 		fx.Invoke(
 			startServer,
