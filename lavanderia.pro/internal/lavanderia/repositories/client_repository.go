@@ -71,3 +71,34 @@ func (clientRepository *ClientRepository) GetClientByAuth(client *types.Client) 
 
 	return clientUnmarshal, nil
 }
+
+func (clientRepository *ClientRepository) Update(client *types.Client) (types.Client, error) {
+	t := time.Now()
+	client.UpdatedAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(client.ID)
+
+	filter := bson.D{{"_id", id}}
+	update := bson.D{
+		{"$set", bson.D{
+			{"name", client.Name},
+		}},
+	}
+
+	objectUpdated, err := clientRepository.database.UpdateOne(clientCollection, filter, update)
+	if err != nil {
+		return types.Client{}, err
+	}
+
+	var updatedClient types.Client
+
+	objectUpdt, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(objectUpdt, &updatedClient)
+
+	return types.Client{
+		ID:        client.ID,
+		Name:      client.Name,
+		CreatedAt: updatedClient.CreatedAt,
+		UpdatedAt: client.UpdatedAt,
+	}, nil
+}
