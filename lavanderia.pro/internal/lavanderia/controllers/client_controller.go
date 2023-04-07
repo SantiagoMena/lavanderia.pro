@@ -21,7 +21,6 @@ func NewClientController(
 }
 
 func (controller ClientController) RegisterClient(auth *types.Auth, client *types.Client) (types.Client, error) {
-	// Handle Create Client
 	clientDb, err := controller.RegisterClientHandler.Handle(auth, client)
 
 	if err != nil {
@@ -32,7 +31,6 @@ func (controller ClientController) RegisterClient(auth *types.Auth, client *type
 }
 
 func (controller ClientController) GetClient(client *types.Client) (types.Client, error) {
-	// Handle Create Client
 	clientDb, err := controller.GetClientHandler.Handle(client)
 
 	if err != nil {
