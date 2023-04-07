@@ -4,9 +4,9 @@ import "time"
 
 type Address struct {
 	ID        string     `json:"id" bson:"_id,omitempty" uri:"id"`
-	Client    string     `json:"auth,omitempty" bson:"auth,omitempty"`
+	Client    string     `json:"client,omitempty" bson:"client,omitempty"`
 	Name      string     `json:"name", bson:"name"`
-	Position  []float64  `json:"position", bson:position"`
+	Position  Geometry   `json:"position", bson:"position"`
 	Address   string     `json:"address", bson:"address"`
 	Phone     string     `json:"phone", bson:"phone"`
 	Extra     string     `json:"extra", bson:"extra"`

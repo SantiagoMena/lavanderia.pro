@@ -21,5 +21,6 @@ var Module = fx.Invoke(
 	NewGetClientRouter,
 	NewPostClientRouter,
 	NewPutClientRouter,
+	NewGetAddressRouter,
 	NewPostAddressRouter,
 )

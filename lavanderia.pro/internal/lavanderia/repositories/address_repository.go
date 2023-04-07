@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"time"
@@ -30,13 +32,11 @@ func (addressRepository *AddressRepository) Create(address *types.Address) (type
 
 	addressDb, err := addressRepository.database.Create("address", bson.D{
 		{Key: "name", Value: address.Name},
-		{Key: "position", Value: bson.D{
-			{"type", "Point"},
-			{"coordinates", address.Position},
-		}},
-		{Key: "address", Value: address.CreatedAt},
+		{Key: "position", Value: address.Position},
+		{Key: "address", Value: address.Address},
 		{Key: "extra", Value: address.Extra},
 		{Key: "client", Value: clientId},
+		{Key: "phone", Value: address.Phone},
 		{Key: "created_at", Value: address.CreatedAt},
 	})
 
@@ -73,11 +73,13 @@ func (addressRepository *AddressRepository) Get(address *types.Address) (*types.
 	if err != nil {
 		return &types.Address{}, err
 	}
-
+	fmt.Println("objectAddress")
+	fmt.Println(objectAddress)
 	var foundAddress types.Address
 
 	objectUpdt, _ := bson.Marshal(objectAddress)
 	bson.Unmarshal(objectUpdt, &foundAddress)
-
+	fmt.Println("foundAddress")
+	fmt.Println(foundAddress)
 	return &foundAddress, nil
 }

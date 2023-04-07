@@ -18,11 +18,14 @@ func TestCreateAddress(t *testing.T) {
 	addressRepository := MakeAddressRepositoryToTest()
 
 	address, err := addressRepository.Create(&types.Address{
-		Position: []float64{-71.327767, -41.138444},
-		Name:     "House",
-		Extra:    "Call me",
-		Phone:    "+123123123",
-		Address:  "Av. Pioneros 200, S.C Bariloche, Argentina",
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+		Name:    "House",
+		Extra:   "Call me",
+		Phone:   "+123123123",
+		Address: "Av. Pioneros 200, S.C Bariloche, Argentina",
 	})
 
 	assert.Equal(t, err, nil, "Create() returns error")
@@ -38,11 +41,14 @@ func TestGetAddress(t *testing.T) {
 	addressRepository := MakeAddressRepositoryToTest()
 
 	address, err := addressRepository.Create(&types.Address{
-		Position: []float64{-71.327767, -41.138444},
-		Name:     "TEST_ADDRESS",
-		Extra:    "Call me",
-		Phone:    "+123123123",
-		Address:  "Av. Pioneros 200, S.C Bariloche, Argentina",
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+		Name:    "TEST_ADDRESS",
+		Extra:   "Call me",
+		Phone:   "+123123123",
+		Address: "Av. Pioneros 200, S.C Bariloche, Argentina",
 	})
 
 	assert.Equal(t, err, nil, "Create() returns error")

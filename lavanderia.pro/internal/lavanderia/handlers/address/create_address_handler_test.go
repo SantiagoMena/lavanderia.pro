@@ -19,11 +19,14 @@ func TestCreateAddressHandler(t *testing.T) {
 	handler := MakeCreateHandlerForTest()
 
 	address, err := handler.Handle(&types.Address{
-		Position: []float64{-71.327767, -41.138444},
-		Name:     "TEST",
-		Extra:    "Call me",
-		Phone:    "+123123123",
-		Address:  "Av. Pioneros 201, S.C Bariloche, Argentina",
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+		Name:    "TEST",
+		Extra:   "Call me",
+		Phone:   "+123123123",
+		Address: "Av. Pioneros 201, S.C Bariloche, Argentina",
 	})
 
 	assert.Equal(t, err, nil, "Create() returns error")
