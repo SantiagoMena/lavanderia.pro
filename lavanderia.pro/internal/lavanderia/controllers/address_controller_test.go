@@ -60,6 +60,7 @@ func TestCreateAddress(t *testing.T) {
 
 	assert.Nil(t, errAddress, "errAddress returns not nil")
 	assert.NotEmpty(t, addressCreated, "addressCreated is empty")
+	assert.Equal(t, "TEST", addressCreated.Name, "Address Name not save properly")
 }
 
 func MakeAuthControllerForTestAddress() *AuthController {
