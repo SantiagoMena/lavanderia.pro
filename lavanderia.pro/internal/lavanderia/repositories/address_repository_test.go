@@ -21,6 +21,7 @@ func TestCreateAddress(t *testing.T) {
 		Position: []float64{-71.327767, -41.138444},
 		Name:     "House",
 		Extra:    "Call me",
+		Phone:    "+123123123",
 		Address:  "Av. Pioneros 200, S.C Bariloche, Argentina",
 	})
 

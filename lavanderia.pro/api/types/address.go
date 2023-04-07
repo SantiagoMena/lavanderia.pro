@@ -8,6 +8,7 @@ type Address struct {
 	Name      string     `json:"name", bson:"name"`
 	Position  []float64  `json:"position", bson:position"`
 	Address   string     `json:"address", bson:"address"`
+	Phone     string     `json:"phone", bson:"phone"`
 	Extra     string     `json:"extra", bson:"extra"`
 	CreatedAt *time.Time `json:"created_at,omitempty" bson:"created_at"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty" bson:"updated_at"`

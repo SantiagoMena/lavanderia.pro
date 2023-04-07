@@ -52,6 +52,7 @@ func (addressRepository *AddressRepository) Create(address *types.Address) (type
 		Position:  address.Position,
 		Address:   address.Address,
 		Extra:     address.Extra,
+		Phone:     address.Phone,
 		Client:    address.Client,
 		CreatedAt: address.CreatedAt,
 	}

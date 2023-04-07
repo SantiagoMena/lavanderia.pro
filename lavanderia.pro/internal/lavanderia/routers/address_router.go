@@ -33,6 +33,7 @@ func NewPostAddressRouter(r *gin.Engine, controller *controllers.AddressControll
 			Name:     newAddress.Name,
 			Position: newAddress.Position,
 			Address:  newAddress.Address,
+			Phone:    newAddress.Phone,
 			Extra:    newAddress.Extra,
 		})
 
