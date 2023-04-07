@@ -51,12 +51,15 @@ func TestCreateAddress(t *testing.T) {
 	assert.NotEmpty(t, client, "Client registered is empty")
 
 	addressCreated, errAddress := addressController.CreateAddress(&types.Address{
-		Client:   client.ID,
-		Position: []float64{-71.327767, -41.138444},
-		Name:     "TEST",
-		Extra:    "Call me",
-		Phone:    "+123123123",
-		Address:  "Av. Pioneros 201, S.C Bariloche, Argentina",
+		Client: client.ID,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+		Name:    "TEST",
+		Extra:   "Call me",
+		Phone:   "+123123123",
+		Address: "Av. Pioneros 201, S.C Bariloche, Argentina",
 	})
 
 	assert.Nil(t, errAddress, "errAddress returns not nil")
@@ -86,6 +89,7 @@ func MakeAddressControllerForTest() *AddressController {
 
 	controller := NewAddressController(
 		address.NewCreateAddressHandler(addressRepository),
+		address.NewGetAddressHandler(addressRepository),
 	)
 
 	return controller

@@ -46,12 +46,7 @@ func TestGetClient(t *testing.T) {
 	assert.NotEmpty(t, clientCreated.CreatedAt, "CreatedAt is empty")
 	assert.NotEmpty(t, clientCreated.ID, "ID created is empty")
 
-	fmt.Println("clientCreated")
-	fmt.Println(clientCreated)
-
 	clientFound, errFind := repository.GetClientByAuth(&clientCreated)
-	fmt.Println("clientFound")
-	fmt.Println(clientFound)
 
 	assert.Equal(t, errFind, nil, "Error on GetClient() client")
 	assert.NotNil(t, clientFound, "GetClient() returns nil result")
