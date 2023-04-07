@@ -53,7 +53,7 @@ func TestGetClient(t *testing.T) {
 	if err := godotenv.Load("../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
-	// controllerAuth := MakeAuthControllerForTest()
+	controllerAuth := MakeAuthControllerForTest()
 	controllerClient := MakeClientControllerForTest()
 
 	pwd := []byte("PwD")
@@ -78,7 +78,19 @@ func TestGetClient(t *testing.T) {
 	assert.NotEmpty(t, client, "Client is empty")
 	assert.NotEmpty(t, client.ID, "Client ID is empty")
 
-	clientGotten, errGet := controllerClient.GetClient(&client)
+	authClient, errAuth := controllerAuth.Login(auth)
+	assert.Nil(t, errAuth, "Error returns not nil on Login")
+	assert.NotEmpty(t, authClient, "AuthClient is empty on login")
+
+	repositoryAuth := MakeAuthRepositoryForTestGetClient()
+	authObject, errGetAuth := repositoryAuth.GetByEmail(auth)
+	assert.Nil(t, errGetAuth, "Error returns not nil on getByEmail()")
+	assert.NotEmpty(t, authObject, "authObject is empty on getByEmail()")
+
+	clientGotten, errGet := controllerClient.GetClient(&types.Client{
+		Auth: authObject.ID,
+	})
+
 	assert.Nil(t, errGet, "Error returns not nil on delete client")
 	assert.NotEmpty(t, clientGotten, "Client is empty on delete client")
 	assert.NotEmpty(t, clientGotten.ID, "Client ID is empty on delete client")
@@ -119,4 +131,12 @@ func MakeAuthControllerForTest() *AuthController {
 	)
 
 	return controller
+}
+
+func MakeAuthRepositoryForTestGetClient() *repositories.AuthRepository {
+	config := config.NewConfig()
+	database := databases.NewMongoDatabase(config)
+	repositoryAuth := repositories.NewAuthRepository(database, config)
+
+	return repositoryAuth
 }

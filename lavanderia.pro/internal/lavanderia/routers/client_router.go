@@ -40,3 +40,21 @@ func NewPostRegisterClientRouter(r *gin.Engine, controller *controllers.AuthCont
 
 	})
 }
+
+func NewGetClientRouter(r *gin.Engine, controller *controllers.ClientController) {
+	r.GET("/client/profile", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		// Handle Controller
+		client, errRegister := controller.GetClient(&types.Client{
+			Auth: authId.(string),
+		})
+
+		if errRegister != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
+		} else {
+			c.IndentedJSON(http.StatusCreated, client)
+		}
+
+	})
+}

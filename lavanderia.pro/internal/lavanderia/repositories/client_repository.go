@@ -49,11 +49,11 @@ func (clientRepository *ClientRepository) Create(business *types.Client) (types.
 	return newClient, nil
 }
 
-func (clientRepository *ClientRepository) GetClient(client *types.Client) (types.Client, error) {
-	id, _ := primitive.ObjectIDFromHex(client.ID)
+func (clientRepository *ClientRepository) GetClientByAuth(client *types.Client) (types.Client, error) {
+	authId, _ := primitive.ObjectIDFromHex(client.Auth)
 
 	clientFound, errFind := clientRepository.database.FindOne(clientCollection, bson.D{
-		{Key: "_id", Value: id},
+		{Key: "auth", Value: authId},
 		{Key: "deleted_at", Value: nil},
 	})
 

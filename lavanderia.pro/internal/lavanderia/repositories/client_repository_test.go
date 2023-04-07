@@ -49,7 +49,7 @@ func TestGetClient(t *testing.T) {
 	fmt.Println("clientCreated")
 	fmt.Println(clientCreated)
 
-	clientFound, errFind := repository.GetClient(&clientCreated)
+	clientFound, errFind := repository.GetClientByAuth(&clientCreated)
 	fmt.Println("clientFound")
 	fmt.Println(clientFound)
 

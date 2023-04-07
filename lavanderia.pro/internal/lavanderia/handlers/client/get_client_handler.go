@@ -18,7 +18,7 @@ func NewGetClientHandler(repositoryAuth *repositories.AuthRepository, repository
 }
 
 func (ch GetClientHandler) Handle(client *types.Client) (types.Client, error) {
-	clientDb, err := ch.repositoryClient.GetClient(client)
+	clientDb, err := ch.repositoryClient.GetClientByAuth(client)
 
 	return clientDb, err
 }
