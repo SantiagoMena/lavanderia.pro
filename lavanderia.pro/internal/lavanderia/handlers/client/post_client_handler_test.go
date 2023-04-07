@@ -49,6 +49,7 @@ func TestPostClient(t *testing.T) {
 
 	assert.NotNil(t, errPost, "Error on post client")
 	assert.Empty(t, clientPosted, "Client Posted Empty")
+	assert.Equal(t, "test register", clientPosted.Name, "Client Name nil")
 }
 
 func MakePostClientHandlerToTest() *PostClientHandler {

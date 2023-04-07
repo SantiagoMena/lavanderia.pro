@@ -22,16 +22,16 @@ func NewClientRepository(database databases.Database) *ClientRepository {
 	}
 }
 
-func (clientRepository *ClientRepository) Create(business *types.Client) (types.Client, error) {
+func (clientRepository *ClientRepository) Create(client *types.Client) (types.Client, error) {
 	t := time.Now()
-	business.CreatedAt = &t
+	client.CreatedAt = &t
 
-	authId, _ := primitive.ObjectIDFromHex(business.Auth)
+	authId, _ := primitive.ObjectIDFromHex(client.Auth)
 
 	clientDb, err := clientRepository.database.Create(clientCollection, bson.D{
-		{Key: "name", Value: business.Name},
+		{Key: "name", Value: client.Name},
 		{Key: "auth", Value: authId},
-		{Key: "created_at", Value: business.CreatedAt},
+		{Key: "created_at", Value: client.CreatedAt},
 	})
 
 	if err != nil {
@@ -42,8 +42,8 @@ func (clientRepository *ClientRepository) Create(business *types.Client) (types.
 
 	newClient := types.Client{
 		ID:        insertedId,
-		Name:      business.Name,
-		CreatedAt: business.CreatedAt,
+		Name:      client.Name,
+		CreatedAt: client.CreatedAt,
 	}
 
 	return newClient, nil

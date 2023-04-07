@@ -43,11 +43,11 @@ func (controller ClientController) GetClientByAuth(client *types.Client) (types.
 	return clientDb, err
 }
 
-func (controller ClientController) PostClient(client *types.Client) (*types.Client, error) {
+func (controller ClientController) PostClient(client *types.Client) (types.Client, error) {
 	clientDb, err := controller.PostClientHandler.Handle(client)
 
 	if err != nil {
-		return &types.Client{}, err
+		return types.Client{}, err
 	}
 
 	return clientDb, err
