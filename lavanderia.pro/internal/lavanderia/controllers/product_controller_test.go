@@ -147,11 +147,7 @@ func MakeAuthForProductController() *AuthController {
 func MakeBusinessForProductController() *BusinessController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
-	// repositoryAuth := repositories.NewAuthRepository(database, config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
-	// RegisterBusinessHandler := business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness)
-	// LoginHandler := auth.NewLoginHandler(repositoryAuth, repositoryBusiness)
-	// RefreshTokenHandler := auth.NewRefreshTokenHandler(repositoryAuth)
 
 	controller := NewBusinessController(
 		business.NewGetAllBusinessHandler(repositoryBusiness),

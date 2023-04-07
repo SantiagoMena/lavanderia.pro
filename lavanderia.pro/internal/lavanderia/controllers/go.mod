@@ -14,6 +14,7 @@ require (
 	lavanderia.pro/api/types v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/config v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/databases v0.0.0-00010101000000-000000000000
+	lavanderia.pro/internal/lavanderia/handlers/address v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/handlers/auth v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/handlers/business v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/handlers/client v0.0.0-00010101000000-000000000000
@@ -61,3 +62,5 @@ replace lavanderia.pro/internal/lavanderia/handlers/auth => ../handlers/auth
 replace lavanderia.pro/internal/lavanderia/handlers/product => ../handlers/product
 
 replace lavanderia.pro/internal/lavanderia/handlers/client => ../handlers/client
+
+replace lavanderia.pro/internal/lavanderia/handlers/address => ../handlers/address
