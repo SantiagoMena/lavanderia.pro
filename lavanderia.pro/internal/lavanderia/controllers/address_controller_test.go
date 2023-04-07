@@ -67,6 +67,59 @@ func TestCreateAddress(t *testing.T) {
 	assert.Equal(t, "TEST", addressCreated.Name, "Address Name not save properly")
 }
 
+func TestUpdateAddress(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	controller := MakeAuthControllerForTestAddress()
+	addressController := MakeAddressControllerForTest()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	authLogin := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	clientObj := &types.Client{
+		Name: "test register",
+	}
+
+	client, err := controller.RegisterClient(authLogin, clientObj)
+
+	assert.Nil(t, err, "Error returns not nil")
+	assert.NotEmpty(t, client, "Client registered is empty")
+
+	addressCreated, errAddress := addressController.CreateAddress(&types.Address{
+		Client: client.ID,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+		Name:    "TEST",
+		Extra:   "Call me",
+		Phone:   "+123123123",
+		Address: "Av. Pioneros 201, S.C Bariloche, Argentina",
+	})
+
+	assert.Nil(t, errAddress, "errAddress returns not nil")
+	assert.NotEmpty(t, addressCreated, "addressCreated is empty")
+	assert.Equal(t, "TEST", addressCreated.Name, "Address Name not save properly")
+
+	addressCreated.Name = "UPDATED"
+
+	addressUpdated, errUpdate := addressController.UpdateAddress(&addressCreated)
+	assert.Nil(t, errUpdate, "errUpdate returns not nil")
+	assert.NotEmpty(t, addressUpdated, "addressCreated is empty")
+	assert.Equal(t, "UPDATED", addressUpdated.Name, "Address Name not updated properly")
+}
+
 func MakeAuthControllerForTestAddress() *AuthController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
@@ -90,6 +143,7 @@ func MakeAddressControllerForTest() *AddressController {
 	controller := NewAddressController(
 		address.NewCreateAddressHandler(addressRepository),
 		address.NewGetAddressHandler(addressRepository),
+		address.NewUpdateAddressHandler(addressRepository),
 	)
 
 	return controller

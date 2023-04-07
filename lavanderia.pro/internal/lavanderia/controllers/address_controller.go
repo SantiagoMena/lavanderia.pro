@@ -8,15 +8,18 @@ import (
 type AddressController struct {
 	CreateAddressHandler *address.CreateAddressHandler
 	GetAddressHandler    *address.GetAddressHandler
+	UpdateAddressHandler *address.UpdateAddressHandler
 }
 
 func NewAddressController(
 	CreateAddressHandler *address.CreateAddressHandler,
 	GetAddressHandler *address.GetAddressHandler,
+	UpdateAddressHandler *address.UpdateAddressHandler,
 ) *AddressController {
 	return &AddressController{
 		CreateAddressHandler: CreateAddressHandler,
 		GetAddressHandler:    GetAddressHandler,
+		UpdateAddressHandler: UpdateAddressHandler,
 	}
 }
 
@@ -30,4 +33,10 @@ func (controller *AddressController) GetAddress(address *types.Address) (*types.
 	addressFound, err := controller.GetAddressHandler.Handle(address)
 
 	return addressFound, err
+}
+
+func (controller *AddressController) UpdateAddress(address *types.Address) (*types.Address, error) {
+	addressUpdated, err := controller.UpdateAddressHandler.Handle(address)
+
+	return addressUpdated, err
 }
