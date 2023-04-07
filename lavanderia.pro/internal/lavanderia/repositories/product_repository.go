@@ -118,9 +118,6 @@ func (productRepository *ProductRepository) Delete(product *types.Product) (type
 }
 
 func (productRepository *ProductRepository) Get(product *types.Product) (types.Product, error) {
-	// t := time.Now()
-	// product.UpdatedAt = &t
-
 	id, _ := primitive.ObjectIDFromHex(product.ID)
 
 	filter := bson.D{
