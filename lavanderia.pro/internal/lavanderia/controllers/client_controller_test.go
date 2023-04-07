@@ -145,7 +145,55 @@ func TestPostClient(t *testing.T) {
 	assert.Equal(t, "POSTED", clientPosted.Name, "Name not get properly")
 }
 
-// TODO: Test UpdateClient
+func TestUpdateClient(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+	controllerAuth := MakeAuthControllerForTest()
+	controllerClient := MakeClientControllerForTest()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	auth := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	clientObj := &types.Client{
+		Name: "test register",
+	}
+
+	client, err := controllerClient.RegisterClient(auth, clientObj)
+
+	assert.Nil(t, err, "Error returns not nil")
+	assert.NotEmpty(t, client, "Client is empty")
+	assert.NotEmpty(t, client.ID, "Client ID is empty")
+
+	authClient, errAuth := controllerAuth.Login(auth)
+	assert.Nil(t, errAuth, "Error returns not nil on Login")
+	assert.NotEmpty(t, authClient, "AuthClient is empty on login")
+
+	repositoryAuth := MakeAuthRepositoryForTestGetClient()
+	authObject, errGetAuth := repositoryAuth.GetByEmail(auth)
+	assert.Nil(t, errGetAuth, "Error returns not nil on getByEmail()")
+	assert.NotEmpty(t, authObject, "authObject is empty on getByEmail()")
+
+	clientUpdated, errPut := controllerClient.UpdateClient(&types.Client{
+		Auth: authObject.ID,
+		Name: "UPDATED",
+	})
+
+	assert.Nil(t, errPut, "Error returns not nil on update client")
+	assert.NotEmpty(t, clientUpdated, "Client is empty on update client")
+	assert.NotEmpty(t, clientUpdated.ID, "Client ID is empty on update client")
+	assert.NotEmpty(t, clientUpdated.CreatedAt, "Client CreatedAt is empty on update client")
+	assert.Equal(t, "UPDATED", clientUpdated.Name, "Name not get properly")
+}
 
 func MakeClientControllerForTest() *ClientController {
 	config := config.NewConfig()

@@ -57,7 +57,7 @@ func (controller ClientController) PostClient(client *types.Client) (types.Clien
 }
 
 func (controller ClientController) UpdateClient(client *types.Client) (types.Client, error) {
-	clientDb, err := controller.PostClientHandler.Handle(client)
+	clientDb, err := controller.UpdateClientProfileHandler.Handle(client)
 
 	if err != nil {
 		return types.Client{}, err
