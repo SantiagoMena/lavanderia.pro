@@ -59,3 +59,25 @@ func (addressRepository *AddressRepository) Create(address *types.Address) (type
 
 	return newAddress, nil
 }
+
+func (addressRepository *AddressRepository) Get(address *types.Address) (*types.Address, error) {
+	id, _ := primitive.ObjectIDFromHex(address.ID)
+
+	filter := bson.D{
+		{Key: "_id", Value: id},
+		{Key: "deleted_at", Value: nil},
+	}
+
+	objectAddress, err := addressRepository.database.FindOne(addressCollection, filter)
+
+	if err != nil {
+		return &types.Address{}, err
+	}
+
+	var foundAddress types.Address
+
+	objectUpdt, _ := bson.Marshal(objectAddress)
+	bson.Unmarshal(objectUpdt, &foundAddress)
+
+	return &foundAddress, nil
+}
