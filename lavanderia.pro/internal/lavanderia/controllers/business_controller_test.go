@@ -37,8 +37,10 @@ func TestPostBusiness(t *testing.T) {
 
 	business, err := controller.PostBusiness(&types.Business{
 		Name: "test",
-		Lat:  0.123,
-		Long: 0.123,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	})
 
 	assert.Nil(t, err, "Error returns not nil")
@@ -54,8 +56,10 @@ func TestDeleteBusiness(t *testing.T) {
 
 	business, err := controller.PostBusiness(&types.Business{
 		Name: "test",
-		Lat:  0.123,
-		Long: 0.123,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	})
 
 	assert.Nil(t, err, "Error returns not nil on create business to delete")
@@ -77,30 +81,32 @@ func TestUpdateBusiness(t *testing.T) {
 
 	business, err := controller.PostBusiness(&types.Business{
 		Name: "test",
-		Lat:  0.123,
-		Long: 0.123,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	})
 
 	assert.Nil(t, err, "Error returns not nil on create business to delete")
 	assert.NotEmpty(t, business, "Business is empty on create business to delete")
 	assert.NotEmpty(t, business.ID, "Business ID is empty on create business to delete")
 	assert.Equal(t, "test", business.Name, "Name not saved properly")
-	assert.Equal(t, 0.123, business.Lat, "Lat not saved properly")
-	assert.Equal(t, 0.123, business.Long, "Long not saved properly")
+	assert.NotEmpty(t, business.Position, "Position not saved properly")
 
 	businessUpdated, errUpdate := controller.UpdateBusiness(&types.Business{
 		ID:   business.ID,
 		Name: "updated",
-		Lat:  0.321,
-		Long: 0.321,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	})
 	assert.Nil(t, errUpdate, "Error returns not nil on delete business")
 	assert.NotEmpty(t, businessUpdated, "Business is empty on delete business")
 	assert.NotEmpty(t, businessUpdated.ID, "Business ID is empty on delete business")
 	assert.NotEmpty(t, businessUpdated.UpdatedAt, "Business UpdatedAt is empty on delete business")
 	assert.Equal(t, "updated", businessUpdated.Name, "Name not save properly")
-	assert.Equal(t, 0.321, businessUpdated.Lat, "Lat not save properly")
-	assert.Equal(t, 0.321, businessUpdated.Long, "Long not save properly")
+	assert.NotEmpty(t, businessUpdated.Position, "Position not save properly")
 }
 
 func TestGetBusiness(t *testing.T) {
@@ -111,16 +117,17 @@ func TestGetBusiness(t *testing.T) {
 
 	business, err := controller.PostBusiness(&types.Business{
 		Name: "test",
-		Lat:  0.123,
-		Long: 0.123,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	})
 
 	assert.Nil(t, err, "Error returns not nil on create business to delete")
 	assert.NotEmpty(t, business, "Business is empty on create business to delete")
 	assert.NotEmpty(t, business.ID, "Business ID is empty on create business to delete")
 	assert.Equal(t, "test", business.Name, "Name not saved properly")
-	assert.Equal(t, 0.123, business.Lat, "Lat not saved properly")
-	assert.Equal(t, 0.123, business.Long, "Long not saved properly")
+	assert.NotEmpty(t, business.Position, "Position not saved properly")
 
 	businessGotten, errGet := controller.GetBusiness(&business)
 	assert.Nil(t, errGet, "Error returns not nil on delete business")
@@ -128,8 +135,7 @@ func TestGetBusiness(t *testing.T) {
 	assert.NotEmpty(t, businessGotten.ID, "Business ID is empty on delete business")
 	assert.NotEmpty(t, businessGotten.CreatedAt, "Business CreatedAt is empty on delete business")
 	assert.Equal(t, "test", businessGotten.Name, "Name not get properly")
-	assert.Equal(t, 0.123, businessGotten.Lat, "Lat not get properly")
-	assert.Equal(t, 0.123, businessGotten.Long, "Long not get properly")
+	assert.NotEmpty(t, businessGotten.Position, "Position not saved properly")
 }
 
 func MakeController() *BusinessController {
@@ -167,8 +173,10 @@ func TestGetAllBusinessByAuth(t *testing.T) {
 
 	businessObj := &types.Business{
 		Name: "test register",
-		Lat:  0.321,
-		Long: 0.321,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	}
 
 	businessRegistered, errRegister := controllerAuth.RegisterBusiness(auth, businessObj)

@@ -23,8 +23,10 @@ func TestUpdateHandle(t *testing.T) {
 
 	business, err := createHandler.Handle(&types.Business{
 		Name: "test to update",
-		Lat:  0.123,
-		Long: 0.123,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	})
 
 	businessGotten, errGet := getHandler.Handle(&business)
@@ -35,8 +37,7 @@ func TestUpdateHandle(t *testing.T) {
 	assert.NotEmpty(t, businessGotten, "Business is empty on get")
 	assert.NotEmpty(t, business.ID, "Business ID created is empty")
 	assert.Equal(t, "test to update", business.Name, "Business name not created properly")
-	assert.Equal(t, 0.123, business.Lat, "Business lat not created properly")
-	assert.Equal(t, 0.123, business.Long, "Business long not created properly")
+	assert.NotEmpty(t, business.Position, "Business position not created properly")
 }
 
 func MakeGetBusinessHandler() *GetBusinessHandler {

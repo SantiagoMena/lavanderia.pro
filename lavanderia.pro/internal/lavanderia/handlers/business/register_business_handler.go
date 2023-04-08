@@ -43,8 +43,7 @@ func (ch RegisterBusinessHandler) Handle(auth *types.Auth, business *types.Busin
 	businessDb, err := ch.repositoryBusiness.Create(&types.Business{
 		Auth:      authDb.ID,
 		Name:      business.Name,
-		Lat:       business.Lat,
-		Long:      business.Long,
+		Position:  business.Position,
 		CreatedAt: business.CreatedAt,
 	})
 

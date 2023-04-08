@@ -22,8 +22,10 @@ func TestCreateHandle(t *testing.T) {
 
 	business, err := handler.Handle(&types.Business{
 		Name: "test",
-		Lat:  0.123,
-		Long: 0.123,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	})
 
 	assert.Nil(t, err, "Error returns not nil")

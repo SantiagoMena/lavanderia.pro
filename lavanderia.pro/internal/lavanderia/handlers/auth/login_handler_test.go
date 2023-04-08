@@ -37,8 +37,10 @@ func TestLoginHandle(t *testing.T) {
 
 	businessObj := &types.Business{
 		Name: "test register",
-		Lat:  0.321,
-		Long: 0.321,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	}
 
 	businessRegistered, errRegister := createHandler.Handle(auth, businessObj)
