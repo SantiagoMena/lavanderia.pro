@@ -153,3 +153,26 @@ func (addressRepository *AddressRepository) GetAddresses(address *types.Address)
 
 	return &foundAddresses, nil
 }
+
+func (addressRepository *AddressRepository) Delete(address *types.Address) (*types.Address, error) {
+	t := time.Now()
+	address.DeletedAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(address.ID)
+
+	filter := bson.D{{"_id", id}}
+	update := bson.D{{"$set", bson.D{{"deleted_at", address.DeletedAt}}}}
+
+	objectUpdated, err := addressRepository.database.UpdateOne(addressCollection, filter, update)
+	if err != nil {
+		return &types.Address{}, err
+	}
+
+	var deletedAddress types.Address
+
+	objectUpdt, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(objectUpdt, &deletedAddress)
+	deletedAddress.DeletedAt = address.DeletedAt
+
+	return &deletedAddress, nil
+}

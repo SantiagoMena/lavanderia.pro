@@ -192,38 +192,36 @@ func TestGetAddresses(t *testing.T) {
 }
 
 func TestDeleteAddress(t *testing.T) {
-	// if err := godotenv.Load("../../../.env.test"); err != nil {
-	// 	fmt.Println("No .env.test file found")
-	// }
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
 
-	// addressRepository := MakeAddressRepositoryToTest()
+	addressRepository := MakeAddressRepositoryToTest()
 
-	// address, err := addressRepository.Create(&types.Address{
-	// 	Position: types.Geometry{
-	// 		Type:        "Point",
-	// 		Coordinates: []float64{-71.327767, -41.138444},
-	// 	},
-	// 	Name:    "TEST_ADDRESS",
-	// 	Extra:   "Call me",
-	// 	Phone:   "+123123123",
-	// 	Address: "Av. Pioneros 200, S.C Bariloche, Argentina",
-	// })
+	address, err := addressRepository.Create(&types.Address{
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+		Name:    "TEST_ADDRESS",
+		Extra:   "Call me",
+		Phone:   "+123123123",
+		Address: "Av. Pioneros 200, S.C Bariloche, Argentina",
+	})
 
-	// assert.Equal(t, err, nil, "Create() returns error")
-	// assert.NotNil(t, address, "Create() returns nil result")
-	// assert.NotEmpty(t, address.CreatedAt, "CreatedAt is empty")
+	assert.Equal(t, err, nil, "Create() returns error")
+	assert.NotNil(t, address, "Create() returns nil result")
+	assert.NotEmpty(t, address.CreatedAt, "CreatedAt is empty")
 
-	// address.Name = "UPDATED"
-
-	// addressUpdated, errUpdate := addressRepository.Update(&address)
+	addressDeleted, errDelete := addressRepository.Delete(&address)
 
 	// var addressUpdatedObject types.Address
 	// addressUpdatedObj, _ := bson.Marshal(addressUpdated)
 	// bson.Unmarshal(addressUpdatedObj, &addressUpdatedObject)
 
-	// assert.Equal(t, errUpdate, nil, "address Update() returns error")
-	// assert.NotEmpty(t, addressUpdated, "address Update() returns nil result")
-	// assert.Equal(t, "UPDATED", addressUpdatedObject.Name, "address name not save properly")
+	assert.Equal(t, errDelete, nil, "address Delete() returns error")
+	assert.NotEmpty(t, addressDeleted, "address Delete() returns nil result")
+	assert.NotEmpty(t, addressDeleted.DeletedAt, "address DeletedAt returns null")
 }
 
 func MakeAddressRepositoryToTest() *AddressRepository {
