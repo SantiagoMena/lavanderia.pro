@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"context"
 	"errors"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -128,4 +129,27 @@ func (addressRepository *AddressRepository) Update(address *types.Address) (*typ
 	bson.Unmarshal(addressFoundMarshal, &addressFoundUnmarshal)
 
 	return &addressFoundUnmarshal, errFind
+}
+
+func (addressRepository *AddressRepository) GetAddresses(address *types.Address) (*[]types.Address, error) {
+	clientId, _ := primitive.ObjectIDFromHex(address.Client)
+
+	filter := bson.D{
+		{Key: "client", Value: clientId},
+		{Key: "deleted_at", Value: nil},
+	}
+
+	objectAddresses, err := addressRepository.database.FindAllFilter(addressCollection, filter)
+
+	if err != nil {
+		return &[]types.Address{}, err
+	}
+
+	var foundAddresses []types.Address
+
+	if err = objectAddresses.All(context.TODO(), &foundAddresses); err != nil {
+		panic(err)
+	}
+
+	return &foundAddresses, nil
 }

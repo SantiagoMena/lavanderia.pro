@@ -8,7 +8,9 @@ import (
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
+	"strings"
 	"testing"
+	"time"
 )
 
 func TestCreateAddress(t *testing.T) {
@@ -97,10 +99,111 @@ func TestUpdateAddress(t *testing.T) {
 	assert.Equal(t, "UPDATED", addressUpdatedObject.Name, "address name not save properly")
 }
 
+func TestGetAddresses(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	authRepository := MakeAuthRepositoryForTestGetAddress()
+	clientRepository := MakeClientRepositoryForTestGetAddress()
+	addressRepository := MakeAddressRepositoryToTest()
+
+	pwd := []byte("PwD")
+
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	auth := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(pwd),
+	}
+
+	authCreated, errCreateAuth := authRepository.Create(auth)
+	assert.Nil(t, errCreateAuth, "Error Auth returns not nil")
+	assert.NotEmpty(t, authCreated, "auth created is empty")
+
+	clientObj := &types.Client{
+		Name: "Client Test",
+		Auth: authCreated.ID,
+	}
+
+	clientRegister, errClient := clientRepository.Create(clientObj)
+	assert.Nil(t, errClient, "Error create client returns not nil")
+	assert.NotEmpty(t, clientRegister, "auth is empty")
+
+	// Get Client Id from auth
+	client, errClient := clientRepository.GetClientByAuth(&types.Client{})
+	assert.Equal(t, errClient, nil, "GetClientByAuth() returns error")
+	assert.NotNil(t, client, "GetClientByAuth() returns nil result")
+
+	// unmarshal client
+	var clientObject types.Client
+	clientUpdatedObj, _ := bson.Marshal(client)
+	bson.Unmarshal(clientUpdatedObj, &clientObject)
+
+	address1, errAdress1 := addressRepository.Create(&types.Address{
+		Client: clientObject.ID,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+		Name:    "TEST_ADDRESS_1",
+		Extra:   "Call me",
+		Phone:   "+123123123",
+		Address: "Av. Pioneros 200, S.C Bariloche, Argentina",
+	})
+
+	assert.Equal(t, errAdress1, nil, "Create Address 1 returns error")
+	assert.NotNil(t, address1, " Address 1 returns nil result")
+	assert.NotEmpty(t, address1.CreatedAt, "address1 CreatedAt is empty")
+
+	address2, errAddress2 := addressRepository.Create(&types.Address{
+		Client: clientObject.ID,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+		Name:    "TEST_ADDRESS_2",
+		Extra:   "Call me",
+		Phone:   "+123123123",
+		Address: "Av. Pioneros 200, S.C Bariloche, Argentina",
+	})
+
+	assert.Equal(t, errAddress2, nil, "Create Address 2 returns error")
+	assert.NotNil(t, address2, " Address 2 returns nil result")
+	assert.NotEmpty(t, address2.CreatedAt, "address2 CreatedAt is empty")
+
+	// Get all addresses len = 2
+	adressesFound, errorFind := addressRepository.GetAddresses(&types.Address{
+		Client: clientObject.ID,
+	})
+
+	assert.Equal(t, errorFind, nil, "GetAddresses() returns error")
+	assert.NotNil(t, adressesFound, "GetAddresses() returns nil result")
+	assert.Equal(t, 2, len(*adressesFound), "GetAddresses() different number of addresses created")
+
+}
+
 func MakeAddressRepositoryToTest() *AddressRepository {
 	config := config.NewConfig()
 	mongo := databases.NewMongoDatabase(config)
 	addressRepository := NewAddressRepository(mongo)
 
 	return addressRepository
+}
+
+func MakeAuthRepositoryForTestGetAddress() *AuthRepository {
+	config := config.NewConfig()
+	database := databases.NewMongoDatabase(config)
+	repositoryAuth := NewAuthRepository(database, config)
+
+	return repositoryAuth
+}
+
+func MakeClientRepositoryForTestGetAddress() *ClientRepository {
+	config := config.NewConfig()
+	mongo := databases.NewMongoDatabase(config)
+	clientRepository := NewClientRepository(mongo)
+
+	return clientRepository
 }
