@@ -1,4 +1,4 @@
-module lavanderia.pro/lavanderia.pro/internal/lavanderia/handlers/product
+module lavanderia.pro/internal/lavanderia/handlers/product
 
 go 1.19
 

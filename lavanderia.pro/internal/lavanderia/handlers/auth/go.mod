@@ -1,4 +1,4 @@
-module lavanderia.pro/lavanderia.pro/internal/lavanderia/handlers/auth
+module lavanderia.pro/internal/lavanderia/handlers/auth
 
 go 1.19
 
