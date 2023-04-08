@@ -12,6 +12,7 @@ use (
 	./internal/lavanderia/handlers/product
 	./internal/lavanderia/handlers/client
 	./internal/lavanderia/handlers/address
+	./internal/lavanderia/handlers/delivery
 	./internal/lavanderia/middlewares
 	./internal/lavanderia/repositories
 	./internal/lavanderia/routers

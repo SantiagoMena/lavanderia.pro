@@ -5,6 +5,7 @@ import (
 	"lavanderia.pro/internal/lavanderia/handlers/auth"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
 	"lavanderia.pro/internal/lavanderia/handlers/client"
+	"lavanderia.pro/internal/lavanderia/handlers/delivery"
 )
 
 type AuthController struct {
@@ -12,6 +13,7 @@ type AuthController struct {
 	LoginHandler            *auth.LoginHandler
 	RefreshTokenHandler     *auth.RefreshTokenHandler
 	RegisterClientHandler   *client.RegisterClientHandler
+	RegisterDeliveryHandler *delivery.RegisterDeliveryHandler
 }
 
 func NewAuthController(
@@ -19,12 +21,14 @@ func NewAuthController(
 	LoginHandler *auth.LoginHandler,
 	RefreshTokenHandler *auth.RefreshTokenHandler,
 	RegisterClientHandler *client.RegisterClientHandler,
+	RegisterDeliveryHandler *delivery.RegisterDeliveryHandler,
 ) *AuthController {
 	return &AuthController{
 		RegisterBusinessHandler: RegisterBusinessHandler,
 		LoginHandler:            LoginHandler,
 		RefreshTokenHandler:     RefreshTokenHandler,
 		RegisterClientHandler:   RegisterClientHandler,
+		RegisterDeliveryHandler: RegisterDeliveryHandler,
 	}
 }
 
@@ -61,7 +65,6 @@ func (controller AuthController) RefreshToken(token string) (*types.JWT, error) 
 }
 
 func (controller AuthController) RegisterClient(auth *types.Auth, client *types.Client) (types.Client, error) {
-	// Handle Create Business
 	clientDb, err := controller.RegisterClientHandler.Handle(auth, client)
 
 	if err != nil {
@@ -69,4 +72,14 @@ func (controller AuthController) RegisterClient(auth *types.Auth, client *types.
 	}
 
 	return clientDb, err
+}
+
+func (controller AuthController) RegisterDelivery(auth *types.Auth, delivery *types.Delivery) (types.Delivery, error) {
+	deliverytDb, err := controller.RegisterDeliveryHandler.Handle(auth, delivery)
+
+	if err != nil {
+		return types.Delivery{}, err
+	}
+
+	return deliverytDb, err
 }

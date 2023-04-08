@@ -13,6 +13,7 @@ import (
 	"lavanderia.pro/internal/lavanderia/handlers/auth"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
 	"lavanderia.pro/internal/lavanderia/handlers/client"
+	"lavanderia.pro/internal/lavanderia/handlers/delivery"
 	"lavanderia.pro/internal/lavanderia/repositories"
 	"strings"
 	"testing"
@@ -103,17 +104,20 @@ func MakeAuthControllerToTestGetAddresses() *controllers.AuthController {
 	database := databases.NewMongoDatabase(config)
 	authRepository := repositories.NewAuthRepository(database, config)
 	clientRepository := repositories.NewClientRepository(database)
+	deliveryRepository := repositories.NewDeliveryRepository(database)
 	businessRepository := repositories.NewBusinessRepository(database)
 	RegisterBusinessHandler := business.NewRegisterBusinessHandler(authRepository, businessRepository)
 	LoginHandler := auth.NewLoginHandler(authRepository, businessRepository)
 	RefreshTokenHandler := auth.NewRefreshTokenHandler(authRepository)
 	RegisterClientHandler := client.NewRegisterClientHandler(authRepository, clientRepository)
+	RegisterDeliveryHandler := delivery.NewRegisterDeliveryHandler(authRepository, deliveryRepository)
 
 	AuthController := controllers.NewAuthController(
 		RegisterBusinessHandler,
 		LoginHandler,
 		RefreshTokenHandler,
 		RegisterClientHandler,
+		RegisterDeliveryHandler,
 	)
 
 	return AuthController

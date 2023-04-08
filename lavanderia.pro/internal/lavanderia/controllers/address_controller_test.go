@@ -14,6 +14,7 @@ import (
 	"lavanderia.pro/internal/lavanderia/handlers/auth"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
 	"lavanderia.pro/internal/lavanderia/handlers/client"
+	"lavanderia.pro/internal/lavanderia/handlers/delivery"
 	"lavanderia.pro/internal/lavanderia/repositories"
 	"strings"
 	"testing"
@@ -177,11 +178,13 @@ func MakeAuthControllerForTestAddress() *AuthController {
 	repositoryAuth := repositories.NewAuthRepository(database, config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
 	repositoryClient := repositories.NewClientRepository(database)
+	repositoryDelivery := repositories.NewDeliveryRepository(database)
 	controller := NewAuthController(
 		business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness),
 		auth.NewLoginHandler(repositoryAuth, repositoryBusiness),
 		auth.NewRefreshTokenHandler(repositoryAuth),
 		client.NewRegisterClientHandler(repositoryAuth, repositoryClient),
+		delivery.NewRegisterDeliveryHandler(repositoryAuth, repositoryDelivery),
 	)
 	return controller
 }

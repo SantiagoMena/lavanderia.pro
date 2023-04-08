@@ -12,8 +12,12 @@ require (
 	lavanderia.pro/internal/lavanderia/config v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/controllers v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/databases v0.0.0-00010101000000-000000000000
+	lavanderia.pro/internal/lavanderia/handlers/address v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/handlers/auth v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/handlers/business v0.0.0-00010101000000-000000000000
+	lavanderia.pro/internal/lavanderia/handlers/client v0.0.0-00010101000000-000000000000
+	lavanderia.pro/internal/lavanderia/handlers/delivery v0.0.0-00010101000000-000000000000
+	lavanderia.pro/internal/lavanderia/handlers/product v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/middlewares v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/repositories v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/routers v0.0.0-00010101000000-000000000000
@@ -53,11 +57,11 @@ require (
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.23.0 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
-	golang.org/x/crypto v0.7.0 // indirect
-	golang.org/x/net v0.8.0 // indirect
+	golang.org/x/crypto v0.8.0 // indirect
+	golang.org/x/net v0.9.0 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.6.0 // indirect
-	golang.org/x/text v0.8.0 // indirect
+	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lavanderia.pro/api/types v0.0.0-00010101000000-000000000000 // indirect
@@ -78,3 +82,11 @@ replace lavanderia.pro/internal/lavanderia/middlewares => ../../internal/lavande
 replace lavanderia.pro/internal/lavanderia/handlers/auth => ../../internal/lavanderia/handlers/auth
 
 replace lavanderia.pro/internal/lavanderia/handlers/business => ../../internal/lavanderia/handlers/business
+
+replace lavanderia.pro/internal/lavanderia/handlers/delivery => ../../internal/lavanderia/handlers/delivery
+
+replace lavanderia.pro/internal/lavanderia/handlers/client => ../../internal/lavanderia/handlers/client
+
+replace lavanderia.pro/internal/lavanderia/handlers/product => ../../internal/lavanderia/handlers/product
+
+replace lavanderia.pro/internal/lavanderia/handlers/address => ../../internal/lavanderia/handlers/address

@@ -13,6 +13,7 @@ import (
 	"lavanderia.pro/internal/lavanderia/handlers/auth"
 	"lavanderia.pro/internal/lavanderia/handlers/business"
 	"lavanderia.pro/internal/lavanderia/handlers/client"
+	"lavanderia.pro/internal/lavanderia/handlers/delivery"
 	"lavanderia.pro/internal/lavanderia/repositories"
 	"strings"
 	"testing"
@@ -136,17 +137,48 @@ func TestRefreshToken(t *testing.T) {
 	assert.NotEmpty(t, RefreshToken.RefreshToken, "RefreshToken RefreshToken is empty")
 }
 
+func TestRegisterDelivery(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	controller := MakeAuthController()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	authRegister := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	deliveryObj := &types.Delivery{
+		Name: "test register",
+	}
+
+	delivery, err := controller.RegisterDelivery(authRegister, deliveryObj)
+
+	assert.Nil(t, err, "Error returns not nil")
+	assert.NotEmpty(t, delivery, "Delivery is empty")
+}
+
 func MakeAuthController() *AuthController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryAuth := repositories.NewAuthRepository(database, config)
 	repositoryBusiness := repositories.NewBusinessRepository(database)
 	repositoryClient := repositories.NewClientRepository(database)
+	repositoryDelivery := repositories.NewDeliveryRepository(database)
 	controller := NewAuthController(
 		business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness),
 		auth.NewLoginHandler(repositoryAuth, repositoryBusiness),
 		auth.NewRefreshTokenHandler(repositoryAuth),
 		client.NewRegisterClientHandler(repositoryAuth, repositoryClient),
+		delivery.NewRegisterDeliveryHandler(repositoryAuth, repositoryDelivery),
 	)
 	return controller
 }

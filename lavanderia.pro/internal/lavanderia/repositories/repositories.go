@@ -8,4 +8,5 @@ var Module = fx.Options(
 	fx.Provide(NewProductRepository),
 	fx.Provide(NewClientRepository),
 	fx.Provide(NewAddressRepository),
+	fx.Provide(NewDeliveryRepository),
 )
