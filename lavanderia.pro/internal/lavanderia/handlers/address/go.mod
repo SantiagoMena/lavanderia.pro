@@ -10,6 +10,8 @@ replace lavanderia.pro/internal/lavanderia/repositories => ../../repositories
 
 replace lavanderia.pro/internal/lavanderia/databases => ../../databases
 
+replace lavanderia.pro/internal/lavanderia/handlers/auth => ../auth
+
 require (
 	go.uber.org/fx v1.19.2
 	lavanderia.pro/api/types v0.0.0-00010101000000-000000000000

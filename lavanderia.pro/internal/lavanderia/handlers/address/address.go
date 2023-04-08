@@ -6,4 +6,5 @@ var Module = fx.Options(
 	fx.Provide(NewCreateAddressHandler),
 	fx.Provide(NewGetAddressHandler),
 	fx.Provide(NewUpdateAddressHandler),
+	fx.Provide(NewGetAddressesHandler),
 )

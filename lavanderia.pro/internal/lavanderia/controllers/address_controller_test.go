@@ -144,6 +144,7 @@ func MakeAddressControllerForTest() *AddressController {
 		address.NewCreateAddressHandler(addressRepository),
 		address.NewGetAddressHandler(addressRepository),
 		address.NewUpdateAddressHandler(addressRepository),
+		address.NewGetAddressesHandler(addressRepository),
 	)
 
 	return controller
