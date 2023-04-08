@@ -108,8 +108,8 @@ func TestGetAddresses(t *testing.T) {
 	clientRepository := MakeClientRepositoryForTestGetAddress()
 	addressRepository := MakeAddressRepositoryToTest()
 
+	// create random user
 	pwd := []byte("PwD")
-
 	ti := time.Now()
 	email := []string{"new@", ti.String(), "test.com"}
 
@@ -127,12 +127,19 @@ func TestGetAddresses(t *testing.T) {
 		Auth: authCreated.ID,
 	}
 
-	clientRegister, errClient := clientRepository.Create(clientObj)
+	clientRegistered, errClient := clientRepository.Create(clientObj)
 	assert.Nil(t, errClient, "Error create client returns not nil")
-	assert.NotEmpty(t, clientRegister, "auth is empty")
+	assert.NotEmpty(t, clientRegistered, "auth is empty")
 
-	// Get Client Id from auth
-	client, errClient := clientRepository.GetClientByAuth(&types.Client{})
+	// Login Random User
+	loginUser, errLogin := authRepository.GetByEmail(auth)
+	assert.Nil(t, errLogin, "Error login client returns not nil")
+	assert.NotEmpty(t, loginUser, "login user is empty")
+
+	// Get Client By Auth
+	client, errClient := clientRepository.GetClientByAuth(&types.Client{
+		Auth: loginUser.ID,
+	})
 	assert.Equal(t, errClient, nil, "GetClientByAuth() returns error")
 	assert.NotNil(t, client, "GetClientByAuth() returns nil result")
 
@@ -181,7 +188,36 @@ func TestGetAddresses(t *testing.T) {
 	assert.Equal(t, errorFind, nil, "GetAddresses() returns error")
 	assert.NotNil(t, adressesFound, "GetAddresses() returns nil result")
 	assert.Equal(t, 2, len(*adressesFound), "GetAddresses() different number of addresses created")
+	fmt.Println(clientObject.ID)
+}
 
+func TestDeleteAddress(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	addressRepository := MakeAddressRepositoryToTest()
+
+	address, err := addressRepository.Create(&types.Address{
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+		Name:    "TEST_ADDRESS",
+		Extra:   "Call me",
+		Phone:   "+123123123",
+		Address: "Av. Pioneros 200, S.C Bariloche, Argentina",
+	})
+
+	assert.Equal(t, err, nil, "Create() returns error")
+	assert.NotNil(t, address, "Create() returns nil result")
+	assert.NotEmpty(t, address.CreatedAt, "CreatedAt is empty")
+
+	addressDeleted, errDelete := addressRepository.Delete(&address)
+
+	assert.Equal(t, errDelete, nil, "address Delete() returns error")
+	assert.NotEmpty(t, addressDeleted, "address Delete() returns nil result")
+	assert.NotEmpty(t, addressDeleted.DeletedAt, "address DeletedAt returns null")
 }
 
 func MakeAddressRepositoryToTest() *AddressRepository {

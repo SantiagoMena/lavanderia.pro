@@ -148,3 +148,50 @@ func NewGetAddressesRouter(r *gin.Engine, controller *controllers.AddressControl
 		c.IndentedJSON(http.StatusOK, addresses)
 	})
 }
+
+func NewDeleteAddressRouter(r *gin.Engine, controller *controllers.AddressController, clientRepository *repositories.ClientRepository) {
+	r.DELETE("/address/:id", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+		var addressId types.Address
+
+		if err := c.ShouldBindUri(&addressId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
+			return
+		}
+
+		client, errClient := clientRepository.GetClientByAuth(&types.Client{
+			Auth: authId.(string),
+		})
+
+		if errClient != nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": errClient})
+			return
+		}
+
+		// find address to check auth
+		address, errFind := controller.GetAddress(&types.Address{
+			ID: addressId.ID,
+		})
+
+		if errFind != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "address not exists"})
+			return
+		}
+
+		// Check auth client its the same address client
+		if address.Client != client.ID {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		addressDeleted, errDeleteAddress := controller.DeleteAddress(&types.Address{
+			ID: addressId.ID,
+		})
+
+		if errDeleteAddress != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errDeleteAddress.Error()})
+		} else {
+			c.IndentedJSON(http.StatusOK, addressDeleted)
+		}
+	})
+}
