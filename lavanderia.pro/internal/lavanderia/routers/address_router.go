@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -72,11 +71,6 @@ func NewGetAddressRouter(r *gin.Engine, controller *controllers.AddressControlle
 			return
 		}
 
-		fmt.Println("address.Client")
-		fmt.Println(address)
-		fmt.Println("client.ID")
-		fmt.Println(client.ID)
-
 		if address.Client != client.ID {
 			c.IndentedJSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
@@ -126,5 +120,31 @@ func NewUpdateAddressRouter(r *gin.Engine, controller *controllers.AddressContro
 		} else {
 			c.IndentedJSON(http.StatusOK, address)
 		}
+	})
+}
+
+func NewGetAddressesRouter(r *gin.Engine, controller *controllers.AddressController, clientRepository *repositories.ClientRepository) {
+	r.GET("/addresses", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		client, errClient := clientRepository.GetClientByAuth(&types.Client{
+			Auth: authId.(string),
+		})
+
+		if errClient != nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": errClient.Error()})
+			return
+		}
+
+		addresses, errAddress := controller.GetAddresses(&types.Address{
+			Client: client.ID,
+		})
+
+		if errAddress != nil {
+			c.IndentedJSON(http.StatusNotFound, gin.H{"msg": errAddress.Error()})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, addresses)
 	})
 }

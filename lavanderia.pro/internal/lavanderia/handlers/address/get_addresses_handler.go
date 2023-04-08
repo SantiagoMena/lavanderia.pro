@@ -6,10 +6,16 @@ import (
 )
 
 type GetAddressesHandler struct {
-	repository repositories.AddressRepository
+	repository *repositories.AddressRepository
 }
 
-func (ch *GetAddressesHandler) NewGetAddressesHandler(address *types.Address) (*[]types.Address, error) {
+func NewGetAddressesHandler(addressRepository *repositories.AddressRepository) *GetAddressesHandler {
+	return &GetAddressesHandler{
+		repository: addressRepository,
+	}
+}
+
+func (ch *GetAddressesHandler) Handle(address *types.Address) (*[]types.Address, error) {
 	addressesFound, errFind := ch.repository.GetAddresses(address)
 
 	return addressesFound, errFind
