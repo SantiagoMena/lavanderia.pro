@@ -10,6 +10,7 @@ type AddressController struct {
 	GetAddressHandler    *address.GetAddressHandler
 	UpdateAddressHandler *address.UpdateAddressHandler
 	GetAddressesHandler  *address.GetAddressesHandler
+	DeleteAddressHandler *address.DeleteAddressHandler
 }
 
 func NewAddressController(
@@ -17,12 +18,14 @@ func NewAddressController(
 	GetAddressHandler *address.GetAddressHandler,
 	UpdateAddressHandler *address.UpdateAddressHandler,
 	GetAddressesHandler *address.GetAddressesHandler,
+	DeleteAddressHandler *address.DeleteAddressHandler,
 ) *AddressController {
 	return &AddressController{
 		CreateAddressHandler: CreateAddressHandler,
 		GetAddressHandler:    GetAddressHandler,
 		UpdateAddressHandler: UpdateAddressHandler,
 		GetAddressesHandler:  GetAddressesHandler,
+		DeleteAddressHandler: DeleteAddressHandler,
 	}
 }
 
@@ -48,4 +51,10 @@ func (controller *AddressController) GetAddresses(address *types.Address) (*[]ty
 	addressesFound, err := controller.GetAddressesHandler.Handle(address)
 
 	return addressesFound, err
+}
+
+func (controller *AddressController) DeleteAddress(address *types.Address) (*types.Address, error) {
+	addressesDeleted, err := controller.DeleteAddressHandler.Handle(address)
+
+	return addressesDeleted, err
 }
