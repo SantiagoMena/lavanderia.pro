@@ -3,21 +3,17 @@ package address
 import (
 	"fmt"
 
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
-	"lavanderia.pro/internal/lavanderia/controllers"
 	"lavanderia.pro/internal/lavanderia/databases"
-	"lavanderia.pro/internal/lavanderia/handlers/auth"
-	"lavanderia.pro/internal/lavanderia/handlers/business"
-	"lavanderia.pro/internal/lavanderia/handlers/client"
-	"lavanderia.pro/internal/lavanderia/handlers/delivery"
 	"lavanderia.pro/internal/lavanderia/repositories"
-	"strings"
-	"testing"
-	"time"
 )
 
 func TestGetAddresses(t *testing.T) {
@@ -26,7 +22,8 @@ func TestGetAddresses(t *testing.T) {
 	}
 
 	// Register Client
-	authController := MakeAuthControllerToTestGetAddresses()
+	// authController := MakeAuthControllerToTestGetAddresses()
+	authRepository := MakeAuthRepositoryForTestGetAddresses()
 
 	pwd := []byte("PwD")
 
@@ -38,15 +35,19 @@ func TestGetAddresses(t *testing.T) {
 		Password: string(pwd),
 	}
 
+	authCreated, errAuth := authRepository.Create(auth)
+	assert.Nil(t, errAuth, "error on auth create")
+	assert.NotNil(t, authCreated, "auth create() return nil")
+
 	clientObj := &types.Client{
 		Name: "Client Test",
+		Auth: authCreated.ID,
 	}
+	clientRepository := MakeClientRepositoryForTestGetAddresses()
 
-	client, errClient := authController.RegisterClient(auth, clientObj)
+	client, errClient := clientRepository.Create(clientObj)
 	assert.Nil(t, errClient, "error on register client")
 	assert.NotNil(t, client, "register client return nil")
-
-	clientRepository := MakeClientRepositoryForTestGetAddresses()
 
 	// Get Client Id from auth
 	clientAuth, errClientAuth := clientRepository.GetClientByAuth(&client)
@@ -99,29 +100,29 @@ func TestGetAddresses(t *testing.T) {
 
 }
 
-func MakeAuthControllerToTestGetAddresses() *controllers.AuthController {
-	config := config.NewConfig()
-	database := databases.NewMongoDatabase(config)
-	authRepository := repositories.NewAuthRepository(database, config)
-	clientRepository := repositories.NewClientRepository(database)
-	deliveryRepository := repositories.NewDeliveryRepository(database)
-	businessRepository := repositories.NewBusinessRepository(database)
-	RegisterBusinessHandler := business.NewRegisterBusinessHandler(authRepository, businessRepository)
-	LoginHandler := auth.NewLoginHandler(authRepository, businessRepository)
-	RefreshTokenHandler := auth.NewRefreshTokenHandler(authRepository)
-	RegisterClientHandler := client.NewRegisterClientHandler(authRepository, clientRepository)
-	RegisterDeliveryHandler := delivery.NewRegisterDeliveryHandler(authRepository, deliveryRepository)
+// func MakeAuthControllerToTestGetAddresses() *controllers.AuthController {
+// 	config := config.NewConfig()
+// 	database := databases.NewMongoDatabase(config)
+// 	authRepository := repositories.NewAuthRepository(database, config)
+// 	clientRepository := repositories.NewClientRepository(database)
+// 	deliveryRepository := repositories.NewDeliveryRepository(database)
+// 	businessRepository := repositories.NewBusinessRepository(database)
+// 	RegisterBusinessHandler := business.NewRegisterBusinessHandler(authRepository, businessRepository)
+// 	LoginHandler := auth.NewLoginHandler(authRepository, businessRepository)
+// 	RefreshTokenHandler := auth.NewRefreshTokenHandler(authRepository)
+// 	RegisterClientHandler := client.NewRegisterClientHandler(authRepository, clientRepository)
+// 	RegisterDeliveryHandler := delivery.NewRegisterDeliveryHandler(authRepository, deliveryRepository)
 
-	AuthController := controllers.NewAuthController(
-		RegisterBusinessHandler,
-		LoginHandler,
-		RefreshTokenHandler,
-		RegisterClientHandler,
-		RegisterDeliveryHandler,
-	)
+// 	AuthController := controllers.NewAuthController(
+// 		RegisterBusinessHandler,
+// 		LoginHandler,
+// 		RefreshTokenHandler,
+// 		RegisterClientHandler,
+// 		RegisterDeliveryHandler,
+// 	)
 
-	return AuthController
-}
+// 	return AuthController
+// }
 
 func MakeAddressRepositoryToTestGetAddresses() *repositories.AddressRepository {
 	config := config.NewConfig()
@@ -137,4 +138,12 @@ func MakeClientRepositoryForTestGetAddresses() *repositories.ClientRepository {
 	clientRepository := repositories.NewClientRepository(mongo)
 
 	return clientRepository
+}
+
+func MakeAuthRepositoryForTestGetAddresses() *repositories.AuthRepository {
+	config := config.NewConfig()
+	mongo := databases.NewMongoDatabase(config)
+	authRepository := repositories.NewAuthRepository(mongo, config)
+
+	return authRepository
 }

@@ -6,14 +6,15 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 
+	"strings"
+	"testing"
+	"time"
+
 	"golang.org/x/crypto/bcrypt"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
 	"lavanderia.pro/internal/lavanderia/repositories"
-	"strings"
-	"testing"
-	"time"
 )
 
 func TestGetClient(t *testing.T) {

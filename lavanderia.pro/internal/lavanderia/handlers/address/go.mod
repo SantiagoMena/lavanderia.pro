@@ -8,15 +8,11 @@ replace lavanderia.pro/internal/lavanderia/config => ../../config
 
 replace lavanderia.pro/internal/lavanderia/repositories => ../../repositories
 
-replace lavanderia.pro/internal/lavanderia/controllers => ../../controllers
-
 replace lavanderia.pro/internal/lavanderia/databases => ../../databases
 
 replace lavanderia.pro/internal/lavanderia/handlers/auth => ../auth
 
 replace lavanderia.pro/internal/lavanderia/handlers/client => ../client
-
-replace lavanderia.pro/internal/lavanderia/handlers/address => ../address
 
 replace lavanderia.pro/internal/lavanderia/handlers/product => ../product
 
@@ -27,7 +23,7 @@ replace lavanderia.pro/internal/lavanderia/handlers/business => ../business
 require (
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.8.2
-	go.mongodb.org/mongo-driver v1.11.3
+	go.mongodb.org/mongo-driver v1.11.4
 	go.uber.org/fx v1.19.2
 	lavanderia.pro/api/types v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/config v0.0.0-00010101000000-000000000000
@@ -61,6 +57,5 @@ require (
 	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	lavanderia.pro/internal/lavanderia/handlers/address v0.0.0-00010101000000-000000000000 // indirect
 	lavanderia.pro/internal/lavanderia/handlers/product v0.0.0-00010101000000-000000000000 // indirect
 )
