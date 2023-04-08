@@ -68,7 +68,7 @@ func (authRepository *AuthRepository) GetById(id string) (types.Auth, error) {
 	if errOBjIdFromHex != nil {
 		return emptyAuth, errOBjIdFromHex
 	}
-	filter := bson.D{{"_id", ObjectID}}
+	filter := bson.D{{Key: "_id", Value: ObjectID}}
 
 	object, err := authRepository.database.FindOne(authCollection, filter)
 	if err != nil {
@@ -92,7 +92,7 @@ func (authRepository *AuthRepository) GetById(id string) (types.Auth, error) {
 }
 
 func (authRepository *AuthRepository) GetByEmail(auth *types.Auth) (types.Auth, error) {
-	filter := bson.D{{"email", auth.Email}}
+	filter := bson.D{{Key: "email", Value: auth.Email}}
 	var emptyAuth types.Auth
 
 	object, err := authRepository.database.FindOne(authCollection, filter)
@@ -177,7 +177,7 @@ func (authRepository *AuthRepository) RefreshJWT(refreshToken string) (*types.JW
 	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
@@ -190,7 +190,7 @@ func (authRepository *AuthRepository) RefreshJWT(refreshToken string) (*types.JW
 			return &types.JWT{}, errors.New("token type error")
 		}
 
-		auth, _ := claims["auth"]
+		auth := claims["auth"]
 		authMap, _ := auth.(map[string]interface{})
 
 		authObj, errGetAuth := authRepository.GetById(authMap["id"].(string))
@@ -211,7 +211,7 @@ func (authRepository *AuthRepository) GetAuthByToken(authToken string) (*types.A
 	token, err := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return &types.Auth{}, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return &types.Auth{}, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
@@ -224,7 +224,7 @@ func (authRepository *AuthRepository) GetAuthByToken(authToken string) (*types.A
 			return &types.Auth{}, errors.New("token type error")
 		}
 
-		auth, _ := claims["auth"]
+		auth := claims["auth"]
 		authMap, _ := auth.(map[string]interface{})
 
 		authObj, errGetAuth := authRepository.GetById(authMap["id"].(string))

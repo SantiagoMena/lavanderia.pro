@@ -100,8 +100,8 @@ func (productRepository *ProductRepository) Delete(product *types.Product) (type
 
 	id, _ := primitive.ObjectIDFromHex(product.ID)
 
-	filter := bson.D{{"_id", id}}
-	update := bson.D{{"$set", bson.D{{"deleted_at", product.DeletedAt}}}}
+	filter := bson.D{{Key: "_id", Value: id}}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "deleted_at", Value: product.DeletedAt}}}}
 
 	objectUpdated, err := productRepository.database.UpdateOne(productCollection, filter, update)
 	if err != nil {
@@ -145,11 +145,11 @@ func (productRepository *ProductRepository) Update(product *types.Product) (type
 
 	id, _ := primitive.ObjectIDFromHex(product.ID)
 
-	filter := bson.D{{"_id", id}}
-	update := bson.D{{"$set", bson.D{
-		{"name", product.Name},
-		{"price", product.Price},
-		{"updated_at", product.UpdatedAt},
+	filter := bson.D{{Key: "_id", Value: id}}
+	update := bson.D{{Key: "$set", Value: bson.D{
+		{Key: "name", Value: product.Name},
+		{Key: "price", Value: product.Price},
+		{Key: "updated_at", Value: product.UpdatedAt},
 	}}}
 
 	updatedProduct, err := productRepository.database.UpdateOne(productCollection, filter, update)
@@ -165,7 +165,7 @@ func (productRepository *ProductRepository) Update(product *types.Product) (type
 	productId, _ := primitive.ObjectIDFromHex(updatedProductUnmarshal.ID)
 
 	productUpdatedFound, errFind := productRepository.database.FindOne(productCollection, bson.D{
-		{"_id", productId},
+		{Key: "_id", Value: productId},
 	})
 
 	if errFind != nil {

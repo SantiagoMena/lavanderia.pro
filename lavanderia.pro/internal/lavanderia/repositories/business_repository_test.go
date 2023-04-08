@@ -3,12 +3,13 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
-	"testing"
 )
 
 func TestFindAllBusiness(t *testing.T) {
@@ -20,16 +21,14 @@ func TestFindAllBusiness(t *testing.T) {
 
 	mongo := databases.NewMongoDatabase(config)
 
-	business, err := NewBusinessRepository(mongo).FindAllBusiness()
+	business, errFindBusiness := NewBusinessRepository(mongo).FindAllBusiness()
+	assert.Nil(t, errFindBusiness, "Error on FindAllBusiness()")
 
 	businessExpect := []types.Business{}
 
 	mongo2 := databases.NewMongoDatabase(config)
-	businessDb, err := mongo2.FindAll("business")
-
-	if err != nil {
-		fmt.Println(err)
-	}
+	businessDb, errFindAll := mongo2.FindAll("business")
+	assert.Nil(t, errFindAll, "FindAllBusiness() returns error")
 
 	for businessDb.Next(context.TODO()) {
 		var business types.Business
@@ -41,7 +40,6 @@ func TestFindAllBusiness(t *testing.T) {
 		businessExpect = append(businessExpect, business)
 	}
 
-	assert.Equal(t, err, nil, "FindAllBusiness() returns error")
 	assert.NotNil(t, business, businessExpect, "FindAllBusiness() returns nil result")
 }
 
