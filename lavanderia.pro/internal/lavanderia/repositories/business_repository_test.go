@@ -56,8 +56,10 @@ func TestCreateBusiness(t *testing.T) {
 
 	business, err := NewBusinessRepository(mongo).Create(&types.Business{
 		Name: "test",
-		Lat:  0.123,
-		Long: 0.123,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	})
 
 	assert.Equal(t, err, nil, "Create() returns error")
@@ -76,8 +78,10 @@ func TestDeleteBusiness(t *testing.T) {
 
 	business, err := NewBusinessRepository(mongo).Create(&types.Business{
 		Name: "test",
-		Lat:  0.321,
-		Long: 0.321,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	})
 
 	assert.Equal(t, err, nil, "Create() returns error")
@@ -106,8 +110,10 @@ func TestGetBusiness(t *testing.T) {
 
 	business, err := NewBusinessRepository(mongo).Create(&types.Business{
 		Name: "test",
-		Lat:  0.321,
-		Long: 0.321,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	})
 
 	assert.Equal(t, err, nil, "Create() returns error")

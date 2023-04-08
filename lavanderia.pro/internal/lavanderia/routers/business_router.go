@@ -115,27 +115,11 @@ func NewUpdateBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 			return
 		}
 
-		Name := businessFound.Name
-		if len(business.Name) > 0 {
-			Name = business.Name
-		}
-
-		Lat := businessFound.Lat
-		if len(business.Name) > 0 {
-			Lat = business.Lat
-		}
-
-		Long := businessFound.Long
-		if len(business.Name) > 0 {
-			Long = business.Long
-		}
-
 		// Handle Controller
 		updatedBusiness, err := controller.UpdateBusiness(&types.Business{
-			ID:   businessFound.ID,
-			Name: Name,
-			Lat:  Lat,
-			Long: Long,
+			ID:       businessFound.ID,
+			Name:     business.Name,
+			Position: business.Position,
 		})
 
 		if err != nil {

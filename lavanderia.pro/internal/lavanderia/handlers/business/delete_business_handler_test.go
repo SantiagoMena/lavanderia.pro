@@ -23,8 +23,10 @@ func TestDeleteHandle(t *testing.T) {
 
 	business, err := createHandler.Handle(&types.Business{
 		Name: "test to delete",
-		Lat:  0.123,
-		Long: 0.123,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	})
 
 	businessDeleted, errDel := deleteHandler.Handle(&types.Business{

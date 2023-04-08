@@ -40,8 +40,10 @@ func TestRegisterBusiness(t *testing.T) {
 
 	businessObj := &types.Business{
 		Name: "test register",
-		Lat:  0.321,
-		Long: 0.321,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	}
 
 	business, err := controller.RegisterBusiness(authRegister, businessObj)
@@ -71,8 +73,10 @@ func TestLogin(t *testing.T) {
 
 	businessObj := &types.Business{
 		Name: "test register",
-		Lat:  0.321,
-		Long: 0.321,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	}
 
 	business, err := controller.RegisterBusiness(authLogin, businessObj)
@@ -107,8 +111,10 @@ func TestRefreshToken(t *testing.T) {
 
 	businessObj := &types.Business{
 		Name: "test register",
-		Lat:  0.321,
-		Long: 0.321,
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
 	}
 
 	business, err := controller.RegisterBusiness(authLogin, businessObj)

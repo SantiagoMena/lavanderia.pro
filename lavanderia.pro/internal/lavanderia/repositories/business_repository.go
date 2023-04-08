@@ -51,8 +51,7 @@ func (businessRepository *BusinessRepository) Create(business *types.Business) (
 
 	businessDb, err := businessRepository.database.Create("business", bson.D{
 		{Key: "name", Value: business.Name},
-		{Key: "lat", Value: business.Lat},
-		{Key: "long", Value: business.Long},
+		{Key: "position", Value: business.Position},
 		{Key: "created_at", Value: business.CreatedAt},
 		{Key: "auth", Value: authId},
 	})
@@ -66,8 +65,7 @@ func (businessRepository *BusinessRepository) Create(business *types.Business) (
 	newBusiness := types.Business{
 		ID:        insertedId,
 		Name:      business.Name,
-		Lat:       business.Lat,
-		Long:      business.Long,
+		Position:  business.Position,
 		CreatedAt: business.CreatedAt,
 	}
 
@@ -109,7 +107,10 @@ func (businessRepository *BusinessRepository) Update(business *types.Business) (
 
 	filter := bson.D{{"_id", id}}
 	update := bson.D{
-		{"$set", bson.D{{"name", business.Name}, {"lat", business.Lat}, {"long", business.Long}}}}
+		{"$set", bson.D{
+			{"name", business.Name},
+			{"position", business.Position},
+		}}}
 
 	objectUpdated, err := businessRepository.database.UpdateOne(businessCollection, filter, update)
 	if err != nil {
@@ -124,8 +125,7 @@ func (businessRepository *BusinessRepository) Update(business *types.Business) (
 	return types.Business{
 		ID:        business.ID,
 		Name:      business.Name,
-		Lat:       business.Lat,
-		Long:      business.Long,
+		Position:  business.Position,
 		CreatedAt: updatedBusiness.CreatedAt,
 		UpdatedAt: business.UpdatedAt,
 	}, nil
