@@ -47,3 +47,26 @@ func (deliveryRepository *DeliveryRepository) Create(delivery *types.Delivery) (
 
 	return newDelivery, nil
 }
+
+func (deliveryRepository *DeliveryRepository) GetDeliveryByAuth(delivery *types.Delivery) (types.Delivery, error) {
+	authId, _ := primitive.ObjectIDFromHex(delivery.Auth)
+
+	deliveryFound, errFind := deliveryRepository.database.FindOne(deliveryCollection, bson.D{
+		{Key: "auth", Value: authId},
+		{Key: "deleted_at", Value: nil},
+	})
+
+	if errFind != nil {
+		return types.Delivery{}, errFind
+	}
+
+	var deliveryUnmarshal types.Delivery
+	marshalObject, errMarshal := bson.Marshal(deliveryFound)
+	bson.Unmarshal(marshalObject, &deliveryUnmarshal)
+
+	if errMarshal != nil {
+		return types.Delivery{}, errFind
+	}
+
+	return deliveryUnmarshal, nil
+}
