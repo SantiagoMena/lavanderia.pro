@@ -2,12 +2,10 @@ package repositories
 
 import (
 	"context"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
-
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/databases"
 )
@@ -78,8 +76,8 @@ func (businessRepository *BusinessRepository) Delete(business *types.Business) (
 
 	id, _ := primitive.ObjectIDFromHex(business.ID)
 
-	filter := bson.D{{"_id", id}}
-	update := bson.D{{"$set", bson.D{{"deleted_at", business.DeletedAt}}}}
+	filter := bson.D{{Key: "_id", Value: id}}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "deleted_at", Value: business.DeletedAt}}}}
 
 	objectUpdated, err := businessRepository.database.UpdateOne(businessCollection, filter, update)
 	if err != nil {
@@ -105,12 +103,14 @@ func (businessRepository *BusinessRepository) Update(business *types.Business) (
 
 	id, _ := primitive.ObjectIDFromHex(business.ID)
 
-	filter := bson.D{{"_id", id}}
+	filter := bson.D{{Key: "_id", Value: id}}
 	update := bson.D{
-		{"$set", bson.D{
-			{"name", business.Name},
-			{"position", business.Position},
-		}}}
+		{
+			Key: "$set",
+			Value: bson.D{
+				{Key: "name", Value: business.Name},
+				{Key: "position", Value: business.Position},
+			}}}
 
 	objectUpdated, err := businessRepository.database.UpdateOne(businessCollection, filter, update)
 	if err != nil {

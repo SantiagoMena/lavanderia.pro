@@ -13,6 +13,7 @@ replace lavanderia.pro/api/types => ../../../../api/types
 require (
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.8.2
+	go.uber.org/fx v1.19.2
 	golang.org/x/crypto v0.8.0
 	lavanderia.pro/api/types v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/config v0.0.0-00010101000000-000000000000
@@ -35,7 +36,6 @@ require (
 	go.mongodb.org/mongo-driver v1.11.3 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/dig v1.16.1 // indirect
-	go.uber.org/fx v1.19.2 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.23.0 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect

@@ -78,10 +78,10 @@ func (clientRepository *ClientRepository) Update(client *types.Client) (types.Cl
 
 	id, _ := primitive.ObjectIDFromHex(client.ID)
 
-	filter := bson.D{{"_id", id}}
+	filter := bson.D{{Key: "_id", Value: id}}
 	update := bson.D{
-		{"$set", bson.D{
-			{"name", client.Name},
+		{Key: "$set", Value: bson.D{
+			{Key: "name", Value: client.Name},
 		}},
 	}
 

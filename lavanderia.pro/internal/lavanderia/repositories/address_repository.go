@@ -102,15 +102,16 @@ func (addressRepository *AddressRepository) Update(address *types.Address) (*typ
 		return &types.Address{}, errors.New("object not found")
 	}
 
-	update := bson.D{{"$set", bson.D{
-		{Key: "client", Value: address.Client},
-		{Key: "name", Value: address.Name},
-		{Key: "position", Value: address.Position},
-		{Key: "address", Value: address.Address},
-		{Key: "phone", Value: address.Phone},
-		{Key: "extra", Value: address.Extra},
-		{Key: "updated_at", Value: address.UpdatedAt},
-	}}}
+	update := bson.D{
+		{Key: "$set", Value: bson.D{
+			{Key: "client", Value: address.Client},
+			{Key: "name", Value: address.Name},
+			{Key: "position", Value: address.Position},
+			{Key: "address", Value: address.Address},
+			{Key: "phone", Value: address.Phone},
+			{Key: "extra", Value: address.Extra},
+			{Key: "updated_at", Value: address.UpdatedAt},
+		}}}
 
 	addressUpdatedMongo, errUpdate := addressRepository.database.UpdateOne(addressCollection, filter, update)
 
@@ -160,8 +161,8 @@ func (addressRepository *AddressRepository) Delete(address *types.Address) (*typ
 
 	id, _ := primitive.ObjectIDFromHex(address.ID)
 
-	filter := bson.D{{"_id", id}}
-	update := bson.D{{"$set", bson.D{{"deleted_at", address.DeletedAt}}}}
+	filter := bson.D{{Key: "_id", Value: id}}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "deleted_at", Value: address.DeletedAt}}}}
 
 	objectUpdated, err := addressRepository.database.UpdateOne(addressCollection, filter, update)
 	if err != nil {
