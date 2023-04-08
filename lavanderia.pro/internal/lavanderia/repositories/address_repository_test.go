@@ -215,10 +215,6 @@ func TestDeleteAddress(t *testing.T) {
 
 	addressDeleted, errDelete := addressRepository.Delete(&address)
 
-	// var addressUpdatedObject types.Address
-	// addressUpdatedObj, _ := bson.Marshal(addressUpdated)
-	// bson.Unmarshal(addressUpdatedObj, &addressUpdatedObject)
-
 	assert.Equal(t, errDelete, nil, "address Delete() returns error")
 	assert.NotEmpty(t, addressDeleted, "address Delete() returns nil result")
 	assert.NotEmpty(t, addressDeleted.DeletedAt, "address DeletedAt returns null")
