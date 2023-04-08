@@ -65,3 +65,21 @@ func NewPostDeliveryRouter(r *gin.Engine, controller *controllers.DeliveryContro
 
 	})
 }
+
+func NewGetDeliveryRouter(r *gin.Engine, controller *controllers.DeliveryController) {
+	r.GET("/delivery/profile", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		// Handle Controller
+		delivery, errRegister := controller.GetDeliveryByAuth(&types.Delivery{
+			Auth: authId.(string),
+		})
+
+		if errRegister != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
+		} else {
+			c.IndentedJSON(http.StatusCreated, delivery)
+		}
+
+	})
+}
