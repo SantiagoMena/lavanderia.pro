@@ -10,4 +10,5 @@ test:
 			./internal/lavanderia/handlers/auth \
 			./internal/lavanderia/handlers/product \
 			./internal/lavanderia/handlers/client \
-			./internal/lavanderia/handlers/address
+			./internal/lavanderia/handlers/address \
+			./internal/lavanderia/handlers/delivery
