@@ -80,6 +80,7 @@ func MakeDeliveryControllerForTestDelivery() *DeliveryController {
 
 	controller := NewDeliveryController(
 		delivery.NewPostDeliveryHandler(repositoryDelivery),
+		delivery.NewGetDeliveryHandler(repositoryDelivery),
 	)
 
 	return controller
