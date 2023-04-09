@@ -15,7 +15,7 @@ func NewPostOrderRouter(
 	orderController *controllers.OrderController,
 	businessController *controllers.BusinessController,
 ) {
-	r.POST("/business/:id/order", func(c *gin.Context) {
+	r.POST("/business-order/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
 
 		if authId == nil {
@@ -44,34 +44,18 @@ func NewPostOrderRouter(
 
 		// Call BindJSON to bind the received JSON to
 		// client.
-		var client types.Client
-		if errClientJson := c.ShouldBindBodyWith(&client, binding.JSON); errClientJson != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": errClientJson})
-			return
-		}
-
-		// Call BindJSON to bind the received JSON to
-		// address.
-		var address types.Address
-		if errAddressJson := c.ShouldBindBodyWith(&address, binding.JSON); errAddressJson != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": errAddressJson})
-			return
-		}
-
-		// Call BindJSON to bind the received JSON to
-		// productList.
-		var productList []types.OrderProduct
-		if errProductJson := c.ShouldBindBodyWith(&productList, binding.JSON); errProductJson != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": errProductJson})
+		var orderObject types.Order
+		if errOrderJson := c.ShouldBindBodyWith(&orderObject, binding.JSON); errOrderJson != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errOrderJson.Error() + "1"})
 			return
 		}
 
 		// Handle Controller
 		order, err := orderController.PostOrder(&types.Order{
-			Client:   client,
+			Client:   orderObject.Client,
 			Business: businessFound,
-			Address:  address,
-			Products: productList,
+			Address:  orderObject.Address,
+			Products: orderObject.Products,
 		})
 
 		if err != nil {

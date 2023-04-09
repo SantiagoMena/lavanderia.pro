@@ -46,6 +46,7 @@ func (orderRepository *OrderRepository) Create(order *types.Order) (types.Order,
 
 	orderDb, err := orderRepository.database.Create("order", bson.D{
 		{Key: "business", Value: order.Business},
+		{Key: "products", Value: order.Products},
 		{Key: "client", Value: order.Client},
 		{Key: "address", Value: order.Address},
 		{Key: "created_at", Value: order.CreatedAt},
@@ -63,6 +64,7 @@ func (orderRepository *OrderRepository) Create(order *types.Order) (types.Order,
 		Business:  order.Business,
 		Client:    order.Client,
 		Address:   order.Address,
+		Products:  order.Products,
 		CreatedAt: order.CreatedAt,
 	}
 
