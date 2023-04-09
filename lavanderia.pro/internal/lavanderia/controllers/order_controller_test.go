@@ -220,6 +220,57 @@ func TestAcceptOrder(t *testing.T) {
 	assert.NotEmpty(t, orderAccepted, "accept order error")
 	assert.NotEmpty(t, orderAccepted.AcceptedAt, "AcceptedAt order error")
 }
+func TestRejectOrder(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	orderController := MakeOrderControllerForTest()
+	authController := MakeAuthForOrderController()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	authObject := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	businessObject := &types.Business{
+		Name: "Test",
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+	}
+
+	business, errBusiness := authController.RegisterBusiness(authObject, businessObject)
+
+	assert.Equal(t, nil, errBusiness, "register business error")
+	assert.NotEmpty(t, business, "register business error")
+
+	order, errOrder := orderController.PostOrder(&types.Order{
+		Business: business,
+		Address:  types.Address{Name: "test"},
+		Client:   types.Client{Name: "Client test"},
+	})
+
+	assert.Equal(t, nil, errOrder, "create order error")
+	assert.NotEmpty(t, order, "create order error")
+	assert.NotEmpty(t, order.CreatedAt, "CreatedAt order error")
+
+	orderRejected, errReject := orderController.RejectOrder(&types.Order{
+		ID: order.ID,
+	})
+
+	assert.Equal(t, nil, errReject, "reject order error")
+	assert.NotEmpty(t, orderRejected, "reject order error")
+	assert.NotEmpty(t, orderRejected.RejectedAt, "RejectedAt order error")
+}
 
 func MakeOrderControllerForTest() *OrderController {
 	config := config.NewConfig()
@@ -231,6 +282,7 @@ func MakeOrderControllerForTest() *OrderController {
 		order.NewGetOrderHandler(repositoryOrder),
 		order.NewDeleteOrderHandler(repositoryOrder),
 		order.NewAcceptOrderHandler(repositoryOrder),
+		order.NewRejectOrderHandler(repositoryOrder),
 	)
 
 	return OrderController

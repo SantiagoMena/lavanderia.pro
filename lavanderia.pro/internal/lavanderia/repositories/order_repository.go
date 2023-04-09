@@ -176,7 +176,13 @@ func (orderRepository *OrderRepository) Accept(order *types.Order) (types.Order,
 		{Key: "delivered_client_at", Value: nil},
 		{Key: "deleted_at", Value: nil},
 	}
-	update := bson.D{{Key: "$set", Value: bson.D{{Key: "accepted_at", Value: order.AcceptedAt}}}}
+
+	update := bson.D{{Key: "$set", Value: bson.D{
+		{Key: "_id", Value: id},
+		{Key: "accepted_at", Value: order.AcceptedAt},
+	}}}
+
+	// db.collection("messages").updateOne({uuid:this.uuid, "key.id":new_message.key.id}}, {$set: {uuid: this.uuid, ...new_message}}, {upsert:true})
 
 	objectUpdated, err := orderRepository.database.UpdateOne(orderCollection, filter, update)
 	if err != nil {
@@ -194,7 +200,7 @@ func (orderRepository *OrderRepository) Accept(order *types.Order) (types.Order,
 
 func (orderRepository *OrderRepository) Reject(order *types.Order) (types.Order, error) {
 	t := time.Now()
-	order.AcceptedAt = &t
+	order.RejectedAt = &t
 
 	id, _ := primitive.ObjectIDFromHex(order.ID)
 
@@ -211,18 +217,18 @@ func (orderRepository *OrderRepository) Reject(order *types.Order) (types.Order,
 		{Key: "delivered_client_at", Value: nil},
 		{Key: "deleted_at", Value: nil},
 	}
-	update := bson.D{{Key: "$set", Value: bson.D{{Key: "accepted_at", Value: order.AcceptedAt}}}}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "rejected_at", Value: order.RejectedAt}}}}
 
 	objectUpdated, err := orderRepository.database.UpdateOne(orderCollection, filter, update)
 	if err != nil {
 		return types.Order{}, err
 	}
 
-	var acceptedOrder types.Order
+	var rejectedOrder types.Order
 
 	objectUpdt, _ := bson.Marshal(objectUpdated)
-	bson.Unmarshal(objectUpdt, &acceptedOrder)
-	acceptedOrder.AcceptedAt = order.AcceptedAt
+	bson.Unmarshal(objectUpdt, &rejectedOrder)
+	rejectedOrder.RejectedAt = order.RejectedAt
 
-	return acceptedOrder, nil
+	return rejectedOrder, nil
 }

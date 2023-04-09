@@ -2,6 +2,8 @@ package databases
 
 import (
 	"context"
+	"errors"
+
 	// "go/types"
 	"log"
 
@@ -95,15 +97,17 @@ func (db database) UpdateOne(collection string, filter bson.D, update bson.D) (b
 	if err != nil {
 		// ErrNoDocuments means that the filter did not match any documents in
 		// the collection.
-		if err == mongo.ErrNoDocuments {
-			return nil, err
-		}
-		log.Fatal(err)
+		// if err == mongo.ErrNoDocuments {
+		// 	return bson.M{}, err
+		// }
+
+		// return bson.M{}, err
+		return bson.M{}, errors.New("document to update not found")
 	}
 
-	if err != nil {
-		log.Panic(err)
-	}
+	// if err != nil {
+	// 	return bson.M{}, err
+	// }
 
 	// defer func() {
 	// 	if err := db.client.Disconnect(context.TODO()); err != nil {
