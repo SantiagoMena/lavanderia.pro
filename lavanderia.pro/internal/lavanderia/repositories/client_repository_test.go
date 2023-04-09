@@ -51,7 +51,6 @@ func TestGetClient(t *testing.T) {
 
 	assert.Equal(t, errFind, nil, "Error on GetClient() client")
 	assert.NotNil(t, clientFound, "GetClient() returns nil result")
-	// assert.Equal(t, "TEST", clientFound.Name, "Error on GetClient() client")
 }
 
 func TestUpdateClient(t *testing.T) {
