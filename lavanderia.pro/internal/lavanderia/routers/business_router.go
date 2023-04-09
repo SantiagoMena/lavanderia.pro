@@ -152,7 +152,7 @@ func NewGetBusinessRouter(r *gin.Engine, controller *controllers.BusinessControl
 		var business types.Business
 
 		if err := c.ShouldBindUri(&business); err != nil {
-			c.JSON(400, gin.H{"msg": err})
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 			return
 		}
 
@@ -160,7 +160,7 @@ func NewGetBusinessRouter(r *gin.Engine, controller *controllers.BusinessControl
 		businessDb, err := controller.GetBusiness(&business)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
 		} else {
 			c.IndentedJSON(http.StatusCreated, businessDb)
 		}
