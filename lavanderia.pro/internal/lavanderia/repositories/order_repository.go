@@ -177,12 +177,7 @@ func (orderRepository *OrderRepository) Accept(order *types.Order) (types.Order,
 		{Key: "deleted_at", Value: nil},
 	}
 
-	update := bson.D{{Key: "$set", Value: bson.D{
-		{Key: "_id", Value: id},
-		{Key: "accepted_at", Value: order.AcceptedAt},
-	}}}
-
-	// db.collection("messages").updateOne({uuid:this.uuid, "key.id":new_message.key.id}}, {$set: {uuid: this.uuid, ...new_message}}, {upsert:true})
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "accepted_at", Value: order.AcceptedAt}}}}
 
 	objectUpdated, err := orderRepository.database.UpdateOne(orderCollection, filter, update)
 	if err != nil {
@@ -231,4 +226,48 @@ func (orderRepository *OrderRepository) Reject(order *types.Order) (types.Order,
 	rejectedOrder.RejectedAt = order.RejectedAt
 
 	return rejectedOrder, nil
+}
+
+func (orderRepository *OrderRepository) AssignPickUp(order *types.Order) (types.Order, error) {
+	t := time.Now()
+	order.AssignedPickUpAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(order.ID)
+
+	// delete only if all other status are empties
+	filter := bson.D{
+		{Key: "_id", Value: id},
+		{Key: "accepted_at", Value: bson.M{"$ne": nil}},
+		{Key: "rejected_at", Value: nil},
+		{Key: "assigned_pickup_at", Value: nil},
+		{Key: "pickup_client_at", Value: nil},
+		{Key: "processing_at", Value: nil},
+		{Key: "finished_at", Value: nil},
+		{Key: "assigned_delivery_at", Value: nil},
+		{Key: "pickup_business_at", Value: nil},
+		{Key: "delivered_client_at", Value: nil},
+		{Key: "deleted_at", Value: nil},
+	}
+	update := bson.D{
+		{
+			Key: "$set", Value: bson.D{
+				{Key: "assigned_pickup_at", Value: order.AssignedPickUpAt},
+				{Key: "delivery", Value: order.Delivery},
+			},
+		},
+	}
+
+	objectUpdated, err := orderRepository.database.UpdateOne(orderCollection, filter, update)
+	if err != nil {
+		return types.Order{}, err
+	}
+
+	var assignedPickUpOrder types.Order
+
+	objectUpdt, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(objectUpdt, &assignedPickUpOrder)
+	assignedPickUpOrder.AssignedPickUpAt = order.AssignedPickUpAt
+	assignedPickUpOrder.PickUp = order.Delivery
+
+	return assignedPickUpOrder, nil
 }

@@ -8,4 +8,5 @@ var Module = fx.Options(
 	fx.Provide(NewDeleteOrderHandler),
 	fx.Provide(NewAcceptOrderHandler),
 	fx.Provide(NewRejectOrderHandler),
+	fx.Provide(NewAssignPickUpOrderHandler),
 )
