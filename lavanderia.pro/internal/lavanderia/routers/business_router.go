@@ -13,6 +13,11 @@ func NewGetAllBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 	r.GET("/business", func(c *gin.Context) {
 		authId := c.MustGet("auth")
 
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
 		business, err := controller.GetAllBusinessByAuth(authId.(string))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
@@ -25,6 +30,11 @@ func NewGetAllBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 func NewPostBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.POST("/business", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
 
 		var newBusiness types.Business
 
@@ -55,6 +65,11 @@ func NewPostBusinessRouter(r *gin.Engine, controller *controllers.BusinessContro
 func NewDeleteBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.DELETE("/business/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
 		var businessId types.Business
 
 		if err := c.ShouldBindUri(&businessId); err != nil {
@@ -89,6 +104,11 @@ func NewDeleteBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 func NewUpdateBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.PUT("/business/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
 
 		var businessId types.Business
 
@@ -136,7 +156,7 @@ func NewGetBusinessRouter(r *gin.Engine, controller *controllers.BusinessControl
 		var business types.Business
 
 		if err := c.ShouldBindUri(&business); err != nil {
-			c.JSON(400, gin.H{"msg": err})
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 			return
 		}
 
@@ -144,7 +164,7 @@ func NewGetBusinessRouter(r *gin.Engine, controller *controllers.BusinessControl
 		businessDb, err := controller.GetBusiness(&business)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
 		} else {
 			c.IndentedJSON(http.StatusCreated, businessDb)
 		}

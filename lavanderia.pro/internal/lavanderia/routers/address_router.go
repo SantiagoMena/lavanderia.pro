@@ -13,6 +13,11 @@ func NewPostAddressRouter(r *gin.Engine, controller *controllers.AddressControll
 	r.POST("/address", func(c *gin.Context) {
 		authId := c.MustGet("auth")
 
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
 		var newAddress types.Address
 		if err := c.BindJSON(&newAddress); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
@@ -49,6 +54,11 @@ func NewGetAddressRouter(r *gin.Engine, controller *controllers.AddressControlle
 	r.GET("/address/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
 
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
 		var addressId types.Address
 		if err := c.ShouldBindUri(&addressId); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
@@ -83,6 +93,11 @@ func NewGetAddressRouter(r *gin.Engine, controller *controllers.AddressControlle
 func NewUpdateAddressRouter(r *gin.Engine, controller *controllers.AddressController, clientRepository *repositories.ClientRepository) {
 	r.PUT("/address/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
 		var addressId types.Address
 
 		if err := c.ShouldBindUri(&addressId); err != nil {
@@ -127,6 +142,11 @@ func NewGetAddressesRouter(r *gin.Engine, controller *controllers.AddressControl
 	r.GET("/addresses", func(c *gin.Context) {
 		authId := c.MustGet("auth")
 
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
 		client, errClient := clientRepository.GetClientByAuth(&types.Client{
 			Auth: authId.(string),
 		})
@@ -152,6 +172,11 @@ func NewGetAddressesRouter(r *gin.Engine, controller *controllers.AddressControl
 func NewDeleteAddressRouter(r *gin.Engine, controller *controllers.AddressController, clientRepository *repositories.ClientRepository) {
 	r.DELETE("/address/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
 		var addressId types.Address
 
 		if err := c.ShouldBindUri(&addressId); err != nil {

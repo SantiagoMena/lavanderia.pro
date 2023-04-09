@@ -45,6 +45,11 @@ func NewGetClientRouter(r *gin.Engine, controller *controllers.ClientController)
 	r.GET("/client/profile", func(c *gin.Context) {
 		authId := c.MustGet("auth")
 
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
 		// Handle Controller
 		client, errRegister := controller.GetClientByAuth(&types.Client{
 			Auth: authId.(string),
@@ -62,6 +67,11 @@ func NewGetClientRouter(r *gin.Engine, controller *controllers.ClientController)
 func NewPostClientRouter(r *gin.Engine, controller *controllers.ClientController) {
 	r.POST("/client/profile", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
 
 		var client types.Client
 
@@ -87,6 +97,11 @@ func NewPostClientRouter(r *gin.Engine, controller *controllers.ClientController
 func NewPutClientRouter(r *gin.Engine, controller *controllers.ClientController) {
 	r.PUT("/client/profile", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
 
 		var client types.Client
 

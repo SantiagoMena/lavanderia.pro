@@ -17,6 +17,11 @@ func NewPostProductRouter(
 	r.POST("/business/:id/product", func(c *gin.Context) {
 		authId := c.MustGet("auth")
 
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
 		var businessId types.Business
 
 		if err := c.ShouldBindUri(&businessId); err != nil {
@@ -88,6 +93,11 @@ func NewDeleteProductRouter(
 ) {
 	r.DELETE("/product/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
 		var productId types.Product
 
 		if err := c.ShouldBindUri(&productId); err != nil {
@@ -169,6 +179,11 @@ func NewUpdateProductRouter(
 ) {
 	r.PUT("/product/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
 
 		var productId types.Product
 
