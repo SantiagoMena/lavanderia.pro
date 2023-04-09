@@ -176,7 +176,13 @@ func (orderRepository *OrderRepository) Accept(order *types.Order) (types.Order,
 		{Key: "delivered_client_at", Value: nil},
 		{Key: "deleted_at", Value: nil},
 	}
-	update := bson.D{{Key: "$set", Value: bson.D{{Key: "accepted_at", Value: order.AcceptedAt}}}}
+
+	update := bson.D{{Key: "$set", Value: bson.D{
+		{Key: "_id", Value: id},
+		{Key: "accepted_at", Value: order.AcceptedAt},
+	}}}
+
+	// db.collection("messages").updateOne({uuid:this.uuid, "key.id":new_message.key.id}}, {$set: {uuid: this.uuid, ...new_message}}, {upsert:true})
 
 	objectUpdated, err := orderRepository.database.UpdateOne(orderCollection, filter, update)
 	if err != nil {
@@ -190,4 +196,39 @@ func (orderRepository *OrderRepository) Accept(order *types.Order) (types.Order,
 	acceptedOrder.AcceptedAt = order.AcceptedAt
 
 	return acceptedOrder, nil
+}
+
+func (orderRepository *OrderRepository) Reject(order *types.Order) (types.Order, error) {
+	t := time.Now()
+	order.RejectedAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(order.ID)
+
+	// delete only if all other status are empties
+	filter := bson.D{
+		{Key: "_id", Value: id},
+		{Key: "rejected_at", Value: nil},
+		{Key: "assigned_pickup_at", Value: nil},
+		{Key: "pickup_client_at", Value: nil},
+		{Key: "processing_at", Value: nil},
+		{Key: "finished_at", Value: nil},
+		{Key: "assigned_delivery_at", Value: nil},
+		{Key: "pickup_business_at", Value: nil},
+		{Key: "delivered_client_at", Value: nil},
+		{Key: "deleted_at", Value: nil},
+	}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "rejected_at", Value: order.RejectedAt}}}}
+
+	objectUpdated, err := orderRepository.database.UpdateOne(orderCollection, filter, update)
+	if err != nil {
+		return types.Order{}, err
+	}
+
+	var rejectedOrder types.Order
+
+	objectUpdt, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(objectUpdt, &rejectedOrder)
+	rejectedOrder.RejectedAt = order.RejectedAt
+
+	return rejectedOrder, nil
 }
