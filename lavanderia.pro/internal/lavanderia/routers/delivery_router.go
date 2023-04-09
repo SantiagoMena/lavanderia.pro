@@ -45,6 +45,10 @@ func NewPostDeliveryRouter(r *gin.Engine, controller *controllers.DeliveryContro
 	r.POST("/delivery/profile", func(c *gin.Context) {
 		authId := c.MustGet("auth")
 
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+		}
+
 		var delivery types.Delivery
 
 		if err := c.BindJSON(&delivery); err != nil {

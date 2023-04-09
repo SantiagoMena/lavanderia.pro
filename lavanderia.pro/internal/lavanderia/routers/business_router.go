@@ -13,6 +13,10 @@ func NewGetAllBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 	r.GET("/business", func(c *gin.Context) {
 		authId := c.MustGet("auth")
 
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+		}
+
 		business, err := controller.GetAllBusinessByAuth(authId.(string))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
@@ -25,6 +29,10 @@ func NewGetAllBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 func NewPostBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.POST("/business", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+		}
 
 		var newBusiness types.Business
 
@@ -55,6 +63,10 @@ func NewPostBusinessRouter(r *gin.Engine, controller *controllers.BusinessContro
 func NewDeleteBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.DELETE("/business/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+		}
 		var businessId types.Business
 
 		if err := c.ShouldBindUri(&businessId); err != nil {
@@ -89,6 +101,10 @@ func NewDeleteBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 func NewUpdateBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.PUT("/business/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+		}
 
 		var businessId types.Business
 
