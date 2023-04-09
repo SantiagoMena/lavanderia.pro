@@ -6,4 +6,5 @@ var Module = fx.Options(
 	fx.Provide(NewRegisterDeliveryHandler),
 	fx.Provide(NewPostDeliveryHandler),
 	fx.Provide(NewGetDeliveryHandler),
+	fx.Provide(NewUpdateDeliveryProfileHandler),
 )
