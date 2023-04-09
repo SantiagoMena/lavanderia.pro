@@ -72,14 +72,14 @@ func NewGetProductsByBusinessRouter(
 		var businessId types.Business
 
 		if err := c.ShouldBindUri(&businessId); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 			return
 		}
 
 		products, err := productController.GetAllProductsByBusiness(string(businessId.ID))
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		} else {
 			c.IndentedJSON(http.StatusOK, products)
 		}
