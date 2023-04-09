@@ -9,9 +9,10 @@ import (
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 
+	"testing"
+
 	"lavanderia.pro/internal/lavanderia/databases"
 	"lavanderia.pro/internal/lavanderia/repositories"
-	"testing"
 )
 
 func TestCreateProductHandle(t *testing.T) {

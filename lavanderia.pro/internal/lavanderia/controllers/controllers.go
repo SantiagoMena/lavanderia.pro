@@ -10,4 +10,5 @@ var Module = fx.Options(
 	fx.Provide(NewClientController),
 	fx.Provide(NewAddressController),
 	fx.Provide(NewDeliveryController),
+	fx.Provide(NewOrderController),
 )
