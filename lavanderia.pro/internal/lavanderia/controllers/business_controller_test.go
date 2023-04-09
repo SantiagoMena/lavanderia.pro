@@ -3,6 +3,10 @@ package controllers
 import (
 	"fmt"
 
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"lavanderia.pro/api/types"
@@ -13,9 +17,6 @@ import (
 	"lavanderia.pro/internal/lavanderia/handlers/client"
 	"lavanderia.pro/internal/lavanderia/handlers/delivery"
 	"lavanderia.pro/internal/lavanderia/repositories"
-	"strings"
-	"testing"
-	"time"
 )
 
 func TestGetAllBusiness(t *testing.T) {
@@ -143,6 +144,9 @@ func MakeController() *BusinessController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repository := repositories.NewBusinessRepository(database)
+	deliveryRepository := repositories.NewDeliveryRepository(database)
+	authRepository := repositories.NewAuthRepository(database, config)
+
 	controller := NewBusinessController(
 		business.NewGetAllBusinessHandler(repository),
 		business.NewCreateBusinessHandler(repository),
@@ -150,6 +154,7 @@ func MakeController() *BusinessController {
 		business.NewUpdateBusinessHandler(repository),
 		business.NewGetBusinessHandler(repository),
 		business.NewGetAllBusinessByAuthHandler(repository),
+		business.NewRegisterBusinessDeliveryHandler(authRepository, repository, deliveryRepository),
 	)
 	return controller
 }

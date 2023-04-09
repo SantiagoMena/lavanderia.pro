@@ -203,17 +203,30 @@ func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthCo
 
 	})
 }
-
-func NewPostRegisterBusinessDeliveryRouter(r *gin.Engine, controller *controllers.AuthController) {
+func NewPostRegisterBusinessDeliveryRouter(r *gin.Engine, controller *controllers.BusinessController) {
 	r.POST("/business/:id/delivery", func(c *gin.Context) {
+		authId := c.MustGet("auth")
 
-		var newBusiness types.Business
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		var newDelivery types.Delivery
+		var businessId types.Business
 		var newAuth types.Auth
 
 		// Call BindJSON to bind the received JSON to
-		// newBusiness.
-		if errBusinessJson := c.ShouldBindBodyWith(&newBusiness, binding.JSON); errBusinessJson != nil {
+		// businessId.
+		if errBusinessJson := c.ShouldBindBodyWith(&businessId, binding.JSON); errBusinessJson != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"msg": errBusinessJson})
+			return
+		}
+
+		// Call BindJSON to bind the received JSON to
+		// newDelivery.
+		if errDeliveryJson := c.ShouldBindBodyWith(&newDelivery, binding.JSON); errDeliveryJson != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errDeliveryJson})
 			return
 		}
 
@@ -225,12 +238,12 @@ func NewPostRegisterBusinessDeliveryRouter(r *gin.Engine, controller *controller
 		}
 
 		// Handle Controller
-		business, errRegister := controller.RegisterBusiness(&newAuth, &newBusiness)
+		delivery, errRegister := controller.RegisterBusinessDelivery(&newAuth, &businessId, &newDelivery)
 
 		if errRegister != nil {
-			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"msg": errRegister.Error()})
 		} else {
-			c.IndentedJSON(http.StatusCreated, business)
+			c.IndentedJSON(http.StatusCreated, delivery)
 		}
 
 	})

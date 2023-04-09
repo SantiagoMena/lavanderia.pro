@@ -26,7 +26,7 @@ func NewRegisterBusinessDeliveryHandler(
 	}
 }
 
-func (ch RegisterBusinessDeliveryHandler) Handle(auth *types.Auth, business *types.Business, delivery *types.Business) (types.Delivery, error) {
+func (ch RegisterBusinessDeliveryHandler) Handle(auth *types.Auth, business *types.Business, delivery *types.Delivery) (types.Delivery, error) {
 	authFound, err := ch.repositoryAuth.GetByEmail(auth)
 
 	if err != nil {

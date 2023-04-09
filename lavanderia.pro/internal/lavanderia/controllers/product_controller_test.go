@@ -3,6 +3,10 @@ package controllers
 import (
 	"fmt"
 
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"lavanderia.pro/api/types"
@@ -14,9 +18,6 @@ import (
 	"lavanderia.pro/internal/lavanderia/handlers/delivery"
 	"lavanderia.pro/internal/lavanderia/handlers/product"
 	"lavanderia.pro/internal/lavanderia/repositories"
-	"strings"
-	"testing"
-	"time"
 )
 
 func TestPostProduct(t *testing.T) {
@@ -153,15 +154,18 @@ func MakeAuthForProductController() *AuthController {
 func MakeBusinessForProductController() *BusinessController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
-	repositoryBusiness := repositories.NewBusinessRepository(database)
+	businessRepository := repositories.NewBusinessRepository(database)
+	authRepository := repositories.NewAuthRepository(database, config)
+	deliveryRepository := repositories.NewDeliveryRepository(database)
 
 	controller := NewBusinessController(
-		business.NewGetAllBusinessHandler(repositoryBusiness),
-		business.NewCreateBusinessHandler(repositoryBusiness),
-		business.NewDeleteBusinessHandler(repositoryBusiness),
-		business.NewUpdateBusinessHandler(repositoryBusiness),
-		business.NewGetBusinessHandler(repositoryBusiness),
-		business.NewGetAllBusinessByAuthHandler(repositoryBusiness),
+		business.NewGetAllBusinessHandler(businessRepository),
+		business.NewCreateBusinessHandler(businessRepository),
+		business.NewDeleteBusinessHandler(businessRepository),
+		business.NewUpdateBusinessHandler(businessRepository),
+		business.NewGetBusinessHandler(businessRepository),
+		business.NewGetAllBusinessByAuthHandler(businessRepository),
+		business.NewRegisterBusinessDeliveryHandler(authRepository, businessRepository, deliveryRepository),
 	)
 
 	return controller
