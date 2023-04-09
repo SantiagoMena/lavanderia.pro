@@ -27,13 +27,10 @@ func NewRegisterBusinessDeliveryHandler(
 }
 
 func (ch RegisterBusinessDeliveryHandler) Handle(auth *types.Auth, business *types.Business, delivery *types.Delivery) (types.Delivery, error) {
-	authFound, err := ch.repositoryAuth.GetByEmail(auth)
+	authFound, _ := ch.repositoryAuth.GetByEmail(auth)
+	authEmpty := types.Auth{}
 
-	if err != nil {
-		return types.Delivery{}, errors.New("error on check auth")
-	}
-
-	if len(authFound.Email) > 0 {
+	if authFound != authEmpty {
 		return types.Delivery{}, errors.New("auth already exists")
 	}
 
