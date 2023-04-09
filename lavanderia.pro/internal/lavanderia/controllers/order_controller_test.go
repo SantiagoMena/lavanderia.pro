@@ -273,8 +273,6 @@ func TestRejectOrder(t *testing.T) {
 	assert.NotEmpty(t, orderRejected.RejectedAt, "RejectedAt order error")
 }
 
-// TODO: test assign pickup
-
 func TestAssignPickUpOrder(t *testing.T) {
 	if err := godotenv.Load("../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
@@ -338,7 +336,74 @@ func TestAssignPickUpOrder(t *testing.T) {
 	assert.NotEmpty(t, orderAssignPickUp.AssignedPickUpAt, "assign pickup AssignedPickUpAt order error")
 }
 
-// TODO: test pickup
+func TestPickUpOrder(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	orderController := MakeOrderControllerForTest()
+	authController := MakeAuthForOrderController()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	authObject := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	businessObject := &types.Business{
+		Name: "Test",
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+	}
+
+	business, errBusiness := authController.RegisterBusiness(authObject, businessObject)
+
+	assert.Equal(t, nil, errBusiness, "register business error")
+	assert.NotEmpty(t, business, "register business error")
+
+	order, errOrder := orderController.PostOrder(&types.Order{
+		Business: business,
+		Address:  types.Address{Name: "test"},
+		Client:   types.Client{Name: "Client test"},
+	})
+
+	assert.Equal(t, nil, errOrder, "create order error")
+	assert.NotEmpty(t, order, "create order error")
+	assert.NotEmpty(t, order.CreatedAt, "CreatedAt order error")
+
+	orderAccepted, errAccept := orderController.AcceptOrder(&types.Order{
+		ID: order.ID,
+	})
+
+	assert.Equal(t, nil, errAccept, "accept order error")
+	assert.NotEmpty(t, orderAccepted, "accept order error")
+	assert.NotEmpty(t, orderAccepted.AcceptedAt, "AcceptedAt order error")
+
+	orderAssignPickUp, errAssignPickUp := orderController.AssignPickUpOrder(&types.Order{
+		ID: order.ID,
+		PickUp: types.Delivery{
+			Name: "TEST PICKER UP",
+		},
+	})
+
+	assert.Equal(t, nil, errAssignPickUp, "assign pickup  order error")
+	assert.NotEmpty(t, orderAssignPickUp, "assign pickup  order error")
+	assert.NotEmpty(t, orderAssignPickUp.AssignedPickUpAt, "assign pickup AssignedPickUpAt order error")
+
+	orderPickUp, errPickUp := orderController.PickUpClientOrder(&types.Order{ID: order.ID})
+
+	assert.Equal(t, nil, errPickUp, "pickup order error")
+	assert.NotEmpty(t, orderPickUp, "pickup order error")
+	assert.NotEmpty(t, orderPickUp.AssignedPickUpAt, "pickup AssignedPickUpAt order error")
+}
 
 func MakeOrderControllerForTest() *OrderController {
 	config := config.NewConfig()
