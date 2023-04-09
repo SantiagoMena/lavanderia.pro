@@ -65,12 +65,65 @@ func TestPostOrder(t *testing.T) {
 	assert.NotEmpty(t, order.CreatedAt, "CreatedAt order error")
 }
 
+func TestGetOrder(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	orderController := MakeAOrderControllerForTest()
+	authController := MakeAuthForOrderController()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	authObject := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	businessObject := &types.Business{
+		Name: "Test",
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+	}
+
+	business, errBusiness := authController.RegisterBusiness(authObject, businessObject)
+
+	assert.Equal(t, nil, errBusiness, "register business error")
+	assert.NotEmpty(t, business, "register business error")
+
+	order, errOrder := orderController.PostOrder(&types.Order{
+		Business: business,
+		Address:  types.Address{Name: "test"},
+		Client:   types.Client{Name: "Client test"},
+	})
+
+	assert.Equal(t, nil, errOrder, "create order error")
+	assert.NotEmpty(t, order, "create order error")
+	assert.NotEmpty(t, order.CreatedAt, "CreatedAt order error")
+
+	orderFound, errFind := orderController.GetOrder(&types.Order{
+		ID: order.ID,
+	})
+
+	assert.Equal(t, nil, errFind, "get order error")
+	assert.NotEmpty(t, orderFound, "get order error")
+	assert.NotEmpty(t, orderFound.CreatedAt, "CreatedAt order error")
+}
+
 func MakeAOrderControllerForTest() *OrderController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryOrder := repositories.NewOrderRepository(database)
 	postOrderHandler := order.NewPostOrderHandler(repositoryOrder)
-	OrderController := NewOrderController(postOrderHandler)
+	getOrderHandler := order.NewGetOrderHandler(repositoryOrder)
+	OrderController := NewOrderController(postOrderHandler, getOrderHandler)
 
 	return OrderController
 }
