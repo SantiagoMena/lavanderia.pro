@@ -10,4 +10,5 @@ var Module = fx.Options(
 	fx.Provide(NewGetBusinessHandler),
 	fx.Provide(NewRegisterBusinessHandler),
 	fx.Provide(NewGetAllBusinessByAuthHandler),
+	fx.Provide(NewRegisterBusinessDeliveryHandler),
 )

@@ -75,13 +75,17 @@ func NewGetDeliveryRouter(r *gin.Engine, controller *controllers.DeliveryControl
 	r.GET("/delivery/profile", func(c *gin.Context) {
 		authId := c.MustGet("auth")
 
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+		}
+
 		// Handle Controller
 		delivery, errRegister := controller.GetDeliveryByAuth(&types.Delivery{
 			Auth: authId.(string),
 		})
 
 		if errRegister != nil {
-			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
 		} else {
 			c.IndentedJSON(http.StatusCreated, delivery)
 		}

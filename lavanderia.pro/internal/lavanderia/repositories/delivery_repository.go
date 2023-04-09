@@ -26,11 +26,13 @@ func (deliveryRepository *DeliveryRepository) Create(delivery *types.Delivery) (
 	delivery.CreatedAt = &t
 
 	authId, _ := primitive.ObjectIDFromHex(delivery.Auth)
+	businessId, _ := primitive.ObjectIDFromHex(delivery.Business)
 
 	deliveryDb, err := deliveryRepository.database.Create("delivery", bson.D{
 		{Key: "name", Value: delivery.Name},
 		{Key: "created_at", Value: delivery.CreatedAt},
 		{Key: "auth", Value: authId},
+		{Key: "business", Value: businessId},
 	})
 
 	if err != nil {

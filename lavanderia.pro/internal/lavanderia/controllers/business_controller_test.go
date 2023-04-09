@@ -3,8 +3,13 @@ package controllers
 import (
 	"fmt"
 
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/bcrypt"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
@@ -13,9 +18,6 @@ import (
 	"lavanderia.pro/internal/lavanderia/handlers/client"
 	"lavanderia.pro/internal/lavanderia/handlers/delivery"
 	"lavanderia.pro/internal/lavanderia/repositories"
-	"strings"
-	"testing"
-	"time"
 )
 
 func TestGetAllBusiness(t *testing.T) {
@@ -139,10 +141,52 @@ func TestGetBusiness(t *testing.T) {
 	assert.NotEmpty(t, businessGotten.Position, "Position not saved properly")
 }
 
+func TestRegisterBusinessDelivery(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+	controller := MakeController()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	authRegister := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	deliveryCreated, err := controller.RegisterBusinessDelivery(
+		authRegister,
+		&types.Business{
+			Name: "test",
+			Position: types.Geometry{
+				Type:        "Point",
+				Coordinates: []float64{-71.327767, -41.138444},
+			},
+		},
+		&types.Delivery{
+			Name: "test_delivery",
+		},
+	)
+
+	assert.Nil(t, err, "Error returns not nil on create business delivery")
+	assert.NotEmpty(t, deliveryCreated, "deliveryCreated is empty on create business delivery")
+	assert.NotEmpty(t, deliveryCreated.ID, "deliveryCreated ID is empty on create business delivery")
+	assert.Equal(t, "test_delivery", deliveryCreated.Name, "Name not saved properly")
+
+}
+
 func MakeController() *BusinessController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repository := repositories.NewBusinessRepository(database)
+	deliveryRepository := repositories.NewDeliveryRepository(database)
+	authRepository := repositories.NewAuthRepository(database, config)
+
 	controller := NewBusinessController(
 		business.NewGetAllBusinessHandler(repository),
 		business.NewCreateBusinessHandler(repository),
@@ -150,6 +194,7 @@ func MakeController() *BusinessController {
 		business.NewUpdateBusinessHandler(repository),
 		business.NewGetBusinessHandler(repository),
 		business.NewGetAllBusinessByAuthHandler(repository),
+		business.NewRegisterBusinessDeliveryHandler(authRepository, repository, deliveryRepository),
 	)
 	return controller
 }
