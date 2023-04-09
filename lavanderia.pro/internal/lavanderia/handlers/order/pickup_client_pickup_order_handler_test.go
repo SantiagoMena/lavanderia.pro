@@ -12,7 +12,7 @@ import (
 	"lavanderia.pro/internal/lavanderia/repositories"
 )
 
-func TestAssignPickUpOrderHandler(t *testing.T) {
+func TestPickUpClientOrderHandler(t *testing.T) {
 	if err := godotenv.Load("../../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
@@ -52,7 +52,7 @@ func TestAssignPickUpOrderHandler(t *testing.T) {
 	}
 
 	// create order
-	handler := MakePostOrderHandlerToTestAssignPickUp()
+	handler := MakePostOrderHandlerToTestPickUpClient()
 
 	order, errOrder := handler.Handle(&types.Order{
 		Client:   *client,
@@ -66,31 +66,45 @@ func TestAssignPickUpOrderHandler(t *testing.T) {
 	assert.NotEmpty(t, order.CreatedAt, "order CreatedAt empty on get")
 
 	// Accept order
-	acceptOrderHandler := MakeAcceptOrderHandlerToTestAssignPickUp()
-	acceptedOrder, errAccept := acceptOrderHandler.Handle(&order)
 
-	assert.Equal(t, nil, errAccept, "error on accept order handler")
+	acceptOrderHandler := MakeAcceptOrderHandlerToTestPickUpClient()
+	acceptedOrder, errAcceptOrder := acceptOrderHandler.Handle(&types.Order{ID: order.ID})
+
+	assert.Equal(t, nil, errAcceptOrder, "error on accept order handler")
 	assert.NotEmpty(t, acceptedOrder, "order empty on accept")
-	assert.NotEmpty(t, acceptedOrder.AcceptedAt, "order AcceptedAt empty on get")
+	assert.NotEmpty(t, acceptedOrder.AcceptedAt, "order AcceptedAt empty on accept")
 
-	// assignpickup order
-	assignPickUpHandler := MakeAssignPickUpOrderHandlerToTestAssignPickUp()
+	// assignpickup
+	assignPickUpOrderHandler := MakeAssignPickUpOrderHandlerToTestAssignPickUp()
 
 	// Create Delivery
-	orderAssignedPickUp, errAssignPickUp := assignPickUpHandler.Handle(&types.Order{
-		ID: order.ID,
-		PickUp: types.Delivery{
-			Name: "pickup test",
-		},
+	pickup := &types.Delivery{
+		Name: "pickup test",
+	}
+
+	// Pickup Client
+	orderAssignedPickUp, errPickUpClient := assignPickUpOrderHandler.Handle(&types.Order{
+		ID:     acceptedOrder.ID,
+		PickUp: *pickup,
 	})
 
-	assert.Equal(t, nil, errAssignPickUp, "error on assign pickup order handler")
+	fmt.Println(acceptedOrder.ID)
+	assert.Equal(t, nil, errPickUpClient, "error on assign pickup order handler")
 	assert.NotEmpty(t, orderAssignedPickUp, "order empty on assign pickup")
 	assert.NotEmpty(t, orderAssignedPickUp.AssignedPickUpAt, "order AssignedPickUpAt empty on assign")
-	// assert.NotEmpty(t, orderAssignedPickUp.PickUp, "order PickUp empty on assign")
+	// TODO: Check order assign pickup
+	assert.NotEmpty(t, orderAssignedPickUp.PickUp, "order PickUp empty on assign")
+
+	pickUpClientHandler := MakePickUpClientOrderHandlerToTestPickUpClient()
+
+	orderPicketUp, errPickUpClient := pickUpClientHandler.Handle(&types.Order{ID: order.ID})
+
+	assert.Equal(t, nil, errPickUpClient, "error on pickup order handler")
+	assert.NotEmpty(t, orderPicketUp, "order empty on pickup")
+	assert.NotEmpty(t, orderPicketUp.PickUpClientAt, "order PickUpClientAt empty on pickup")
 }
 
-func MakePostOrderHandlerToTestAssignPickUp() *PostOrderHandler {
+func MakePostOrderHandlerToTestPickUpClient() *PostOrderHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repository := repositories.NewOrderRepository(database)
@@ -99,7 +113,7 @@ func MakePostOrderHandlerToTestAssignPickUp() *PostOrderHandler {
 	return handler
 }
 
-func MakeAssignPickUpOrderHandlerToTestAssignPickUp() *AssignPickUpOrderHandler {
+func MakeAssignPickUpOrderHandlerToTestPickUpClient() *AssignPickUpOrderHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repository := repositories.NewOrderRepository(database)
@@ -108,7 +122,25 @@ func MakeAssignPickUpOrderHandlerToTestAssignPickUp() *AssignPickUpOrderHandler 
 	return handler
 }
 
-func MakeAcceptOrderHandlerToTestAssignPickUp() *AcceptOrderHandler {
+func MakePickUpOrderHandlerToTestPickUpClient() *PickUpClientOrderHandler {
+	config := config.NewConfig()
+	database := databases.NewMongoDatabase(config)
+	repository := repositories.NewOrderRepository(database)
+	handler := NewPickUpClientOrderHandler(repository)
+
+	return handler
+}
+
+func MakePickUpClientOrderHandlerToTestPickUpClient() *PickUpClientOrderHandler {
+	config := config.NewConfig()
+	database := databases.NewMongoDatabase(config)
+	repository := repositories.NewOrderRepository(database)
+	handler := NewPickUpClientOrderHandler(repository)
+
+	return handler
+}
+
+func MakeAcceptOrderHandlerToTestPickUpClient() *AcceptOrderHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repository := repositories.NewOrderRepository(database)

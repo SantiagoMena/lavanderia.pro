@@ -252,7 +252,7 @@ func (orderRepository *OrderRepository) AssignPickUp(order *types.Order) (types.
 		{
 			Key: "$set", Value: bson.D{
 				{Key: "assigned_pickup_at", Value: order.AssignedPickUpAt},
-				{Key: "delivery", Value: order.Delivery},
+				{Key: "pickup", Value: order.PickUp},
 			},
 		},
 	}
@@ -267,7 +267,7 @@ func (orderRepository *OrderRepository) AssignPickUp(order *types.Order) (types.
 	objectUpdt, _ := bson.Marshal(objectUpdated)
 	bson.Unmarshal(objectUpdt, &assignedPickUpOrder)
 	assignedPickUpOrder.AssignedPickUpAt = order.AssignedPickUpAt
-	assignedPickUpOrder.PickUp = order.Delivery
+	assignedPickUpOrder.PickUp = order.PickUp
 
 	return assignedPickUpOrder, nil
 }
