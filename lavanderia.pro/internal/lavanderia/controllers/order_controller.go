@@ -6,17 +6,20 @@ import (
 )
 
 type OrderController struct {
-	PostOrderHandler *order.PostOrderHandler
-	GetOrderHandler  *order.GetOrderHandler
+	PostOrderHandler   *order.PostOrderHandler
+	GetOrderHandler    *order.GetOrderHandler
+	DeleteOrderHandler *order.DeleteOrderHandler
 }
 
 func NewOrderController(
 	PostOrderHandler *order.PostOrderHandler,
 	GetOrderHandler *order.GetOrderHandler,
+	DeleteOrderHandler *order.DeleteOrderHandler,
 ) *OrderController {
 	return &OrderController{
-		PostOrderHandler: PostOrderHandler,
-		GetOrderHandler:  GetOrderHandler,
+		PostOrderHandler:   PostOrderHandler,
+		GetOrderHandler:    GetOrderHandler,
+		DeleteOrderHandler: DeleteOrderHandler,
 	}
 }
 
@@ -32,6 +35,16 @@ func (controller OrderController) PostOrder(order *types.Order) (types.Order, er
 
 func (controller OrderController) GetOrder(order *types.Order) (types.Order, error) {
 	orderDb, err := controller.GetOrderHandler.Handle(order)
+
+	if err != nil {
+		return types.Order{}, err
+	}
+
+	return orderDb, err
+}
+
+func (controller OrderController) DeleteOrder(order *types.Order) (types.Order, error) {
+	orderDb, err := controller.DeleteOrderHandler.Handle(order)
 
 	if err != nil {
 		return types.Order{}, err

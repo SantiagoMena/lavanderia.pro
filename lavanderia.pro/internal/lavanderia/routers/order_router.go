@@ -98,3 +98,45 @@ func NewGetOrderRouter(
 
 	})
 }
+
+func NewDeleteOrderRouter(
+	r *gin.Engine,
+	productController *controllers.ProductController,
+	orderController *controllers.OrderController,
+	businessController *controllers.BusinessController,
+) {
+	r.DELETE("/business-order/:id", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		var orderId types.Order
+		if err := c.ShouldBindUri(&orderId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
+			return
+		}
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		// Handle Controller
+		order, err := orderController.GetOrder(&orderId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+		}
+
+		if order.Client.Auth != authId.(string) {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+		}
+
+		// Handle Delete
+		orderDeleted, errDelete := orderController.DeleteOrder(&types.Order{ID: order.ID})
+
+		if errDelete != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+		}
+
+		c.IndentedJSON(http.StatusOK, orderDeleted)
+	})
+}

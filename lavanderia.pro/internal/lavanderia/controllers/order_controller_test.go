@@ -123,7 +123,8 @@ func MakeAOrderControllerForTest() *OrderController {
 	repositoryOrder := repositories.NewOrderRepository(database)
 	postOrderHandler := order.NewPostOrderHandler(repositoryOrder)
 	getOrderHandler := order.NewGetOrderHandler(repositoryOrder)
-	OrderController := NewOrderController(postOrderHandler, getOrderHandler)
+	deleteOrderHandler := order.NewDeleteOrderHandler(repositoryOrder)
+	OrderController := NewOrderController(postOrderHandler, getOrderHandler, deleteOrderHandler)
 
 	return OrderController
 }
