@@ -6,4 +6,5 @@ var Module = fx.Options(
 	fx.Provide(NewPostOrderHandler),
 	fx.Provide(NewGetOrderHandler),
 	fx.Provide(NewDeleteOrderHandler),
+	fx.Provide(NewAcceptOrderHandler),
 )

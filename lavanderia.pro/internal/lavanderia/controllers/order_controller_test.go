@@ -26,7 +26,7 @@ func TestPostOrder(t *testing.T) {
 		fmt.Println("No .env.test file found")
 	}
 
-	orderController := MakeAOrderControllerForTest()
+	orderController := MakeOrderControllerForTest()
 	authController := MakeAuthForOrderController()
 
 	pwd := []byte("PwD")
@@ -70,7 +70,7 @@ func TestGetOrder(t *testing.T) {
 		fmt.Println("No .env.test file found")
 	}
 
-	orderController := MakeAOrderControllerForTest()
+	orderController := MakeOrderControllerForTest()
 	authController := MakeAuthForOrderController()
 
 	pwd := []byte("PwD")
@@ -117,14 +117,121 @@ func TestGetOrder(t *testing.T) {
 	assert.NotEmpty(t, orderFound.CreatedAt, "CreatedAt order error")
 }
 
-func MakeAOrderControllerForTest() *OrderController {
+func TestDeleteOrder(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	orderController := MakeOrderControllerForTest()
+	authController := MakeAuthForOrderController()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	authObject := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	businessObject := &types.Business{
+		Name: "Test",
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+	}
+
+	business, errBusiness := authController.RegisterBusiness(authObject, businessObject)
+
+	assert.Equal(t, nil, errBusiness, "register business error")
+	assert.NotEmpty(t, business, "register business error")
+
+	order, errOrder := orderController.PostOrder(&types.Order{
+		Business: business,
+		Address:  types.Address{Name: "test"},
+		Client:   types.Client{Name: "Client test"},
+	})
+
+	assert.Equal(t, nil, errOrder, "create order error")
+	assert.NotEmpty(t, order, "create order error")
+	assert.NotEmpty(t, order.CreatedAt, "CreatedAt order error")
+
+	orderDeleted, errDelete := orderController.DeleteOrder(&types.Order{
+		ID: order.ID,
+	})
+
+	assert.Equal(t, nil, errDelete, "delete order error")
+	assert.NotEmpty(t, orderDeleted, "delete order error")
+	assert.NotEmpty(t, orderDeleted.DeletedAt, "DeletedAt order error")
+}
+
+func TestAcceptOrder(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	orderController := MakeOrderControllerForTest()
+	authController := MakeAuthForOrderController()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	authObject := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	businessObject := &types.Business{
+		Name: "Test",
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+	}
+
+	business, errBusiness := authController.RegisterBusiness(authObject, businessObject)
+
+	assert.Equal(t, nil, errBusiness, "register business error")
+	assert.NotEmpty(t, business, "register business error")
+
+	order, errOrder := orderController.PostOrder(&types.Order{
+		Business: business,
+		Address:  types.Address{Name: "test"},
+		Client:   types.Client{Name: "Client test"},
+	})
+
+	assert.Equal(t, nil, errOrder, "create order error")
+	assert.NotEmpty(t, order, "create order error")
+	assert.NotEmpty(t, order.CreatedAt, "CreatedAt order error")
+
+	orderAccepted, errAccept := orderController.AcceptOrder(&types.Order{
+		ID: order.ID,
+	})
+
+	assert.Equal(t, nil, errAccept, "accept order error")
+	assert.NotEmpty(t, orderAccepted, "accept order error")
+	assert.NotEmpty(t, orderAccepted.AcceptedAt, "AcceptedAt order error")
+}
+
+func MakeOrderControllerForTest() *OrderController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryOrder := repositories.NewOrderRepository(database)
-	postOrderHandler := order.NewPostOrderHandler(repositoryOrder)
-	getOrderHandler := order.NewGetOrderHandler(repositoryOrder)
-	deleteOrderHandler := order.NewDeleteOrderHandler(repositoryOrder)
-	OrderController := NewOrderController(postOrderHandler, getOrderHandler, deleteOrderHandler)
+
+	OrderController := NewOrderController(
+		order.NewPostOrderHandler(repositoryOrder),
+		order.NewGetOrderHandler(repositoryOrder),
+		order.NewDeleteOrderHandler(repositoryOrder),
+		order.NewAcceptOrderHandler(repositoryOrder),
+	)
 
 	return OrderController
 }
