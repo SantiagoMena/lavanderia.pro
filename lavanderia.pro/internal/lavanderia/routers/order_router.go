@@ -245,3 +245,58 @@ func NewRejectOrderRouter(
 		c.IndentedJSON(http.StatusOK, orderRejected)
 	})
 }
+
+func NewAssignPickUpOrderRouter(
+	r *gin.Engine,
+	productController *controllers.ProductController,
+	orderController *controllers.OrderController,
+	businessController *controllers.BusinessController,
+) {
+	r.POST("/business-order/assign-pickup/:id", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		var orderId types.Order
+		if err := c.ShouldBindUri(&orderId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
+			return
+		}
+
+		var delivery types.Delivery
+		// Call BindJSON to bind the received JSON to
+		// delivery.
+		if errDeliveryJson := c.ShouldBindBodyWith(&delivery, binding.JSON); errDeliveryJson != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errDeliveryJson})
+			return
+		}
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		// Handle Controller
+		order, err := orderController.GetOrder(&orderId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
+			return
+		}
+
+		if order.Client.Auth != authId.(string) {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		order.Delivery = delivery
+
+		// Handle Delete
+		orderAssignedPickup, errReject := orderController.AssignPickUpOrder(&order)
+
+		if errReject != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "error on reject order"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, orderAssignedPickup)
+	})
+}

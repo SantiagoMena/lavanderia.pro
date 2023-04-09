@@ -283,6 +283,7 @@ func MakeOrderControllerForTest() *OrderController {
 		order.NewDeleteOrderHandler(repositoryOrder),
 		order.NewAcceptOrderHandler(repositoryOrder),
 		order.NewRejectOrderHandler(repositoryOrder),
+		order.NewAssignPickUpOrderHandler(repositoryOrder),
 	)
 
 	return OrderController

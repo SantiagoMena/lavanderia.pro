@@ -7,6 +7,7 @@ type Order struct {
 	Business           Business       `json:"business" bson:"business,omitempty"`
 	Client             Client         `json:"client,omitempty" bson:"client,omitempty"`
 	Address            Address        `json:"address" bson:"address"`
+	PickUp             Delivery       `json:"pickup" bson:"pickup"`
 	Delivery           Delivery       `json:"delivery" bson:"delivery"`
 	Products           []OrderProduct `json:"products" bson:"products"`
 	CreatedAt          *time.Time     `json:"created_at,omitempty" bson:"created_at"`
