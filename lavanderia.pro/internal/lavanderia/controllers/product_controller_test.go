@@ -68,7 +68,7 @@ func TestGetAllProductsByBusiness(t *testing.T) {
 	assert.NotEmpty(t, authRegister, "auth is empty")
 
 	productCreated, err := productController.PostProduct(&types.Product{
-		Business: auth.ID,
+		Business: authRegister.ID,
 		Name:     "test",
 		Price:    0.123,
 	})
@@ -78,7 +78,7 @@ func TestGetAllProductsByBusiness(t *testing.T) {
 	assert.NotEmpty(t, productCreated.ID, "productCreated ID is empty")
 	assert.NotEmpty(t, productCreated.CreatedAt, "productCreated CreatedAt is empty")
 
-	productsFound, errFind := productController.GetAllProductsByBusiness(string(auth.ID))
+	productsFound, errFind := productController.GetAllProductsByBusiness(authRegister.ID)
 
 	assert.Nil(t, errFind, "errFind returns not nil")
 	assert.NotEmpty(t, productsFound, "productsFound is empty")

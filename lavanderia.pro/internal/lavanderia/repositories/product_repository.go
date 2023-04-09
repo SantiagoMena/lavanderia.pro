@@ -118,7 +118,11 @@ func (productRepository *ProductRepository) Delete(product *types.Product) (type
 }
 
 func (productRepository *ProductRepository) Get(product *types.Product) (types.Product, error) {
-	id, _ := primitive.ObjectIDFromHex(product.ID)
+	id, errorId := primitive.ObjectIDFromHex(product.ID)
+
+	if errorId != nil {
+		return types.Product{}, errorId
+	}
 
 	filter := bson.D{
 		{Key: "_id", Value: id},
