@@ -85,3 +85,8 @@ func (controller BusinessController) GetAllBusinessByAuth(authId string) ([]type
 	business, err := controller.GetAllBusinessByAuthHandler.Handle(authId)
 	return business, err
 }
+
+// func (controller BusinessController) RegisterDelivery(authId string) (types.Delivery, error) {
+// 	business, err := controller.RegisterDeliv.Handle(authId)
+// 	return business, err
+// }

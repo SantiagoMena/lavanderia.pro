@@ -203,3 +203,35 @@ func NewPostRegisterBusinessRouter(r *gin.Engine, controller *controllers.AuthCo
 
 	})
 }
+
+func NewPostRegisterBusinessDeliveryRouter(r *gin.Engine, controller *controllers.AuthController) {
+	r.POST("/business/:id/delivery", func(c *gin.Context) {
+
+		var newBusiness types.Business
+		var newAuth types.Auth
+
+		// Call BindJSON to bind the received JSON to
+		// newBusiness.
+		if errBusinessJson := c.ShouldBindBodyWith(&newBusiness, binding.JSON); errBusinessJson != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errBusinessJson})
+			return
+		}
+
+		// Call BindJSON to bind the received JSON to
+		// newAuth.
+		if errAuthJson := c.ShouldBindBodyWith(&newAuth, binding.JSON); errAuthJson != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errAuthJson})
+			return
+		}
+
+		// Handle Controller
+		business, errRegister := controller.RegisterBusiness(&newAuth, &newBusiness)
+
+		if errRegister != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
+		} else {
+			c.IndentedJSON(http.StatusCreated, business)
+		}
+
+	})
+}
