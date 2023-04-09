@@ -66,3 +66,35 @@ func NewPostOrderRouter(
 
 	})
 }
+
+func NewGetOrderRouter(
+	r *gin.Engine,
+	productController *controllers.ProductController,
+	orderController *controllers.OrderController,
+	businessController *controllers.BusinessController,
+) {
+	r.GET("/business-order/:id", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		var orderId types.Order
+		if err := c.ShouldBindUri(&orderId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
+			return
+		}
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		// Handle Controller
+		order, err := orderController.GetOrder(&orderId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+		} else {
+			c.IndentedJSON(http.StatusOK, order)
+		}
+
+	})
+}
