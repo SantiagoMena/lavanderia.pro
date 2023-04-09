@@ -19,6 +19,7 @@ func NewPostProductRouter(
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 
 		var businessId types.Business
@@ -95,6 +96,7 @@ func NewDeleteProductRouter(
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 		var productId types.Product
 
@@ -180,6 +182,7 @@ func NewUpdateProductRouter(
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 
 		var productId types.Product

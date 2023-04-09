@@ -15,6 +15,7 @@ func NewGetAllBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 
 		business, err := controller.GetAllBusinessByAuth(authId.(string))
@@ -32,6 +33,7 @@ func NewPostBusinessRouter(r *gin.Engine, controller *controllers.BusinessContro
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 
 		var newBusiness types.Business
@@ -66,6 +68,7 @@ func NewDeleteBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 		var businessId types.Business
 
@@ -104,6 +107,7 @@ func NewUpdateBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 
 		var businessId types.Business

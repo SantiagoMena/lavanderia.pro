@@ -15,6 +15,7 @@ func NewPostAddressRouter(r *gin.Engine, controller *controllers.AddressControll
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 
 		var newAddress types.Address
@@ -55,6 +56,7 @@ func NewGetAddressRouter(r *gin.Engine, controller *controllers.AddressControlle
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 
 		var addressId types.Address
@@ -94,6 +96,7 @@ func NewUpdateAddressRouter(r *gin.Engine, controller *controllers.AddressContro
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 		var addressId types.Address
 
@@ -141,6 +144,7 @@ func NewGetAddressesRouter(r *gin.Engine, controller *controllers.AddressControl
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 
 		client, errClient := clientRepository.GetClientByAuth(&types.Client{
@@ -171,6 +175,7 @@ func NewDeleteAddressRouter(r *gin.Engine, controller *controllers.AddressContro
 
 		if authId == nil {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 		var addressId types.Address
 
