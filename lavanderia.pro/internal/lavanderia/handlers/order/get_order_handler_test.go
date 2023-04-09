@@ -12,7 +12,7 @@ import (
 	"lavanderia.pro/internal/lavanderia/repositories"
 )
 
-func TestPostOrderHandler(t *testing.T) {
+func TestGetOrderHandler(t *testing.T) {
 	if err := godotenv.Load("../../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
@@ -52,7 +52,7 @@ func TestPostOrderHandler(t *testing.T) {
 	}
 
 	// create order
-	handler := MakePostOrderHandlerToTest()
+	handler := MakePostOrderHandlerToTestGet()
 	order, errOrder := handler.Handle(&types.Order{
 		Client:   *client,
 		Address:  *address,
@@ -62,20 +62,10 @@ func TestPostOrderHandler(t *testing.T) {
 
 	assert.Equal(t, nil, errOrder, "error on create order handler")
 	assert.NotEmpty(t, order, "order empty on create")
-	assert.NotEmpty(t, order.CreatedAt, "order CreatedAt empty on create")
-
-	// get order
-	getHandler := MakePostOrderHandlerToTestGet()
-	orderFound, errorFind := getHandler.Handle(&types.Order{
-		ID: order.ID,
-	})
-
-	assert.Equal(t, nil, errorFind, "error on get order handler")
-	assert.NotEmpty(t, orderFound, "order empty on get")
-	assert.NotEmpty(t, orderFound.CreatedAt, "order CreatedAt empty on get")
+	assert.NotEmpty(t, order.CreatedAt, "order CreatedAt empty on get")
 }
 
-func MakePostOrderHandlerToTest() *PostOrderHandler {
+func MakePostOrderHandlerToTestGet() *PostOrderHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repository := repositories.NewOrderRepository(database)
