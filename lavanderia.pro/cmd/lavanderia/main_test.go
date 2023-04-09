@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 	"testing"
 	"time"
 
@@ -29,17 +30,15 @@ func TestMain(t *testing.T) {
 	errStart := app.Start(startCtx)
 	assert.Nil(t, errStart, "Server is no starting")
 
-	// TODO: Check test
-	// // Normally, we'd block here with <-app.Done(). Instead, we'll make an HTTP
-	// // request to demonstrate that our server is running.
-	// _, errServe := http.Get("http://localhost:8080/")
-	// assert.Nil(t, errServe, "Server is not running")
+	// Normally, we'd block here with <-app.Done(). Instead, we'll make an HTTP
+	// request to demonstrate that our server is running.
+	_, errServe := http.Get("http://localhost:8080/")
+	assert.Nil(t, errServe, "Server is not running")
 
-	// TODO: check stop app test
-	// stopCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	// defer cancel()
-	// errStop := app.Stop(stopCtx)
+	stopCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	errStop := app.Stop(stopCtx)
 
-	// assert.Nil(t, errStop, "Server is no stopping")
+	assert.Nil(t, errStop, "Server is no stopping")
 
 }
