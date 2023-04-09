@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -49,6 +50,8 @@ func NewPostOrderRouter(
 			c.JSON(http.StatusBadRequest, gin.H{"msg": errOrderJson.Error() + "1"})
 			return
 		}
+
+		orderObject.Client.Auth = authId.(string)
 
 		// Handle Controller
 		order, err := orderController.PostOrder(&types.Order{
@@ -123,18 +126,24 @@ func NewDeleteOrderRouter(
 		order, err := orderController.GetOrder(&orderId)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
+			return
 		}
+
+		fmt.Println(order.Client.Auth)
+		fmt.Println(authId.(string))
 
 		if order.Client.Auth != authId.(string) {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
 		}
 
 		// Handle Delete
 		orderDeleted, errDelete := orderController.DeleteOrder(&types.Order{ID: order.ID})
 
 		if errDelete != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
+			return
 		}
 
 		c.IndentedJSON(http.StatusOK, orderDeleted)
