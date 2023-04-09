@@ -17,10 +17,6 @@ func NewPostAddressRouter(r *gin.Engine, controller *controllers.AddressControll
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 		}
 
-		if authId == nil {
-			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
-		}
-
 		var newAddress types.Address
 		if err := c.BindJSON(&newAddress); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
