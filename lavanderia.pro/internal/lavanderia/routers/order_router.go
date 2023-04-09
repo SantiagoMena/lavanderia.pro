@@ -149,3 +149,51 @@ func NewDeleteOrderRouter(
 		c.IndentedJSON(http.StatusOK, orderDeleted)
 	})
 }
+
+func NewPostAcceptOrderRouter(
+	r *gin.Engine,
+	productController *controllers.ProductController,
+	orderController *controllers.OrderController,
+	businessController *controllers.BusinessController,
+) {
+	r.POST("/business-order/accept/:id", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		var orderId types.Order
+		if err := c.ShouldBindUri(&orderId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
+			return
+		}
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		// Handle Controller
+		order, err := orderController.GetOrder(&orderId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
+			return
+		}
+
+		fmt.Println(order.Client.Auth)
+		fmt.Println(authId.(string))
+
+		if order.Client.Auth != authId.(string) {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		// Handle Delete
+		orderAccepted, errAccept := orderController.AcceptOrder(&types.Order{ID: order.ID})
+
+		if errAccept != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, orderAccepted)
+	})
+}
