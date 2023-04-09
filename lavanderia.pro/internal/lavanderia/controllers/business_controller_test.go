@@ -9,6 +9,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/bcrypt"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
@@ -138,6 +139,45 @@ func TestGetBusiness(t *testing.T) {
 	assert.NotEmpty(t, businessGotten.CreatedAt, "Business CreatedAt is empty on delete business")
 	assert.Equal(t, "test", businessGotten.Name, "Name not get properly")
 	assert.NotEmpty(t, businessGotten.Position, "Position not saved properly")
+}
+
+func TestRegisterBusinessDelivery(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+	controller := MakeController()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	authRegister := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	deliveryCreated, err := controller.RegisterBusinessDelivery(
+		authRegister,
+		&types.Business{
+			Name: "test",
+			Position: types.Geometry{
+				Type:        "Point",
+				Coordinates: []float64{-71.327767, -41.138444},
+			},
+		},
+		&types.Delivery{
+			Name: "test_delivery",
+		},
+	)
+
+	assert.Nil(t, err, "Error returns not nil on create business delivery")
+	assert.NotEmpty(t, deliveryCreated, "deliveryCreated is empty on create business delivery")
+	assert.NotEmpty(t, deliveryCreated.ID, "deliveryCreated ID is empty on create business delivery")
+	assert.Equal(t, "test_delivery", deliveryCreated.Name, "Name not saved properly")
+
 }
 
 func MakeController() *BusinessController {
