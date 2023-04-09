@@ -2,12 +2,13 @@ package repositories
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
-	"testing"
 )
 
 func TestCreateDelivery(t *testing.T) {
@@ -50,4 +51,29 @@ func TestGetDeliveryByAuth(t *testing.T) {
 
 	assert.Equal(t, errFind, nil, "Error on GetDelivery() delivery")
 	assert.NotNil(t, deliveryFound, "GetDelivery() returns nil result")
+}
+
+func TestUpdateDelivery(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	config := config.NewConfig()
+	mongo := databases.NewMongoDatabase(config)
+
+	delivery, err := NewDeliveryRepository(mongo).Create(&types.Delivery{
+		Name: "test",
+	})
+
+	assert.Equal(t, err, nil, "Create() returns error")
+	assert.NotNil(t, delivery, "FindAllDelivery() returns nil result")
+	assert.NotEmpty(t, delivery.CreatedAt, "CreatedAt is empty")
+
+	delivery.Name = "UPDATED"
+	deliveryUpdated, errUpdate := NewDeliveryRepository(mongo).Update(&delivery)
+
+	assert.Equal(t, errUpdate, nil, "Create() returns error")
+	assert.NotNil(t, deliveryUpdated, "FindAllDelivery() returns nil result")
+	assert.NotEmpty(t, deliveryUpdated.UpdatedAt, "UpdatedAt is empty")
+	assert.Equal(t, "UPDATED", deliveryUpdated.Name, "delivery name not updated properly")
 }

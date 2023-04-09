@@ -70,3 +70,34 @@ func (deliveryRepository *DeliveryRepository) GetDeliveryByAuth(delivery *types.
 
 	return deliveryUnmarshal, nil
 }
+
+func (deliveryRepository *DeliveryRepository) Update(delivery *types.Delivery) (types.Delivery, error) {
+	t := time.Now()
+	delivery.UpdatedAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(delivery.ID)
+
+	filter := bson.D{{Key: "_id", Value: id}}
+	update := bson.D{
+		{Key: "$set", Value: bson.D{
+			{Key: "name", Value: delivery.Name},
+		}},
+	}
+
+	objectUpdated, err := deliveryRepository.database.UpdateOne(deliveryCollection, filter, update)
+	if err != nil {
+		return types.Delivery{}, err
+	}
+
+	var updatedDelivery types.Delivery
+
+	objectUpdt, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(objectUpdt, &updatedDelivery)
+
+	return types.Delivery{
+		ID:        delivery.ID,
+		Name:      delivery.Name,
+		CreatedAt: updatedDelivery.CreatedAt,
+		UpdatedAt: delivery.UpdatedAt,
+	}, nil
+}

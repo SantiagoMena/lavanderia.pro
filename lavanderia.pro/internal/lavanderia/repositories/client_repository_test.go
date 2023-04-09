@@ -2,12 +2,13 @@ package repositories
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
-	"testing"
 )
 
 func TestCreateClient(t *testing.T) {
@@ -52,3 +53,5 @@ func TestGetClient(t *testing.T) {
 	assert.NotNil(t, clientFound, "GetClient() returns nil result")
 	// assert.Equal(t, "TEST", clientFound.Name, "Error on GetClient() client")
 }
+
+// TODO: Test update client
