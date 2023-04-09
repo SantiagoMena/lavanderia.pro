@@ -13,6 +13,8 @@ replace lavanderia.pro/api/types => ../../../../api/types
 require (
 	go.uber.org/fx v1.19.2
 	lavanderia.pro/api/types v0.0.0-00010101000000-000000000000
+	lavanderia.pro/internal/lavanderia/config v0.0.0-00010101000000-000000000000
+	lavanderia.pro/internal/lavanderia/databases v0.0.0-00010101000000-000000000000
 	lavanderia.pro/internal/lavanderia/repositories v0.0.0-00010101000000-000000000000
 )
 
@@ -35,6 +37,4 @@ require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20210903071746-97244b99971b // indirect
 	golang.org/x/text v0.3.7 // indirect
-	lavanderia.pro/internal/lavanderia/config v0.0.0-00010101000000-000000000000 // indirect
-	lavanderia.pro/internal/lavanderia/databases v0.0.0-00010101000000-000000000000 // indirect
 )
