@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -130,9 +129,6 @@ func NewDeleteOrderRouter(
 			return
 		}
 
-		fmt.Println(order.Client.Auth)
-		fmt.Println(authId.(string))
-
 		if order.Client.Auth != authId.(string) {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
@@ -178,9 +174,6 @@ func NewPostAcceptOrderRouter(
 			return
 		}
 
-		fmt.Println(order.Client.Auth)
-		fmt.Println(authId.(string))
-
 		if order.Client.Auth != authId.(string) {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
@@ -225,9 +218,6 @@ func NewRejectOrderRouter(
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
 			return
 		}
-
-		fmt.Println(order.Client.Auth)
-		fmt.Println(authId.(string))
 
 		if order.Client.Auth != authId.(string) {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
