@@ -14,4 +14,5 @@ var Module = fx.Options(
 	fx.Provide(NewFinishOrderHandler),
 	fx.Provide(NewAssignDeliveryOrderHandler),
 	fx.Provide(NewPickUpBusinessOrderHandler),
+	fx.Provide(NewDeliveryClientOrderHandler),
 )
