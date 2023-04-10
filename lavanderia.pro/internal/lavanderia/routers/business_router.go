@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -218,8 +219,8 @@ func NewPostRegisterBusinessDeliveryRouter(r *gin.Engine, controller *controller
 
 		// Call BindJSON to bind the received JSON to
 		// businessId.
-		if errBusinessJson := c.ShouldBindBodyWith(&businessId, binding.JSON); errBusinessJson != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": errBusinessJson})
+		if err := c.ShouldBindUri(&businessId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
 			return
 		}
 
@@ -240,6 +241,7 @@ func NewPostRegisterBusinessDeliveryRouter(r *gin.Engine, controller *controller
 		// Handle Controller
 		delivery, errRegister := controller.RegisterBusinessDelivery(&newAuth, &businessId, &newDelivery)
 
+		fmt.Println(businessId)
 		if errRegister != nil {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"msg": errRegister.Error()})
 		} else {

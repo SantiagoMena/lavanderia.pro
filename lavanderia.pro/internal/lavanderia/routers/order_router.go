@@ -9,11 +9,13 @@ import (
 	"lavanderia.pro/internal/lavanderia/controllers"
 )
 
+// Client
 func NewPostOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
 	orderController *controllers.OrderController,
 	businessController *controllers.BusinessController,
+	clientController *controllers.ClientController,
 ) {
 	r.POST("/business-order/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
@@ -37,16 +39,24 @@ func NewPostOrderRouter(
 			return
 		}
 
-		if string(businessFound.Auth) != authId {
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": "permissions denied"})
-			return
-		}
-
 		// Call BindJSON to bind the received JSON to
 		// client.
 		var orderObject types.Order
 		if errOrderJson := c.ShouldBindBodyWith(&orderObject, binding.JSON); errOrderJson != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"msg": errOrderJson.Error() + "1"})
+			return
+		}
+
+		clientAuthId := authId.(string)
+		clientAuth, errAuthClient := clientController.GetClientByAuth(&types.Client{Auth: clientAuthId})
+
+		if errAuthClient != nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		if clientAuth.ID != orderObject.Client.ID {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
 
@@ -69,6 +79,7 @@ func NewPostOrderRouter(
 	})
 }
 
+// Client / Business / Delivery
 func NewGetOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
@@ -84,13 +95,19 @@ func NewGetOrderRouter(
 			return
 		}
 
-		if authId == nil {
+		// Handle Controller
+		order, err := orderController.GetOrder(&orderId)
+
+		havePermissions := false
+
+		havePermissions = havePermissions || order.Business.Auth == authId.(string)
+		havePermissions = havePermissions || (len(order.Delivery.Auth) > 0 && order.Delivery.Auth == authId.(string))
+		havePermissions = havePermissions || order.Client.Auth == authId.(string)
+
+		if !havePermissions {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
-
-		// Handle Controller
-		order, err := orderController.GetOrder(&orderId)
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
@@ -101,6 +118,7 @@ func NewGetOrderRouter(
 	})
 }
 
+// Client
 func NewDeleteOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
@@ -146,6 +164,7 @@ func NewDeleteOrderRouter(
 	})
 }
 
+// Business
 func NewPostAcceptOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
@@ -174,7 +193,7 @@ func NewPostAcceptOrderRouter(
 			return
 		}
 
-		if order.Client.Auth != authId.(string) {
+		if order.Business.Auth != authId.(string) {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
@@ -191,6 +210,7 @@ func NewPostAcceptOrderRouter(
 	})
 }
 
+// Business
 func NewRejectOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
@@ -219,7 +239,7 @@ func NewRejectOrderRouter(
 			return
 		}
 
-		if order.Client.Auth != authId.(string) {
+		if order.Business.Auth != authId.(string) {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
@@ -236,6 +256,7 @@ func NewRejectOrderRouter(
 	})
 }
 
+// Business
 func NewAssignPickUpOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
@@ -272,12 +293,12 @@ func NewAssignPickUpOrderRouter(
 			return
 		}
 
-		if order.Client.Auth != authId.(string) {
+		if order.Business.Auth != authId.(string) {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
 
-		order.Delivery = delivery
+		order.PickUp = delivery
 
 		// Handle Delete
 		orderAssignedPickup, errReject := orderController.AssignPickUpOrder(&order)
@@ -291,6 +312,7 @@ func NewAssignPickUpOrderRouter(
 	})
 }
 
+// Delivery / Business
 func NewPickUpOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
@@ -319,7 +341,12 @@ func NewPickUpOrderRouter(
 			return
 		}
 
-		if order.Client.Auth != authId.(string) {
+		havePermissions := false
+
+		havePermissions = havePermissions || order.Business.Auth == authId.(string)
+		havePermissions = havePermissions || order.PickUp.Auth == authId.(string)
+
+		if !havePermissions {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
@@ -335,6 +362,7 @@ func NewPickUpOrderRouter(
 	})
 }
 
+// Business
 func NewProcessOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
@@ -363,7 +391,7 @@ func NewProcessOrderRouter(
 			return
 		}
 
-		if order.Client.Auth != authId.(string) {
+		if order.Business.Auth != authId.(string) {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
@@ -379,6 +407,7 @@ func NewProcessOrderRouter(
 	})
 }
 
+// Business
 func NewFinishOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
@@ -407,7 +436,7 @@ func NewFinishOrderRouter(
 			return
 		}
 
-		if order.Client.Auth != authId.(string) {
+		if order.Business.Auth != authId.(string) {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
@@ -423,6 +452,7 @@ func NewFinishOrderRouter(
 	})
 }
 
+// Business
 func NewAssignDeliveryOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
@@ -443,6 +473,14 @@ func NewAssignDeliveryOrderRouter(
 			return
 		}
 
+		var delivery types.Delivery
+		// Call BindJSON to bind the received JSON to
+		// delivery.
+		if errDeliveryJson := c.ShouldBindBodyWith(&delivery, binding.JSON); errDeliveryJson != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errDeliveryJson})
+			return
+		}
+
 		// Handle Controller
 		order, err := orderController.GetOrder(&orderId)
 
@@ -451,10 +489,12 @@ func NewAssignDeliveryOrderRouter(
 			return
 		}
 
-		if order.Client.Auth != authId.(string) {
+		if order.Business.Auth != authId.(string) {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
+
+		order.Delivery = delivery
 
 		orderFinished, errFinish := orderController.AssignDeliveryOrder(&order)
 
@@ -467,6 +507,7 @@ func NewAssignDeliveryOrderRouter(
 	})
 }
 
+// Delivery / business
 func NewPickUpBusinessOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
@@ -495,7 +536,12 @@ func NewPickUpBusinessOrderRouter(
 			return
 		}
 
-		if order.Client.Auth != authId.(string) {
+		havePermissions := false
+
+		havePermissions = havePermissions || order.Business.Auth == authId.(string)
+		havePermissions = havePermissions || order.Delivery.Auth == authId.(string)
+
+		if !havePermissions {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
@@ -511,6 +557,7 @@ func NewPickUpBusinessOrderRouter(
 	})
 }
 
+// Delivery / Business
 func NewDeliveryClientOrderRouter(
 	r *gin.Engine,
 	productController *controllers.ProductController,
@@ -539,7 +586,12 @@ func NewDeliveryClientOrderRouter(
 			return
 		}
 
-		if order.Client.Auth != authId.(string) {
+		havePermissions := false
+
+		havePermissions = havePermissions || order.Business.Auth == authId.(string)
+		havePermissions = havePermissions || order.Delivery.Auth == authId.(string)
+
+		if !havePermissions {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
