@@ -480,6 +480,87 @@ func TestProcessOrder(t *testing.T) {
 	assert.NotEmpty(t, orderProcessing.ProcessingAt, "process ProcessingAt order error")
 }
 
+func TestFinishOrder(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	orderController := MakeOrderControllerForTest()
+	authController := MakeAuthForOrderController()
+
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+
+	authObject := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	businessObject := &types.Business{
+		Name: "Test",
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+	}
+
+	business, errBusiness := authController.RegisterBusiness(authObject, businessObject)
+
+	assert.Equal(t, nil, errBusiness, "register business error")
+	assert.NotEmpty(t, business, "register business error")
+
+	order, errOrder := orderController.PostOrder(&types.Order{
+		Business: business,
+		Address:  types.Address{Name: "test"},
+		Client:   types.Client{Name: "Client test"},
+	})
+
+	assert.Equal(t, nil, errOrder, "create order error")
+	assert.NotEmpty(t, order, "create order error")
+	assert.NotEmpty(t, order.CreatedAt, "CreatedAt order error")
+
+	orderAccepted, errAccept := orderController.AcceptOrder(&types.Order{
+		ID: order.ID,
+	})
+
+	assert.Equal(t, nil, errAccept, "accept order error")
+	assert.NotEmpty(t, orderAccepted, "accept order error")
+	assert.NotEmpty(t, orderAccepted.AcceptedAt, "AcceptedAt order error")
+
+	orderAssignPickUp, errAssignPickUp := orderController.AssignPickUpOrder(&types.Order{
+		ID: order.ID,
+		PickUp: types.Delivery{
+			Name: "TEST PICKER UP",
+		},
+	})
+
+	assert.Equal(t, nil, errAssignPickUp, "assign pickup  order error")
+	assert.NotEmpty(t, orderAssignPickUp, "assign pickup  order error")
+	assert.NotEmpty(t, orderAssignPickUp.AssignedPickUpAt, "assign pickup AssignedPickUpAt order error")
+
+	orderPickUp, errPickUp := orderController.PickUpClientOrder(&types.Order{ID: order.ID})
+
+	assert.Equal(t, nil, errPickUp, "pickup order error")
+	assert.NotEmpty(t, orderPickUp, "pickup order error")
+	assert.NotEmpty(t, orderPickUp.AssignedPickUpAt, "pickup AssignedPickUpAt order error")
+
+	orderProcessing, errProcess := orderController.ProcessOrder(&types.Order{ID: order.ID})
+
+	assert.Equal(t, nil, errProcess, "process order error")
+	assert.NotEmpty(t, orderProcessing, "process order error")
+	assert.NotEmpty(t, orderProcessing.ProcessingAt, "process ProcessingAt order error")
+
+	orderFinished, errFinish := orderController.FinishOrder(&types.Order{ID: order.ID})
+
+	assert.Equal(t, nil, errFinish, "finish order error")
+	assert.NotEmpty(t, orderFinished, "finish order error")
+	assert.NotEmpty(t, orderFinished.FinishedAt, "finish FinishedAt order error")
+}
+
 func MakeOrderControllerForTest() *OrderController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
@@ -494,6 +575,7 @@ func MakeOrderControllerForTest() *OrderController {
 		order.NewAssignPickUpOrderHandler(repositoryOrder),
 		order.NewPickUpClientOrderHandler(repositoryOrder),
 		order.NewProcessOrderHandler(repositoryOrder),
+		order.NewFinishOrderHandler(repositoryOrder),
 	)
 
 	return OrderController
