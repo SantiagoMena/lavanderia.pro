@@ -40,9 +40,14 @@ func (ch RegisterDeliveryHandler) Handle(auth *types.Auth, delivery *types.Deliv
 		Password: string(password),
 	})
 
+	if err != nil {
+		return types.Delivery{}, err
+	}
+
 	deliveryDb, err := ch.repositoryDelivery.Create(&types.Delivery{
 		Auth:      authDb.ID,
 		Name:      delivery.Name,
+		Business:  delivery.Business,
 		CreatedAt: delivery.CreatedAt,
 	})
 
