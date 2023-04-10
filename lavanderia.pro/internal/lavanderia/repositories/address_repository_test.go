@@ -2,15 +2,16 @@ package repositories
 
 import (
 	"fmt"
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
 	"lavanderia.pro/api/types"
 	"lavanderia.pro/internal/lavanderia/config"
 	"lavanderia.pro/internal/lavanderia/databases"
-	"strings"
-	"testing"
-	"time"
 )
 
 func TestCreateAddress(t *testing.T) {
@@ -188,7 +189,6 @@ func TestGetAddresses(t *testing.T) {
 	assert.Equal(t, errorFind, nil, "GetAddresses() returns error")
 	assert.NotNil(t, adressesFound, "GetAddresses() returns nil result")
 	assert.Equal(t, 2, len(*adressesFound), "GetAddresses() different number of addresses created")
-	fmt.Println(clientObject.ID)
 }
 
 func TestDeleteAddress(t *testing.T) {
