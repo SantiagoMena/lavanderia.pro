@@ -423,3 +423,39 @@ func (orderRepository *OrderRepository) AssignDelivery(order *types.Order) (type
 
 	return assignedDeliveryOrder, nil
 }
+
+func (orderRepository *OrderRepository) PickUpBusiness(order *types.Order) (types.Order, error) {
+	t := time.Now()
+	order.PickUpBusinessAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(order.ID)
+
+	// delete only if all other status are empties
+	filter := bson.D{
+		{Key: "_id", Value: id},
+		{Key: "accepted_at", Value: bson.M{"$ne": nil}},
+		{Key: "assigned_pickup_at", Value: bson.M{"$ne": nil}},
+		{Key: "rejected_at", Value: nil},
+		{Key: "pickup_client_at", Value: bson.M{"$ne": nil}},
+		{Key: "processing_at", Value: bson.M{"$ne": nil}},
+		{Key: "finished_at", Value: bson.M{"$ne": nil}},
+		{Key: "assigned_delivery_at", Value: bson.M{"$ne": nil}},
+		{Key: "pickup_business_at", Value: nil},
+		{Key: "delivered_client_at", Value: nil},
+		{Key: "deleted_at", Value: nil},
+	}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "pickup_business_at", Value: order.PickUpBusinessAt}}}}
+
+	objectUpdated, err := orderRepository.database.UpdateOne(orderCollection, filter, update)
+	if err != nil {
+		return types.Order{}, err
+	}
+
+	var assignedOrder types.Order
+
+	objectUpdt, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(objectUpdt, &assignedOrder)
+	assignedOrder.PickUpBusinessAt = order.PickUpBusinessAt
+
+	return assignedOrder, nil
+}
