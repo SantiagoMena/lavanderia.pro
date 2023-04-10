@@ -307,3 +307,39 @@ func (orderRepository *OrderRepository) PickUpClient(order *types.Order) (types.
 
 	return rejectedOrder, nil
 }
+
+func (orderRepository *OrderRepository) Process(order *types.Order) (types.Order, error) {
+	t := time.Now()
+	order.ProcessingAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(order.ID)
+
+	// delete only if all other status are empties
+	filter := bson.D{
+		{Key: "_id", Value: id},
+		{Key: "accepted_at", Value: bson.M{"$ne": nil}},
+		{Key: "assigned_pickup_at", Value: bson.M{"$ne": nil}},
+		{Key: "rejected_at", Value: nil},
+		{Key: "pickup_client_at", Value: bson.M{"$ne": nil}},
+		{Key: "processing_at", Value: nil},
+		{Key: "finished_at", Value: nil},
+		{Key: "assigned_delivery_at", Value: nil},
+		{Key: "pickup_business_at", Value: nil},
+		{Key: "delivered_client_at", Value: nil},
+		{Key: "deleted_at", Value: nil},
+	}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "processing_at", Value: order.ProcessingAt}}}}
+
+	objectUpdated, err := orderRepository.database.UpdateOne(orderCollection, filter, update)
+	if err != nil {
+		return types.Order{}, err
+	}
+
+	var rejectedOrder types.Order
+
+	objectUpdt, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(objectUpdt, &rejectedOrder)
+	rejectedOrder.ProcessingAt = order.ProcessingAt
+
+	return rejectedOrder, nil
+}
