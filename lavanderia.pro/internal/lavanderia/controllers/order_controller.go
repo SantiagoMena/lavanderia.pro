@@ -6,15 +6,16 @@ import (
 )
 
 type OrderController struct {
-	PostOrderHandler         *order.PostOrderHandler
-	GetOrderHandler          *order.GetOrderHandler
-	DeleteOrderHandler       *order.DeleteOrderHandler
-	AcceptOrderHandler       *order.AcceptOrderHandler
-	RejectOrderHandler       *order.RejectOrderHandler
-	AssignPickUpOrderHandler *order.AssignPickUpOrderHandler
-	PickUpClientOrderHandler *order.PickUpClientOrderHandler
-	ProcessOrderHandler      *order.ProcessOrderHandler
-	FinishOrderHandler       *order.FinishOrderHandler
+	PostOrderHandler           *order.PostOrderHandler
+	GetOrderHandler            *order.GetOrderHandler
+	DeleteOrderHandler         *order.DeleteOrderHandler
+	AcceptOrderHandler         *order.AcceptOrderHandler
+	RejectOrderHandler         *order.RejectOrderHandler
+	AssignPickUpOrderHandler   *order.AssignPickUpOrderHandler
+	PickUpClientOrderHandler   *order.PickUpClientOrderHandler
+	ProcessOrderHandler        *order.ProcessOrderHandler
+	FinishOrderHandler         *order.FinishOrderHandler
+	AssignDeliveryOrderHandler *order.AssignDeliveryOrderHandler
 }
 
 func NewOrderController(
@@ -27,17 +28,19 @@ func NewOrderController(
 	PickUpClientOrderHandler *order.PickUpClientOrderHandler,
 	ProcessOrderHandler *order.ProcessOrderHandler,
 	FinishOrderHandler *order.FinishOrderHandler,
+	AssignDeliveryOrderHandler *order.AssignDeliveryOrderHandler,
 ) *OrderController {
 	return &OrderController{
-		PostOrderHandler:         PostOrderHandler,
-		GetOrderHandler:          GetOrderHandler,
-		DeleteOrderHandler:       DeleteOrderHandler,
-		AcceptOrderHandler:       AcceptOrderHandler,
-		RejectOrderHandler:       RejectOrderHandler,
-		AssignPickUpOrderHandler: AssignPickUpOrderHandler,
-		PickUpClientOrderHandler: PickUpClientOrderHandler,
-		ProcessOrderHandler:      ProcessOrderHandler,
-		FinishOrderHandler:       FinishOrderHandler,
+		PostOrderHandler:           PostOrderHandler,
+		GetOrderHandler:            GetOrderHandler,
+		DeleteOrderHandler:         DeleteOrderHandler,
+		AcceptOrderHandler:         AcceptOrderHandler,
+		RejectOrderHandler:         RejectOrderHandler,
+		AssignPickUpOrderHandler:   AssignPickUpOrderHandler,
+		PickUpClientOrderHandler:   PickUpClientOrderHandler,
+		ProcessOrderHandler:        ProcessOrderHandler,
+		FinishOrderHandler:         FinishOrderHandler,
+		AssignDeliveryOrderHandler: AssignDeliveryOrderHandler,
 	}
 }
 
@@ -123,6 +126,16 @@ func (controller OrderController) ProcessOrder(order *types.Order) (types.Order,
 
 func (controller OrderController) FinishOrder(order *types.Order) (types.Order, error) {
 	orderDb, err := controller.FinishOrderHandler.Handle(order)
+
+	if err != nil {
+		return types.Order{}, err
+	}
+
+	return orderDb, err
+}
+
+func (controller OrderController) AssignDeliveryOrder(order *types.Order) (types.Order, error) {
+	orderDb, err := controller.AssignDeliveryOrderHandler.Handle(order)
 
 	if err != nil {
 		return types.Order{}, err
