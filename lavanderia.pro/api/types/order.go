@@ -15,8 +15,8 @@ type Order struct {
 	RejectedAt         *time.Time     `json:"rejected_at,omitempty" bson:"rejected_at"`
 	AssignedPickUpAt   *time.Time     `json:"assigned_pickup_at,omitempty" bson:"assigned_pickup_at"`
 	PickUpClientAt     *time.Time     `json:"pickup_client_at,omitempty" bson:"pickup_client_at"`
-	ProcessingOrderAt  *time.Time     `json:"processing_at,omitempty" bson:"processing_at"`
-	FinishedOrderAt    *time.Time     `json:"finished_at,omitempty" bson:"finished_at"`
+	ProcessingAt       *time.Time     `json:"processing_at,omitempty" bson:"processing_at"`
+	FinishedAt         *time.Time     `json:"finished_at,omitempty" bson:"finished_at"`
 	AssignedDeliveryAt *time.Time     `json:"assigned_delivery_at,omitempty" bson:"assigned_delivery_at"`
 	PickUpBusinessAt   *time.Time     `json:"pickup_business_at,omitempty" bson:"pickup_business_at"`
 	DeliveredClientAt  *time.Time     `json:"delivered_client_at,omitempty" bson:"delivered_client_at"`

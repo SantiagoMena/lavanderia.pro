@@ -37,4 +37,5 @@ var Module = fx.Invoke(
 	NewRejectOrderRouter,
 	NewAssignPickUpOrderRouter,
 	NewPickUpOrderRouter,
+	NewProcessOrderRouter,
 )

@@ -13,6 +13,7 @@ type OrderController struct {
 	RejectOrderHandler       *order.RejectOrderHandler
 	AssignPickUpOrderHandler *order.AssignPickUpOrderHandler
 	PickUpClientOrderHandler *order.PickUpClientOrderHandler
+	ProcessOrderHandler      *order.ProcessOrderHandler
 }
 
 func NewOrderController(
@@ -23,6 +24,7 @@ func NewOrderController(
 	RejectOrderHandler *order.RejectOrderHandler,
 	AssignPickUpOrderHandler *order.AssignPickUpOrderHandler,
 	PickUpClientOrderHandler *order.PickUpClientOrderHandler,
+	ProcessOrderHandler *order.ProcessOrderHandler,
 ) *OrderController {
 	return &OrderController{
 		PostOrderHandler:         PostOrderHandler,
@@ -32,6 +34,7 @@ func NewOrderController(
 		RejectOrderHandler:       RejectOrderHandler,
 		AssignPickUpOrderHandler: AssignPickUpOrderHandler,
 		PickUpClientOrderHandler: PickUpClientOrderHandler,
+		ProcessOrderHandler:      ProcessOrderHandler,
 	}
 }
 
@@ -97,6 +100,16 @@ func (controller OrderController) AssignPickUpOrder(order *types.Order) (types.O
 
 func (controller OrderController) PickUpClientOrder(order *types.Order) (types.Order, error) {
 	orderDb, err := controller.PickUpClientOrderHandler.Handle(order)
+
+	if err != nil {
+		return types.Order{}, err
+	}
+
+	return orderDb, err
+}
+
+func (controller OrderController) ProcessOrder(order *types.Order) (types.Order, error) {
+	orderDb, err := controller.ProcessOrderHandler.Handle(order)
 
 	if err != nil {
 		return types.Order{}, err
