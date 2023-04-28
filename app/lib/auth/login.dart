@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lavanderiapro/auth/register.dart';
+import 'package:lavanderiapro/auth/register_business.dart';
+import 'package:lavanderiapro/auth/register_client.dart';
 import 'package:lavanderiapro/pages/home.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/services/login_service.dart';
@@ -22,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    var icons = ['🧺','🧼','👕','👚','👔','👖','🧦','👙','👗'];
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.loginLabel),
@@ -30,9 +32,16 @@ class _LoginPageState extends State<LoginPage> {
           key: _formKey,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: Center(
+                      child: Text((icons..shuffle()).first, style: TextStyle(fontSize: 75)),
+                    )
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   child: TextFormField(
@@ -105,11 +114,34 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => RegisterPage(title: 'Register')
+                                builder: (context) => RegisterClientPage(title: 'Register Client')
                             )
                         );
                       },
                       child: Text(AppLocalizations.of(context)!.registerLabel, style: TextStyle(fontSize: 18)),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: Divider(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50), // NEW
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterBusinessPage(title: 'Register Business')
+                            )
+                        );
+                      },
+                      child: Text(AppLocalizations.of(context)!.registerBusinessLabel, style: TextStyle(fontSize: 18)),
                     ),
                   ),
                 ),
