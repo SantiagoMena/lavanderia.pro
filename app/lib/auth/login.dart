@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lavanderiapro/auth/register.dart';
 import 'package:lavanderiapro/pages/home.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/services/login_service.dart';
@@ -63,6 +64,9 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   child: Center(
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50), // NEW
+                      ),
                       onPressed: () {
                         if(_formKey.currentState!.validate()){
                           // Login User
@@ -90,9 +94,28 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50), // NEW
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterPage(title: 'Register')
+                            )
+                        );
+                      },
+                      child: Text(AppLocalizations.of(context)!.registerLabel, style: TextStyle(fontSize: 18)),
+                    ),
+                  ),
+                ),
               ],
             ),
-          )
+          ),
       ),
     );
   }
@@ -138,7 +161,7 @@ class SubmitLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(AppLocalizations.of(context)!.submitLoginLabel);
+    return Text(AppLocalizations.of(context)!.submitLoginLabel, style: TextStyle(fontSize: 18));
   }
 }
 
