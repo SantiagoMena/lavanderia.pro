@@ -6,5 +6,6 @@
   "emptyEmailAlert": "Ingrese su correo electrónico",
   "emptyPasswordAlert": "Ingrese su contraseña",
   "snackBarInvalidCredentials": "Credenciales Invalidas",
-  "snackBarFillInput": "Completa los campos"
+  "snackBarFillInput": "Completa los campos",
+  "snackBarLoginError": "Error al ingresar"
 }
