@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:lavanderiapro/pages/home.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/services/login_service.dart';
-import 'package:lavanderiapro/services/register_service.dart';
+import 'package:lavanderiapro/services/register_business_service.dart';
 
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key, required this.title});
+class RegisterBusinessPage extends StatefulWidget {
+  const RegisterBusinessPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<RegisterBusinessPage> createState() => _RegisterBusinessPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterBusinessPageState extends State<RegisterBusinessPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -25,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.registerLabel),
+        title: Text(AppLocalizations.of(context)!.registerBusinessPageTitle),
       ),
       body: Form(
           key: _formKey,
@@ -34,6 +34,12 @@ class _RegisterPageState extends State<RegisterPage> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: Center(
+                      child: Text('🗝️', style: TextStyle(fontSize: 75)),
+                    )
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   child: TextFormField(
