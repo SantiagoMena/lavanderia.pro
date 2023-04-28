@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:lavanderiapro/util/constants.dart';
 
 Future<Token?> emailLogin(String email, String password) async {
-  // var url = Uri.https('localhost:8080', 'whatsit/create');
   var url = Uri.http(API_HOST, 'auth/login');
   final response = await http.post(
       url,
