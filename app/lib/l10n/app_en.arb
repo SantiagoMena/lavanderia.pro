@@ -30,5 +30,9 @@
   "snackBarFillInput": "Please fill input",
   "@snackBarFillInput": {
     "description": "Alert Please fill input"
-  }
+  },
+ "snackBarLoginError": "Login Error",
+ "@snackBarFillInput": {
+   "description": "Alert Login Error"
+ }
 }
