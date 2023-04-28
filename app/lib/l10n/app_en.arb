@@ -1,0 +1,34 @@
+{
+  "emailLabel": "E-mail",
+  "@emailLabel": {
+    "description": "Label Email"
+  },
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Label Password"
+  },
+  "submitLoginLabel": "Login",
+  "@submitLoginLabel": {
+    "description": "Submit Login Label"
+  },
+  "loginLabel": "Login",
+  "@loginLabel": {
+    "description": "Label Login"
+  },
+  "emptyEmailAlert": "Please enter you email",
+  "@emptyEmailAlert": {
+    "description": "Alert Email Empty"
+  },
+  "emptyPasswordAlert": "Please enter you password",
+  "@emptyPasswordAlert": {
+    "description": "Alert Password Empty"
+  },
+  "snackBarInvalidCredentials": "Invalid Credentials",
+  "@snackBarInvalidCredentials": {
+    "description": "Alert Invalid Credentials"
+  },
+  "snackBarFillInput": "Please fill input",
+  "@snackBarFillInput": {
+    "description": "Alert Please fill input"
+  }
+}

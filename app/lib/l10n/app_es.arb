@@ -1,0 +1,10 @@
+{
+  "emailLabel": "Correo electrónico",
+  "passwordLabel": "Contraseña",
+  "loginLabel": "Ingresar",
+  "submitLoginLabel": "Ingresar",
+  "emptyEmailAlert": "Ingrese su correo electrónico",
+  "emptyPasswordAlert": "Ingrese su contraseña",
+  "snackBarInvalidCredentials": "Credenciales Invalidas",
+  "snackBarFillInput": "Completa los campos"
+}

@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lavanderiapro/pages/home.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -29,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(AppLocalizations.of(context)!.loginLabel),
       ),
       body: Form(
           key: _formKey,
@@ -42,10 +35,10 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   child: TextFormField(
                     controller: emailController,
-                    decoration: const InputDecoration(border: OutlineInputBorder(), labelText: "Email"),
+                    decoration: const InputDecoration(border: OutlineInputBorder(), label: EmailLabel()),
                     validator: (value) {
                       if(value == null || value.isEmpty){
-                        return 'Please enter you email';
+                        return AppLocalizations.of(context)!.emptyEmailAlert;
                       }
                       return null;
                     },
@@ -56,10 +49,10 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextFormField(
                     controller: passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(border: OutlineInputBorder(), labelText: "Password"),
+                    decoration: const InputDecoration(border: OutlineInputBorder(), label: PasswordLabel()),
                     validator: (value) {
                       if(value == null || value.isEmpty){
-                        return 'Please enter you password';
+                        return AppLocalizations.of(context)!.emptyPasswordAlert;
                       }
                       return null;
                     },
@@ -81,16 +74,16 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Invalid Credentials'))
+                                const SnackBar(content: SnackBarInvalidCredentials())
                             );
                           }
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Please fill input'))
+                              const SnackBar(content: SnackBarFillInput())
                           );
                         }
                       },
-                      child: const Text('Submit'),
+                      child: SubmitLabel(),
                     ),
                   ),
                 ),
@@ -99,5 +92,60 @@ class _LoginPageState extends State<LoginPage> {
           )
       ),
     );
+  }
+}
+
+class SnackBarFillInput extends StatelessWidget {
+  const SnackBarFillInput({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.snackBarFillInput);
+  }
+}
+
+class SnackBarInvalidCredentials extends StatelessWidget {
+  const SnackBarInvalidCredentials({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.snackBarInvalidCredentials);
+  }
+}
+
+class SubmitLabel extends StatelessWidget {
+  const SubmitLabel({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.submitLoginLabel);
+  }
+}
+
+class EmailLabel extends StatelessWidget {
+  const EmailLabel({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.emailLabel);
+  }
+}
+
+class PasswordLabel extends StatelessWidget {
+  const PasswordLabel({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.passwordLabel);
   }
 }
