@@ -7,9 +7,17 @@
   "@passwordLabel": {
     "description": "Label Password"
   },
+  "businessNameLabel": "Business Name",
+  "@businessNameLabel": {
+    "description": "Label Business Name"
+  },
   "submitLoginLabel": "Login",
   "@submitLoginLabel": {
     "description": "Submit Login Label"
+  },
+  "submitRegisterLabel": "Register",
+  "@submitRegisterLabel": {
+    "description": "Submit Register Label"
   },
   "loginLabel": "Login",
   "@loginLabel": {
@@ -18,6 +26,10 @@
   "emptyEmailAlert": "Please enter you email",
   "@emptyEmailAlert": {
     "description": "Alert Email Empty"
+  },
+  "emptyNameAlert": "Please enter you name",
+  "@emptyNameAlert": {
+    "description": "Alert Name Empty"
   },
   "emptyPasswordAlert": "Please enter you password",
   "@emptyPasswordAlert": {
@@ -32,7 +44,15 @@
     "description": "Alert Please fill input"
   },
  "snackBarLoginError": "Login Error",
- "@snackBarFillInput": {
+ "@snackBarLoginError": {
    "description": "Alert Login Error"
+ },
+ "registerLabel": "Register",
+ "@registerLabel": {
+    "description": "Register Laberl"
+ },
+ "snackBarRegisterError": "Register Error",
+ "@snackBarRegisterInput": {
+   "description": "Alert Register Error"
  }
 }
