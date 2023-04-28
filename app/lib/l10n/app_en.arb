@@ -49,10 +49,22 @@
  },
  "registerLabel": "Register",
  "@registerLabel": {
-    "description": "Register Laberl"
+    "description": "Register Label"
  },
  "snackBarRegisterError": "Register Error",
  "@snackBarRegisterInput": {
    "description": "Alert Register Error"
+ },
+ "registerBusinessLabel": "Register Your Business",
+ "@registerBusinessLabel": {
+    "description": "Register Business Label"
+ },
+ "clientNameLabel": "Name",
+ "@clientNameLabel": {
+    "description": "Client Name Label"
+ },
+ "registerBusinessPageTitle": "Register Your Business",
+ "@registerBusinessPageTitle": {
+    "description": "Register Business Page Title"
  }
 }

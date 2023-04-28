@@ -12,5 +12,8 @@
   "snackBarFillInput": "Completa los campos",
   "snackBarLoginError": "Error al ingresar",
   "registerLabel": "Registrarse",
-  "snackBarRegisterError": "Error al registrarse"
+  "snackBarRegisterError": "Error al registrarse",
+  "registerBusinessLabel": "Registrar tu Negocio",
+ "clientNameLabel": "Nombre",
+ "registerBusinessPageTitle": "Registra tu Negocio"
 }
