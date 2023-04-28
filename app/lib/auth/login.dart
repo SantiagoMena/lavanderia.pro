@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lavanderiapro/pages/home.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lavanderiapro/services/login_service.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -64,19 +65,21 @@ class _LoginPageState extends State<LoginPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         if(_formKey.currentState!.validate()){
-                          // Navigate user to home page
-                          if(emailController.text == "test@test.com" && passwordController.text == "123") {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
+                          // Login User
+                          emailLogin(emailController.text, passwordController.text)
+                              .then((token) => token!.token!.length > 0 ?
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
                                     builder: (context) => HomePage(email: emailController.text)
-                                )
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: SnackBarInvalidCredentials())
-                            );
-                          }
+                                  )
+                              ) :
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: SnackBarLoginError())
+                              )
+                          ).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: SnackBarLoginError())
+                          ));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: SnackBarFillInput())
@@ -92,6 +95,17 @@ class _LoginPageState extends State<LoginPage> {
           )
       ),
     );
+  }
+}
+
+class SnackBarLoginError extends StatelessWidget {
+  const SnackBarLoginError({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.snackBarLoginError);
   }
 }
 
