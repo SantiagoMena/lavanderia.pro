@@ -29,12 +29,11 @@ class _RegisterClientPageState extends State<RegisterClientPage> {
         title: Text(AppLocalizations.of(context)!.registerLabel),
       ),
       body: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              children: [
+        key: _formKey,
+        child: SingleChildScrollView(
+          reverse: true,
+          child: Column(
+            children: [
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: Center(
@@ -138,6 +137,7 @@ class _RegisterClientPageState extends State<RegisterClientPage> {
                     ),
                   ),
                 ),
+                Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
               ],
             ),
           ),

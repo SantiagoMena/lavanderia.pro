@@ -29,125 +29,129 @@ class _LoginPageState extends State<LoginPage> {
         title: Text(AppLocalizations.of(context)!.loginLabel),
       ),
       body: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              // crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: Center(
-                      child: Text((icons..shuffle()).first, style: TextStyle(fontSize: 75)),
-                    )
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: TextFormField(
-                    controller: emailController,
-                    decoration: const InputDecoration(border: OutlineInputBorder(), label: EmailLabel()),
-                    validator: (value) {
-                      if(value == null || value.isEmpty){
-                        return AppLocalizations.of(context)!.emptyEmailAlert;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: TextFormField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(border: OutlineInputBorder(), label: PasswordLabel()),
-                    validator: (value) {
-                      if(value == null || value.isEmpty){
-                        return AppLocalizations.of(context)!.emptyPasswordAlert;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Padding(
+        key: _formKey,
+        child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+        child:
+          SingleChildScrollView(
+          reverse: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   child: Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50), // NEW
-                      ),
-                      onPressed: () {
-                        if(_formKey.currentState!.validate()){
-                          // Login User
-                          emailLogin(emailController.text, passwordController.text)
-                              .then((token) => token!.token!.length > 0 ?
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomePage(token: token!.token)
-                                  )
-                              ) :
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: SnackBarLoginError())
-                              )
-                          ).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: SnackBarLoginError())
-                          ));
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: SnackBarFillInput())
-                          );
-                        }
-                      },
-                      child: SubmitLabel(),
+                    child: Text((icons..shuffle()).first, style: TextStyle(fontSize: 75)),
+                  )
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: TextFormField(
+                  controller: emailController,
+                  decoration: const InputDecoration(border: OutlineInputBorder(), label: EmailLabel()),
+                  validator: (value) {
+                    if(value == null || value.isEmpty){
+                      return AppLocalizations.of(context)!.emptyEmailAlert;
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: TextFormField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(border: OutlineInputBorder(), label: PasswordLabel()),
+                  validator: (value) {
+                    if(value == null || value.isEmpty){
+                      return AppLocalizations.of(context)!.emptyPasswordAlert;
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50), // NEW
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50), // NEW
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RegisterClientPage(title: 'Register Client')
+                    onPressed: () {
+                      if(_formKey.currentState!.validate()){
+                        // Login User
+                        emailLogin(emailController.text, passwordController.text)
+                            .then((token) => token!.token!.length > 0 ?
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomePage(token: token!.token)
+                                )
+                            ) :
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: SnackBarLoginError())
                             )
+                        ).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: SnackBarLoginError())
+                        ));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: SnackBarFillInput())
                         );
-                      },
-                      child: Text(AppLocalizations.of(context)!.registerLabel, style: TextStyle(fontSize: 18)),
-                    ),
+                      }
+                    },
+                    child: SubmitLabel(),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: Divider(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50), // NEW
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RegisterBusinessPage(title: 'Register Business')
-                            )
-                        );
-                      },
-                      child: Text(AppLocalizations.of(context)!.registerBusinessLabel, style: TextStyle(fontSize: 18)),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50), // NEW
                     ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegisterClientPage(title: 'Register Client')
+                          )
+                      );
+                    },
+                    child: Text(AppLocalizations.of(context)!.registerLabel, style: TextStyle(fontSize: 18)),
                   ),
                 ),
-              ],
-            ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: Divider(),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50), // NEW
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegisterBusinessPage(title: 'Register Business')
+                          )
+                      );
+                    },
+                    child: Text(AppLocalizations.of(context)!.registerBusinessLabel, style: TextStyle(fontSize: 18)),
+                  ),
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
+            ],
           ),
+        ),
+      ),
       ),
     );
   }

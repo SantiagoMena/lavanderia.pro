@@ -19,5 +19,13 @@
  "loginAsBusinessButtonLabel": "Ingresar como Negocio",
  "loginAsClientButtonLabel": "Ingresar como Cliente",
  "loginAsDeliveryButtonLabel": "Ingresar como Delivery",
- "selectProfileLabel": "Seleccione un Perfil"
+ "selectProfileLabel": "Seleccione un Perfil",
+ "profileTabClientLabel": "Perfil",
+ "newOrderTabClientLabel": "Nueva Orden",
+ "ordersTabClientLabel": "Ordenes",
+ "manageAddressesButtonLabel": "Administrar Direcciones",
+ "changeNameButtonLabel": "Cambiar Nombre",
+ "changePasswordButtonLabel": "Cambiar Contraseña",
+ "currentPasswordLabel": "Contraseña Actual",
+ "newPasswordLabel": "Contraseña Nueva"
 }

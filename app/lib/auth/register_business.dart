@@ -29,10 +29,9 @@ class _RegisterBusinessPageState extends State<RegisterBusinessPage> {
       ),
       body: Form(
           key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: SingleChildScrollView(
+            reverse: true,
+            child: Column(
               children: [
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -138,6 +137,7 @@ class _RegisterBusinessPageState extends State<RegisterBusinessPage> {
                     ),
                   ),
                 ),
+                Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
               ],
             ),
           ),
