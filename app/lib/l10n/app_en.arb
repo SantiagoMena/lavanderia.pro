@@ -82,5 +82,17 @@
  "selectProfileLabel": "Select Profile",
  "@selectProfileLabel": {
   "description": "Select Profile Label"
- }
+ },
+ "profileTabClientLabel": "Profile",
+  "@profileTabClientLabel": {
+   "description": "Profile Tab Client Label"
+  },
+  "newOrderTabClientLabel": "New Order",
+   "@newOrderTabClientLabel": {
+   "description": "New Order Tab Client Label"
+  },
+  "ordersTabClientLabel": "Orders",
+   "@ordersTabClientLabel": {
+   "description": "Orders Tab Client Label"
+  }
 }
