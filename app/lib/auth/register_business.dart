@@ -91,17 +91,27 @@ class _RegisterBusinessPageState extends State<RegisterBusinessPage> {
                         if(_formKey.currentState!.validate()){
                           // Login User
                           emailBusinessRegister(nameController.text, emailController.text, passwordController.text)
-                            .then((business) => business!.created_at!.length > 0 ?
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomePage(email: emailController.text)
+                            .then(
+                              (business) => business!.created_at!.length > 0 ?
+                              emailLogin(emailController.text, passwordController.text).then(
+                                (token) =>
+                                  token!.token!.length > 0 ?
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => HomePage(token: token!.token ?? '')
+                                          )
+                                      ) :
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: SnackBarRegisterError())
                                   )
                               ) :
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: SnackBarRegisterError())
+                                const SnackBar(content: SnackBarRegisterError())
                               )
                             ).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: SnackBarRegisterError())
+                            )).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: SnackBarRegisterError())
                           ));
                         } else {
