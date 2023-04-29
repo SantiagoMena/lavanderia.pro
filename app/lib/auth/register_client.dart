@@ -93,12 +93,21 @@ class _RegisterClientPageState extends State<RegisterClientPage> {
                           // Login User
                           emailClientRegister(nameController.text, emailController.text, passwordController.text)
                             .then((business) => business!.created_at!.length > 0 ?
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomePage(email: emailController.text)
-                                  )
-                              ) :
+                              emailLogin(emailController.text, passwordController.text).then(
+                                      (token) =>
+                                  token!.token!.length > 0 ?
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => HomePage(token: token!.token ?? '')
+                                        )
+                                    ) :
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: SnackBarRegisterError())
+                                    )
+                              ).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: SnackBarRegisterError())
+                              )) :
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: SnackBarRegisterError())
                               )
