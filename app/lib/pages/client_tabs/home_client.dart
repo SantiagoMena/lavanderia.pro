@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/auth/login.dart';
 import 'package:lavanderiapro/auth/register_business.dart';
+import 'package:lavanderiapro/pages/client_tabs/profile_client_tab.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -15,12 +16,13 @@ class HomeClientTab extends StatelessWidget {
 
     Profile? profile;
 
-    return MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: DefaultTabController(
+    return  DefaultTabController(
         length: 3,
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar:  AppBar(
+            backgroundColor: Colors.white,
+          ),
           bottomNavigationBar: Container(
             color: Colors.green,
             child: const TabBar(
@@ -28,15 +30,15 @@ class HomeClientTab extends StatelessWidget {
               tabs: [
                   Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: ProfileTabClient()
+                      child: ProfileTabClientLabel()
                   ),
                   Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: NewOrderTabClient()
+                      child: NewOrderTabClientLabel()
                   ),
                   Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: OrdersTabClient()
+                      child: OrdersTabClientLabel()
                   ),
                 ],
             ),
@@ -44,19 +46,18 @@ class HomeClientTab extends StatelessWidget {
           ),
           body: const TabBarView(
             children: [
-              Icon(Icons.person),
+              ProfileClientTab(),
               Icon(Icons.add),
               Icon(Icons.assignment_turned_in_outlined),
             ],
           ),
         ),
-      ),
     );
   }
 }
 
-class OrdersTabClient extends StatelessWidget {
-  const OrdersTabClient({
+class OrdersTabClientLabel extends StatelessWidget {
+  const OrdersTabClientLabel({
     super.key,
   });
 
@@ -69,8 +70,8 @@ class OrdersTabClient extends StatelessWidget {
   }
 }
 
-class NewOrderTabClient extends StatelessWidget {
-  const NewOrderTabClient({
+class NewOrderTabClientLabel extends StatelessWidget {
+  const NewOrderTabClientLabel({
     super.key,
   });
 
@@ -83,8 +84,8 @@ class NewOrderTabClient extends StatelessWidget {
   }
 }
 
-class ProfileTabClient extends StatelessWidget {
-  const ProfileTabClient({
+class ProfileTabClientLabel extends StatelessWidget {
+  const ProfileTabClientLabel({
     super.key,
   });
 
