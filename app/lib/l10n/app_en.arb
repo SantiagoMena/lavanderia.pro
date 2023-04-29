@@ -94,5 +94,25 @@
   "ordersTabClientLabel": "Orders",
    "@ordersTabClientLabel": {
    "description": "Orders Tab Client Label"
+  },
+  "manageAddressesButtonLabel": "Manage Addresses",
+   "@manageAddressesButtonLabel": {
+   "description": "Manage Addresses Button Label"
+  },
+  "changeNameButtonLabel": "Change Name",
+   "@changeNameButtonLabel": {
+   "description": "Change Name Button Label"
+  },
+  "changePasswordButtonLabel": "Change Name",
+   "@changePasswordButtonLabel": {
+   "description": "Change Password Button Label"
+  },
+  "currentPasswordLabel": "Current Password",
+   "@changePasswordButtonLabel": {
+   "description": "Current Password Label"
+  },
+  "newPasswordLabel": "New Password",
+   "@newPasswordLabel": {
+   "description": "New Password Label"
   }
 }
