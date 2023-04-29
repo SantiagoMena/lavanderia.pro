@@ -15,5 +15,9 @@
   "snackBarRegisterError": "Error al registrarse",
   "registerBusinessLabel": "Registrar tu Negocio",
  "clientNameLabel": "Nombre",
- "registerBusinessPageTitle": "Registra tu Negocio"
+ "registerBusinessPageTitle": "Registra tu Negocio",
+ "loginAsBusinessButtonLabel": "Ingresar como Negocio",
+ "loginAsClientButtonLabel": "Ingresar como Cliente",
+ "loginAsDeliveryButtonLabel": "Ingresar como Delivery",
+ "selectProfileLabel": "Seleccione un Perfil"
 }

@@ -66,5 +66,21 @@
  "registerBusinessPageTitle": "Register Your Business",
  "@registerBusinessPageTitle": {
     "description": "Register Business Page Title"
+ },
+ "loginAsBusinessButtonLabel": "Login as Business",
+ "@loginAsBusinessButtonLabel": {
+  "description": "Login as Business Button Label"
+ },
+ "loginAsClientButtonLabel": "Login as Client",
+ "@loginAsClientButtonLabel": {
+  "description": "Login as Client Button Label"
+ },
+ "loginAsDeliveryButtonLabel": "Login as Delivery",
+ "@loginAsDeliveryButtonLabel": {
+  "description": "Login as Delivery Button Label"
+ },
+ "selectProfileLabel": "Select Profile",
+ "@selectProfileLabel": {
+  "description": "Select Profile Label"
  }
 }
