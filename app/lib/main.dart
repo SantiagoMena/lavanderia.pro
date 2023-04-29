@@ -23,6 +23,10 @@ class MyApp extends StatelessWidget {
       home: const LoginPage(
           title: "Login"
       ),
+      initialRoute: '/',
+      routes: <String, WidgetBuilder> {
+        '/login': (BuildContext context) => const LoginPage(title: "Login"),
+      },
     );
   }
 }
