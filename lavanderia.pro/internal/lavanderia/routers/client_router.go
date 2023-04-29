@@ -58,7 +58,7 @@ func NewGetClientRouter(r *gin.Engine, controller *controllers.ClientController)
 		if errRegister != nil {
 			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
 		} else {
-			c.IndentedJSON(http.StatusCreated, client)
+			c.IndentedJSON(http.StatusOK, client)
 		}
 
 	})

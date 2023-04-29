@@ -12,27 +12,41 @@ class HomeClientTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
     Profile? profile;
-    List<Widget> children = [
-      Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: Center(
-            child: Text('👕', style: TextStyle(fontSize: 75)),
-          )
-      )
-    ];
 
-      //children.add(const LoginAsBusinessButton());
-
-
-    return Scaffold(
-      /*appBar: AppBar(
-        title: const Text('Client Home'),
-      ),*/
-      body: ListView(
-        children:children,
-      )
+    return MaterialApp(
+      home: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          bottomNavigationBar: Container(
+            color: Colors.green,
+            child: const TabBar(
+              tabs: [
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Tab(icon: Icon(Icons.person))
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Tab(icon: Icon(Icons.add))
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Tab(icon: Icon(Icons.assignment_turned_in_outlined))
+                  ),
+                ],
+            ),
+            // title: const Text('Tabs Demo'),
+          ),
+          body: const TabBarView(
+            children: [
+              Icon(Icons.person),
+              Icon(Icons.add),
+              Icon(Icons.assignment_turned_in_outlined),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
