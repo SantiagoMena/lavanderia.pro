@@ -28,7 +28,7 @@ Future<Profile?> getProfile(String token) async {
       }
   );
   profile.client = responseClient.statusCode == 200;
-  print(['client/profile ===>', responseClient.body, profile.client]);
+  print(['client/profile ===>',  responseClient.statusCode, responseClient.body, profile.client]);
 
   var urlBusiness = Uri.http(API_HOST, 'business');
   final responseBusiness = await http.get(

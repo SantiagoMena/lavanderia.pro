@@ -38,10 +38,6 @@ class HomePage extends StatelessWidget {
         builder: (context, snapshot) {
 
 
-          if (snapshot.connectionState != ConnectionState.done) {
-            return CircularProgressIndicator();
-          }
-
           if(snapshot.hasData) {
             if(snapshot.data!.business == true) {
               children.add(const LoginAsBusinessButton());
@@ -66,7 +62,13 @@ class HomePage extends StatelessWidget {
               return HomeDeliveryTab();
             }
 
+          } else if (snapshot.connectionState != ConnectionState.done) {
+            children = [CircularProgressIndicator()];
+          } else {
+
           }
+
+
           return ListView(
             children: children,
           );
