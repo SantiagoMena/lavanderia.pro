@@ -20,6 +20,12 @@ func NewGetAllBusinessRouter(r *gin.Engine, controller *controllers.BusinessCont
 		}
 
 		business, err := controller.GetAllBusinessByAuth(authId.(string))
+
+		if business == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
 		} else {

@@ -7,9 +7,17 @@
   "@passwordLabel": {
     "description": "Label Password"
   },
+  "businessNameLabel": "Business Name",
+  "@businessNameLabel": {
+    "description": "Label Business Name"
+  },
   "submitLoginLabel": "Login",
   "@submitLoginLabel": {
     "description": "Submit Login Label"
+  },
+  "submitRegisterLabel": "Register",
+  "@submitRegisterLabel": {
+    "description": "Submit Register Label"
   },
   "loginLabel": "Login",
   "@loginLabel": {
@@ -18,6 +26,10 @@
   "emptyEmailAlert": "Please enter you email",
   "@emptyEmailAlert": {
     "description": "Alert Email Empty"
+  },
+  "emptyNameAlert": "Please enter you name",
+  "@emptyNameAlert": {
+    "description": "Alert Name Empty"
   },
   "emptyPasswordAlert": "Please enter you password",
   "@emptyPasswordAlert": {
@@ -32,7 +44,43 @@
     "description": "Alert Please fill input"
   },
  "snackBarLoginError": "Login Error",
- "@snackBarFillInput": {
+ "@snackBarLoginError": {
    "description": "Alert Login Error"
+ },
+ "registerLabel": "Register",
+ "@registerLabel": {
+    "description": "Register Label"
+ },
+ "snackBarRegisterError": "Register Error",
+ "@snackBarRegisterInput": {
+   "description": "Alert Register Error"
+ },
+ "registerBusinessLabel": "Register Your Business",
+ "@registerBusinessLabel": {
+    "description": "Register Business Label"
+ },
+ "clientNameLabel": "Name",
+ "@clientNameLabel": {
+    "description": "Client Name Label"
+ },
+ "registerBusinessPageTitle": "Register Your Business",
+ "@registerBusinessPageTitle": {
+    "description": "Register Business Page Title"
+ },
+ "loginAsBusinessButtonLabel": "Login as Business",
+ "@loginAsBusinessButtonLabel": {
+  "description": "Login as Business Button Label"
+ },
+ "loginAsClientButtonLabel": "Login as Client",
+ "@loginAsClientButtonLabel": {
+  "description": "Login as Client Button Label"
+ },
+ "loginAsDeliveryButtonLabel": "Login as Delivery",
+ "@loginAsDeliveryButtonLabel": {
+  "description": "Login as Delivery Button Label"
+ },
+ "selectProfileLabel": "Select Profile",
+ "@selectProfileLabel": {
+  "description": "Select Profile Label"
  }
 }

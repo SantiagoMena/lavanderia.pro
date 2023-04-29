@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:lavanderiapro/auth/register_business.dart';
-import 'package:lavanderiapro/auth/register_client.dart';
 import 'package:lavanderiapro/pages/home.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/services/login_service.dart';
+import 'package:lavanderiapro/services/register_business_service.dart';
 
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title});
+class RegisterBusinessPage extends StatefulWidget {
+  const RegisterBusinessPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterBusinessPage> createState() => _RegisterBusinessPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterBusinessPageState extends State<RegisterBusinessPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
 
   @override
   Widget build(BuildContext context) {
-    var icons = ['🧺','🧼','👕','👚','👔','👖','🧦','👙','👗'];
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.loginLabel),
+        title: Text(AppLocalizations.of(context)!.registerBusinessPageTitle),
       ),
       body: Form(
           key: _formKey,
@@ -34,13 +33,25 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: Center(
-                      child: Text((icons..shuffle()).first, style: TextStyle(fontSize: 75)),
+                      child: Text('🗝️', style: TextStyle(fontSize: 75)),
                     )
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: TextFormField(
+                    controller: nameController,
+                    decoration: const InputDecoration(border: OutlineInputBorder(), label: NameLabel()),
+                    validator: (value) {
+                      if(value == null || value.isEmpty){
+                        return AppLocalizations.of(context)!.emptyNameAlert;
+                      }
+                      return null;
+                    },
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -79,19 +90,29 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         if(_formKey.currentState!.validate()){
                           // Login User
-                          emailLogin(emailController.text, passwordController.text)
-                              .then((token) => token!.token!.length > 0 ?
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomePage(token: token!.token)
+                          emailBusinessRegister(nameController.text, emailController.text, passwordController.text)
+                            .then(
+                              (business) => business!.created_at!.length > 0 ?
+                              emailLogin(emailController.text, passwordController.text).then(
+                                (token) =>
+                                  token!.token!.length > 0 ?
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => HomePage(token: token!.token ?? '')
+                                          )
+                                      ) :
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: SnackBarRegisterError())
                                   )
                               ) :
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: SnackBarLoginError())
+                                const SnackBar(content: SnackBarRegisterError())
                               )
-                          ).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: SnackBarLoginError())
+                            ).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: SnackBarRegisterError())
+                            )).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: SnackBarRegisterError())
                           ));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -111,37 +132,9 @@ class _LoginPageState extends State<LoginPage> {
                         minimumSize: const Size.fromHeight(50), // NEW
                       ),
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RegisterClientPage(title: 'Register Client')
-                            )
-                        );
+                        Navigator.pop(context);
                       },
-                      child: Text(AppLocalizations.of(context)!.registerLabel, style: TextStyle(fontSize: 18)),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: Divider(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50), // NEW
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RegisterBusinessPage(title: 'Register Business')
-                            )
-                        );
-                      },
-                      child: Text(AppLocalizations.of(context)!.registerBusinessLabel, style: TextStyle(fontSize: 18)),
+                      child: Text(AppLocalizations.of(context)!.loginLabel, style: TextStyle(fontSize: 18)),
                     ),
                   ),
                 ),
@@ -153,14 +146,25 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-class SnackBarLoginError extends StatelessWidget {
-  const SnackBarLoginError({
+class NameLabel extends StatelessWidget {
+  const NameLabel({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Text(AppLocalizations.of(context)!.snackBarLoginError);
+    return Text(AppLocalizations.of(context)!.businessNameLabel);
+  }
+}
+
+class SnackBarRegisterError extends StatelessWidget {
+  const SnackBarRegisterError({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.snackBarRegisterError);
   }
 }
 
@@ -193,7 +197,7 @@ class SubmitLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(AppLocalizations.of(context)!.submitLoginLabel, style: TextStyle(fontSize: 18));
+    return Text(AppLocalizations.of(context)!.submitRegisterLabel, style: TextStyle(fontSize: 18));
   }
 }
 
