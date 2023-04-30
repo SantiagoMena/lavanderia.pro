@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/auth/login.dart';
 import 'package:lavanderiapro/auth/register_business.dart';
 import 'package:lavanderiapro/pages/business_tabs/business_tab.dart';
+import 'package:lavanderiapro/pages/business_tabs/orders_business_tab.dart';
 import 'package:lavanderiapro/pages/business_tabs/profile_business_tab.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
 
@@ -48,7 +49,7 @@ class HomeBusinessTab extends StatelessWidget {
           children: [
             ProfileBusinessTab(),
             BusinessTab(),
-            Text("OrdersClientTab()"),
+            OrdersBusinessTab(),
           ],
         ),
       ),
