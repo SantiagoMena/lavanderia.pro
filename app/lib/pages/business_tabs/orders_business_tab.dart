@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/pages/business_tabs/business_create_form.dart';
 import 'package:lavanderiapro/pages/business_tabs/business_view.dart';
+import 'package:lavanderiapro/pages/business_tabs/processed_order_business_view.dart';
 import 'package:lavanderiapro/pages/business_tabs/products_business_view.dart';
 import 'package:lavanderiapro/pages/client_tabs/business_client_view.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
@@ -75,7 +76,7 @@ class BusinessCard extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ProcessedOrderClient()
+                  builder: (context) => ProcessedOrderBusiness()
               )
           );
         },
