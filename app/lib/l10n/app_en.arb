@@ -118,5 +118,13 @@
   "selectBusinessLabel": "Select a Business",
    "@selectBusinessLabel": {
    "description": "Select Business Label"
+  },
+  "businessTabLabel": "Business",
+   "@homeTabLabel": {
+   "description": "Business Tab Label"
+  },
+  "manageDeliveryButtonLabel": "Manage Delivery",
+   "@manageDeliveryButtonLabel": {
+   "description": "Manage Delivery Tab Label"
   }
 }
