@@ -30,5 +30,9 @@
  "newPasswordLabel": "Contraseña Nueva",
  "selectBusinessLabel": "Seleccione un Negocio",
  "businessTabLabel": "Negocios",
-  "manageDeliveryButtonLabel": "Administrar Delivery"
+ "manageDeliveryButtonLabel": "Administrar Delivery",
+ "createBusinessButtonLabel": "Crear Negocio",
+ "createProductButtonLabel": "Crear Producto",
+ "productNameLabel": "Nombre del Producto",
+ "priceNameLabel": "Precio"
 }
