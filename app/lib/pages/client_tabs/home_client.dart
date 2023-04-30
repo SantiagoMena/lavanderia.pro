@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/auth/login.dart';
 import 'package:lavanderiapro/auth/register_business.dart';
 import 'package:lavanderiapro/pages/client_tabs/new_order_client_tab.dart';
+import 'package:lavanderiapro/pages/client_tabs/orders_client_tab.dart';
 import 'package:lavanderiapro/pages/client_tabs/profile_client_tab.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -49,7 +50,7 @@ class HomeClientTab extends StatelessWidget {
             children: [
               ProfileClientTab(),
               NewOrderClientTab(),
-              Icon(Icons.assignment_turned_in_outlined),
+              OrdersClientTab(),
             ],
           ),
         ),
