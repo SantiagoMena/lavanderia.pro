@@ -27,5 +27,6 @@
  "changeNameButtonLabel": "Cambiar Nombre",
  "changePasswordButtonLabel": "Cambiar Contraseña",
  "currentPasswordLabel": "Contraseña Actual",
- "newPasswordLabel": "Contraseña Nueva"
+ "newPasswordLabel": "Contraseña Nueva",
+ "selectBusinessLabel": "Seleccione un Negocio"
 }

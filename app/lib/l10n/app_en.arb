@@ -114,5 +114,9 @@
   "newPasswordLabel": "New Password",
    "@newPasswordLabel": {
    "description": "New Password Label"
+  },
+  "selectBusinessLabel": "Select a Business",
+   "@selectBusinessLabel": {
+   "description": "Select Business Label"
   }
 }

@@ -36,126 +36,140 @@ class _ProfileClientTabState extends State<ProfileClientTab> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Center(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
-                            backgroundColor: Colors.green,
-                          ),
-                          onPressed: () {
-
-                          },
-                          child: Text(AppLocalizations.of(context)!.manageAddressesButtonLabel),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: TextFormField(
-                        controller: nameController,
-                        decoration: const InputDecoration(border: OutlineInputBorder(), label: ClientNameLabel()),
-                        validator: (value) {
-                          if(value == null || value.isEmpty){
-                            return AppLocalizations.of(context)!.emptyNameAlert;
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Center(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
-                            backgroundColor: Colors.green,
-                          ),
-                          onPressed: () {
-                            if(_formPasswordKey.currentState!.validate()){
-                              // Login User
-
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: FillInputSnackBar())
-                              );
-                            }
-                          },
-                          child: Text(AppLocalizations.of(context)!.changeNameButtonLabel),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: TextFormField(
-                        controller: passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(border: OutlineInputBorder(), label: CurrentPasswordLabel()),
-                        validator: (value) {
-                          if(value == null || value.isEmpty){
-                            return AppLocalizations.of(context)!.emptyPasswordAlert;
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
                   Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: TextFormField(
-                        controller: newPasswordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(border: OutlineInputBorder(), label: NewPasswordLabel()),
-                        validator: (value) {
-                          if(value == null || value.isEmpty){
-                            return AppLocalizations.of(context)!.emptyPasswordAlert;
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Center(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
-                            backgroundColor: Colors.green,
-                          ),
-                          onPressed: () {
-                            if(_formPasswordKey.currentState!.validate()){
-                              // Login User
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Colors.green,
+                        ),
+                        onPressed: () {
 
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: FillInputSnackBar())
-                              );
-                            }
-                          },
-                          child: Text(AppLocalizations.of(context)!.changePasswordButtonLabel),
-                        ),
+                        },
+                        child: Text(AppLocalizations.of(context)!.manageAddressesButtonLabel),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Center(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
-                            backgroundColor: Colors.green,
-                          ),
-                          onPressed: () {
-                            Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
-                          },
-                          child: Text("Logout"),
-                        ),
-                      ),
-                    ),
+                  ),
+                  Form(
+                       key: _formNameKey,
+                       child: Column(
+                         children:[
+                           Padding(
+                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                             child: TextFormField(
+                               controller: nameController,
+                               decoration: const InputDecoration(border: OutlineInputBorder(), label: ClientNameLabel()),
+                               validator: (value) {
+                                 if(value == null || value.isEmpty){
+                                   return AppLocalizations.of(context)!.emptyNameAlert;
+                                 }
+                                 return null;
+                               },
+                             ),
+                           ),
+                           Padding(
+                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                             child: Center(
+                               child: ElevatedButton(
+                                 style: ElevatedButton.styleFrom(
+                                   minimumSize: const Size.fromHeight(50),
+                                   backgroundColor: Colors.green,
+                                 ),
+                                 onPressed: () {
+                                   if(_formNameKey.currentState!.validate()){
+                                     // Change Name
+
+                                   } else {
+                                     ScaffoldMessenger.of(context).showSnackBar(
+                                         const SnackBar(content: FillInputSnackBar())
+                                     );
+                                   }
+                                 },
+                                 child: Text(AppLocalizations.of(context)!.changeNameButtonLabel),
+                               ),
+                             ),
+                           ),
+                         ],
+                       ),
+                     ),
+                  Form(
+                        key: _formPasswordKey,
+                         child: Column(
+                             children:[
+                           Padding(
+                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                             child: TextFormField(
+                               controller: passwordController,
+                               obscureText: true,
+                               decoration: const InputDecoration(border: OutlineInputBorder(), label: CurrentPasswordLabel()),
+                               validator: (value) {
+                                 if(value == null || value.isEmpty){
+                                   return AppLocalizations.of(context)!.emptyPasswordAlert;
+                                 }
+                                 return null;
+                               },
+                             ),
+                           ),
+                           Padding(
+                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                             child: TextFormField(
+                               controller: newPasswordController,
+                               obscureText: true,
+                               decoration: const InputDecoration(border: OutlineInputBorder(), label: NewPasswordLabel()),
+                               validator: (value) {
+                                 if(value == null || value.isEmpty){
+                                   return AppLocalizations.of(context)!.emptyPasswordAlert;
+                                 }
+                                 return null;
+                               },
+                             ),
+                           ),
+                           Padding(
+                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                             child: Center(
+                               child: ElevatedButton(
+                                 style: ElevatedButton.styleFrom(
+                                   minimumSize: const Size.fromHeight(50),
+                                   backgroundColor: Colors.green,
+                                 ),
+                                 onPressed: () {
+                                   if(_formPasswordKey.currentState!.validate()){
+                                     // Change Name
+
+                                   } else {
+                                     ScaffoldMessenger.of(context).showSnackBar(
+                                         const SnackBar(content: FillInputSnackBar())
+                                     );
+                                   }
+                                 },
+                                 child: Text(AppLocalizations.of(context)!.changePasswordButtonLabel),
+                               ),
+                             ),
+                           ),
+                           ],
+                         ),
+                       ),
+                  Padding(
+                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                   child: Center(
+                     child: ElevatedButton(
+                       style: ElevatedButton.styleFrom(
+                         minimumSize: const Size.fromHeight(50),
+                         backgroundColor: Colors.green,
+                       ),
+                       onPressed: () {
+                         Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
+                       },
+                       child: Text("Logout"),
+                     ),
+                   ),
+                 ),
                   Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
-              ],
+                ],
+               ),
               ),
-          ),
-      );
+        );
       }
     );
   }
