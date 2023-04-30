@@ -22,7 +22,8 @@ class _OrdersClientTabState extends State<OrdersClientTab> {
         alignment: Alignment.topCenter,
         child: Column(
           children:[
-              const Expanded(
+              const SizedBox(
+                height: 50,
                 child: Align(
                   alignment: Alignment.center,
                   child: Padding(
@@ -31,8 +32,7 @@ class _OrdersClientTabState extends State<OrdersClientTab> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 550,
+              Expanded(
                 child: ListView.builder(
                   itemCount: items.length,
                   /*prototypeItem: ListTile(

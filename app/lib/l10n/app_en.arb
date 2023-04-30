@@ -126,5 +126,21 @@
   "manageDeliveryButtonLabel": "Manage Delivery",
    "@manageDeliveryButtonLabel": {
    "description": "Manage Delivery Tab Label"
+  },
+  "createBusinessButtonLabel": "Create Business",
+   "@createBusinessButtonLabel": {
+   "description": "Create Business Button Label"
+  },
+  "createProductButtonLabel": "Create Product",
+   "@createProductButtonLabel": {
+   "description": "Create Product Button Label"
+  },
+  "productNameLabel": "Product Name",
+   "@productNameLabel": {
+   "description": "Product Name Label"
+  },
+  "priceLabel": "Price",
+   "@priceLabel": {
+   "description": "Price Label"
   }
 }
