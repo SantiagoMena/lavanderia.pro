@@ -23,7 +23,7 @@ class HomeClientTab extends StatelessWidget {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           appBar:  AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.green,
           ),
           bottomNavigationBar: Container(
             color: Colors.green,
