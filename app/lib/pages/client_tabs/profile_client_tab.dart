@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/auth/register_business.dart';
 import 'package:lavanderiapro/pages/client_tabs/addresses_client_view.dart';
+import 'package:lavanderiapro/services/change_password_service.dart';
 import 'package:lavanderiapro/services/get_business_profile_service.dart';
 import 'package:lavanderiapro/services/get_client_profile_service.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
@@ -125,75 +126,94 @@ class _ProfileClientTabState extends State<ProfileClientTab> {
                           ],
                         ),
                       ),
-                      Form(
-                        key: _formPasswordKey,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 16),
-                              child: TextFormField(
-                                controller: passwordController,
-                                obscureText: true,
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    label: CurrentPasswordLabel()),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return AppLocalizations.of(context)!
-                                        .emptyPasswordAlert;
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 16),
-                              child: TextFormField(
-                                controller: newPasswordController,
-                                obscureText: true,
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    label: NewPasswordLabel()),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return AppLocalizations.of(context)!
-                                        .emptyPasswordAlert;
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 16),
-                              child: Center(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        const Size.fromHeight(50),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                  onPressed: () {
-                                    if (_formPasswordKey.currentState!
-                                        .validate()) {
-                                      // Change Name
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content:
-                                                  FillInputSnackBar()));
+                      FutureBuilder(
+                        future: SharedPreferences.getInstance(),
+                        builder: (context, snapshot) {
+                          if(snapshot.hasData) {
+                            return Form(
+                          key: _formPasswordKey,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                                child: TextFormField(
+                                  controller: passwordController,
+                                  obscureText: true,
+                                  decoration: const InputDecoration(border: OutlineInputBorder(), label: CurrentPasswordLabel()),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return AppLocalizations.of(context)!.emptyPasswordAlert;
                                     }
+                                    return null;
                                   },
-                                  child: Text(
-                                      AppLocalizations.of(context)!
-                                          .changePasswordButtonLabel),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                                child: TextFormField(
+                                  controller: newPasswordController,
+                                  obscureText: true,
+                                  decoration: const InputDecoration(border: OutlineInputBorder(), label: NewPasswordLabel()),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return AppLocalizations.of(context)!.emptyPasswordAlert;
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                                child: Center(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      minimumSize: const Size.fromHeight(50),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                    onPressed: () {
+                                      FocusManager.instance.primaryFocus?.unfocus();
+                                      if(_formPasswordKey.currentState!.validate()){
+                                        String? token = snapshot.data!.getString('token') ?? '';
+                                        changePassword(token, passwordController.text, newPasswordController.text)
+                                            .then((auth) {
+                                              if(auth == null){
+                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                    content: SnackBarErrorOnChangePasswordClient()
+                                                ));
+
+                                                return;
+                                              }
+                                              if(auth!.id!.length > 0) {
+                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                    content: SnackBarPasswordChangedSuccessfullyClient()
+                                                ));
+
+                                                passwordController.text = "";
+                                                newPasswordController.text = "";
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                    content: SnackBarErrorOnChangePasswordClient()
+                                                ));
+                                              }
+                                            })
+                                            .catchError((error) => error);
+                                      } else {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: FillInputSnackBar())
+                                        );
+                                      }
+                                    },
+                                    child: Text(AppLocalizations.of(context)!.changePasswordButtonLabel),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                          } else {
+                            return CircularProgressIndicator();
+                          }
+                        },
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -232,6 +252,28 @@ class _ProfileClientTabState extends State<ProfileClientTab> {
         return CircularProgressIndicator();
 
     });
+  }
+}
+
+class SnackBarPasswordChangedSuccessfullyClient extends StatelessWidget {
+  const SnackBarPasswordChangedSuccessfullyClient({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.snackBarPasswordChangedSuccessfully);
+  }
+}
+
+class SnackBarErrorOnChangePasswordClient extends StatelessWidget {
+  const SnackBarErrorOnChangePasswordClient({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.snackBarErrorOnChangePassword);
   }
 }
 
