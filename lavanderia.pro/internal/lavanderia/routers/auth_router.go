@@ -56,3 +56,32 @@ func NewPostRefreshTokenRouter(r *gin.Engine, controller *controllers.AuthContro
 
 	})
 }
+
+func NewPostChangePassword(r *gin.Engine, controller *controllers.AuthController) {
+	r.POST("/auth/password/change", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		var newPassword types.NewPassword
+
+		// Call BindJSON to bind the received JSON to
+		// newAuth.
+		if errAuthJson := c.ShouldBindBodyWith(&newPassword, binding.JSON); errAuthJson != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": errAuthJson})
+			return
+		}
+
+		changePassword, errChangePassword := controller.ChangePassword(authId.(string), &newPassword)
+
+		if errChangePassword != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errChangePassword.Error()})
+		} else {
+			c.IndentedJSON(http.StatusOK, changePassword)
+		}
+
+	})
+}
