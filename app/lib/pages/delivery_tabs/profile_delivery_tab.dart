@@ -141,21 +141,21 @@ class _ProfileDeliveryTabState extends State<ProfileDeliveryTab> {
                                                .then((auth) {
                                              if(auth == null){
                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                   content: Text("SnackBarErrorOnChangePasswordClient()")
+                                                   content: SnackBarErrorOnChangePasswordDelivery()
                                                ));
 
                                                return;
                                              }
                                              if(auth!.id!.length > 0) {
                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                   content: Text("SnackBarPasswordChangedSuccessfullyClient()")
+                                                   content: SnackBarPasswordChangedSuccessfullyDelivery()
                                                ));
 
                                                passwordController.text = "";
                                                newPasswordController.text = "";
                                              } else {
                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                   content: Text("SnackBarErrorOnChangePasswordClient()")
+                                                   content: SnackBarErrorOnChangePasswordDelivery()
                                                ));
                                              }
                                            })
@@ -200,6 +200,28 @@ class _ProfileDeliveryTabState extends State<ProfileDeliveryTab> {
         );
       }
     );
+  }
+}
+
+class SnackBarPasswordChangedSuccessfullyDelivery extends StatelessWidget {
+  const SnackBarPasswordChangedSuccessfullyDelivery({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.snackBarPasswordChangedSuccessfully);
+  }
+}
+
+class SnackBarErrorOnChangePasswordDelivery extends StatelessWidget {
+  const SnackBarErrorOnChangePasswordDelivery({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.snackBarErrorOnChangePassword);
   }
 }
 
