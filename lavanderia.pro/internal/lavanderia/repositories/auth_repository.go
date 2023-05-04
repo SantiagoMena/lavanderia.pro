@@ -234,3 +234,24 @@ func (authRepository *AuthRepository) GetAuthByToken(authToken string) (*types.A
 		return &types.Auth{}, err
 	}
 }
+
+func (authRepository *AuthRepository) UpdatePassword(auth *types.Auth) (types.Auth, error) {
+	t := time.Now()
+	auth.CreatedAt = &t
+
+	id, _ := primitive.ObjectIDFromHex(auth.ID)
+
+	filter := bson.D{{Key: "_id", Value: id}}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "password", Value: auth.Password}}}}
+
+	objectUpdated, err := authRepository.database.UpdateOne(authCollection, filter, update)
+	if err != nil {
+		return types.Auth{}, err
+	}
+
+	var authUpdatedUnmarshal types.Auth
+	authUpdatedMarshal, _ := bson.Marshal(objectUpdated)
+	bson.Unmarshal(authUpdatedMarshal, &authUpdatedUnmarshal)
+
+	return authUpdatedUnmarshal, nil
+}

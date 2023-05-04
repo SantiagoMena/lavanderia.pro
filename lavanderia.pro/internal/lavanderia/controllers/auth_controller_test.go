@@ -179,6 +179,83 @@ func MakeAuthController() *AuthController {
 		auth.NewRefreshTokenHandler(repositoryAuth),
 		client.NewRegisterClientHandler(repositoryAuth, repositoryClient),
 		delivery.NewRegisterDeliveryHandler(repositoryAuth, repositoryDelivery),
+		auth.NewChangePasswordHandler(repositoryAuth, repositoryBusiness),
 	)
 	return controller
+}
+
+func MakeAuthRepositoryAuthControllerTest() *repositories.AuthRepository {
+	config := config.NewConfig()
+	database := databases.NewMongoDatabase(config)
+	repositoryAuth := repositories.NewAuthRepository(database, config)
+
+	return repositoryAuth
+}
+
+func TestChangePassword(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	controller := MakeAuthController()
+
+	currentPassword := "PwD"
+	pwd := []byte(currentPassword)
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+	ti := time.Now()
+	email := []string{"new@", fmt.Sprintf("%+d", ti.Unix()), "test.com"}
+
+	authLogin := &types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	}
+
+	businessObj := &types.Business{
+		Name: "test register",
+		Position: types.Geometry{
+			Type:        "Point",
+			Coordinates: []float64{-71.327767, -41.138444},
+		},
+	}
+
+	business, err := controller.RegisterBusiness(authLogin, businessObj)
+
+	assert.Nil(t, err, "Error returns not nil")
+	assert.NotEmpty(t, business, "Business is empty")
+
+	businessLogged, errLogin := controller.Login(authLogin)
+
+	assert.Nil(t, errLogin, "Error Login returns not nil")
+	assert.NotEmpty(t, businessLogged, "Business Logged is empty")
+
+	newPassword := "NewPassword"
+	newPwd := []byte(newPassword)
+
+	authRepository := MakeAuthRepositoryAuthControllerTest()
+
+	authFound, errAuthFound := authRepository.GetByEmail(authLogin)
+
+	assert.Nil(t, errAuthFound, "Error on login business")
+	assert.NotEmpty(t, authFound, "Business Login Empty")
+
+	changePassword, errChangePassword := controller.ChangePassword(authFound.ID, &types.NewPassword{
+		ID:          authFound.ID,
+		Password:    string(password),
+		NewPassword: newPassword,
+	})
+
+	assert.Nil(t, errChangePassword, "Error on change password")
+	assert.NotEmpty(t, changePassword, "changePassword Empty")
+
+	authFoundChanged, errAuthFoundChanged := authRepository.GetByEmail(authLogin)
+	assert.NotEmpty(t, authFoundChanged, "authFoundChanged Empty")
+
+	assert.Nil(t, errAuthFoundChanged, "Error on getAuth changed password")
+
+	newPwdChanged := []byte(authFoundChanged.Password)
+	passwordChanged := bcrypt.CompareHashAndPassword(newPwdChanged, newPwd)
+
+	assert.Nil(t, passwordChanged, "Password not change properly")
 }

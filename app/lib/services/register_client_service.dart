@@ -16,7 +16,6 @@ Future<Client?> emailClientRegister(String name, String email, String password) 
         'password': password
       }
   ));
-print(response.body);
   if (response.statusCode == 201) {
     // Si la llamada al servidor fue exitosa, analiza el JSON
     return Client.fromJson(json.decode(response.body));

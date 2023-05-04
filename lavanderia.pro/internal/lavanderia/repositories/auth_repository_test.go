@@ -98,3 +98,44 @@ func TestCreateJWT(t *testing.T) {
 	assert.NotNil(t, jwt, "Login() returns nil result")
 	assert.NotEmpty(t, jwt.Token, "Token is empty")
 }
+
+func TestUpdatePassword(t *testing.T) {
+	if err := godotenv.Load("../../../.env.test"); err != nil {
+		fmt.Println("No .env.test file found")
+	}
+
+	config := config.NewConfig()
+
+	mongo := databases.NewMongoDatabase(config)
+	pwd := []byte("PwD")
+	password, errPass := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	assert.Equal(t, errPass, nil, "GenerateFromPassword() returns error")
+
+	ti := time.Now()
+	email := []string{"new@", ti.String(), "test.com"}
+	auth, err := NewAuthRepository(mongo, config).Create(&types.Auth{
+		Email:    strings.Join(email, ""),
+		Password: string(password),
+	})
+
+	mongo3 := databases.NewMongoDatabase(config)
+
+	authUpdated, errAuthUpdate := NewAuthRepository(mongo3, config).UpdatePassword(&types.Auth{
+		ID:       auth.ID,
+		Password: "NEW_FB_ID",
+	})
+
+	assert.NotNil(t, authUpdated, "FindAllBusiness() returns nil result")
+	assert.Nil(t, errAuthUpdate, "errAuthUpdate error")
+
+	mongo2 := databases.NewMongoDatabase(config)
+	authFound, errFind := NewAuthRepository(mongo2, config).GetByEmail(&types.Auth{
+		Email: "new@test.com",
+	})
+
+	assert.Equal(t, errFind, nil, "GetByEmail() returns error")
+	assert.Equal(t, err, nil, "Create() returns error")
+
+	assert.NotEqual(t, auth.Password, authFound.Password, "Entity not updated password")
+}
