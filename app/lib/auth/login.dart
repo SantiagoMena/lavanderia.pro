@@ -4,6 +4,7 @@ import 'package:lavanderiapro/auth/register_client.dart';
 import 'package:lavanderiapro/pages/home.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/services/login_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -82,16 +83,35 @@ class _LoginPageState extends State<LoginPage> {
                       if(_formKey.currentState!.validate()){
                         // Login User
                         emailLogin(emailController.text, passwordController.text)
-                            .then((token) => token!.token!.length > 0 ?
-                              Navigator.push(
+                            .then((token) {
+                          if(token!.token!.length > 0){
+                            try {
+                              Future<SharedPreferences> _sprefs = SharedPreferences.getInstance();
+                              _sprefs.then((prefs) {
+                                prefs.setString('token', token!.token ?? '');
+                                prefs.setString('refresh_token', token!.refresh_token ?? '');
+                              },
+                              onError: (error) {
+                                print("SharedPreferences ERROR = $error");
+                              });
+
+                            } catch (e) {
+                              print(e);
+                            }
+
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => HomePage(token: token!.token)
+                                    builder: (context) =>
+                                        const HomePage()
                                 )
-                            ) :
+                            );
+                          } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: SnackBarLoginError())
-                            )
+                            );
+                          }
+                        }
                         ).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: SnackBarLoginError())
                         ));
