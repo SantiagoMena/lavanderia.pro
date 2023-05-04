@@ -5,7 +5,7 @@ import 'package:lavanderiapro/auth/register_business.dart';
 import 'package:lavanderiapro/pages/business_tabs/business_tab.dart';
 import 'package:lavanderiapro/pages/business_tabs/home_business.dart';
 import 'package:lavanderiapro/pages/client_tabs/home_client.dart';
-import 'package:lavanderiapro/pages/delivery_tabs/delivery_client.dart';
+import 'package:lavanderiapro/pages/delivery_tabs/home_delivery.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
