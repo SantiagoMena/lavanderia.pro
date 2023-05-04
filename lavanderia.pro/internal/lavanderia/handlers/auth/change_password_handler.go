@@ -51,7 +51,7 @@ func (ch ChangePasswordHandler) Handle(authId string, newPassword *types.NewPass
 	}
 
 	auth.Password = string(passwordClient)
-	authUpdated, errAuthUpdate := ch.repositoryAuth.Update(&auth)
+	authUpdated, errAuthUpdate := ch.repositoryAuth.UpdatePassword(&auth)
 
 	if errAuthUpdate != nil {
 		return types.Auth{}, errors.New("error update password")

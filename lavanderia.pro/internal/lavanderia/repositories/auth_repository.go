@@ -235,7 +235,7 @@ func (authRepository *AuthRepository) GetAuthByToken(authToken string) (*types.A
 	}
 }
 
-func (authRepository *AuthRepository) Update(auth *types.Auth) (types.Auth, error) {
+func (authRepository *AuthRepository) UpdatePassword(auth *types.Auth) (types.Auth, error) {
 	t := time.Now()
 	auth.CreatedAt = &t
 

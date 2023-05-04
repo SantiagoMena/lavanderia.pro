@@ -99,7 +99,7 @@ func TestCreateJWT(t *testing.T) {
 	assert.NotEmpty(t, jwt.Token, "Token is empty")
 }
 
-func TestUpdate(t *testing.T) {
+func TestUpdatePassword(t *testing.T) {
 	if err := godotenv.Load("../../../.env.test"); err != nil {
 		fmt.Println("No .env.test file found")
 	}
@@ -121,7 +121,7 @@ func TestUpdate(t *testing.T) {
 
 	mongo3 := databases.NewMongoDatabase(config)
 
-	authUpdated, errAuthUpdate := NewAuthRepository(mongo3, config).Update(&types.Auth{
+	authUpdated, errAuthUpdate := NewAuthRepository(mongo3, config).UpdatePassword(&types.Auth{
 		ID:       auth.ID,
 		Password: "NEW_FB_ID",
 	})
