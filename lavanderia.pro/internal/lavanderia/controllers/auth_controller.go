@@ -14,6 +14,7 @@ type AuthController struct {
 	RefreshTokenHandler     *auth.RefreshTokenHandler
 	RegisterClientHandler   *client.RegisterClientHandler
 	RegisterDeliveryHandler *delivery.RegisterDeliveryHandler
+	ChangePasswordHandler   *auth.ChangePasswordHandler
 }
 
 func NewAuthController(
@@ -22,6 +23,7 @@ func NewAuthController(
 	RefreshTokenHandler *auth.RefreshTokenHandler,
 	RegisterClientHandler *client.RegisterClientHandler,
 	RegisterDeliveryHandler *delivery.RegisterDeliveryHandler,
+	ChangePasswordHandler *auth.ChangePasswordHandler,
 ) *AuthController {
 	return &AuthController{
 		RegisterBusinessHandler: RegisterBusinessHandler,
@@ -29,6 +31,7 @@ func NewAuthController(
 		RefreshTokenHandler:     RefreshTokenHandler,
 		RegisterClientHandler:   RegisterClientHandler,
 		RegisterDeliveryHandler: RegisterDeliveryHandler,
+		ChangePasswordHandler:   ChangePasswordHandler,
 	}
 }
 
@@ -82,4 +85,14 @@ func (controller AuthController) RegisterDelivery(auth *types.Auth, delivery *ty
 	}
 
 	return deliverytDb, err
+}
+
+func (controller AuthController) ChangePassword(authId string, newPassword *types.NewPassword) (types.Auth, error) {
+	authDb, err := controller.ChangePasswordHandler.Handle(authId, newPassword)
+
+	if err != nil {
+		return types.Auth{}, err
+	}
+
+	return authDb, err
 }
