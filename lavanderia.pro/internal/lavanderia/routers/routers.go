@@ -43,4 +43,5 @@ var Module = fx.Invoke(
 	NewPickUpBusinessOrderRouter,
 	NewDeliveryClientOrderRouter,
 	NewPostChangePassword,
+	NewPutDeliveryProfileRouter,
 )
