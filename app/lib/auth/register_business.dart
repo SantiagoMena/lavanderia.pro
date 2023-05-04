@@ -98,7 +98,7 @@ class _RegisterBusinessPageState extends State<RegisterBusinessPage> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => HomePage(token: token!.token ?? '')
+                                              builder: (context) => HomePage()
                                           )
                                       ) :
                                   ScaffoldMessenger.of(context).showSnackBar(
