@@ -87,7 +87,7 @@ func NewGetDeliveryRouter(r *gin.Engine, controller *controllers.DeliveryControl
 		if errRegister != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"msg": errRegister.Error()})
 		} else {
-			c.IndentedJSON(http.StatusCreated, delivery)
+			c.IndentedJSON(http.StatusOK, delivery)
 		}
 
 	})
