@@ -86,6 +86,13 @@ class _ProfileBusinessTabState extends State<ProfileBusinessTab> {
                                        String? token = shape.data!.getString('token') ?? '';
                                         changePassword(token, passwordController.text, newPasswordController.text)
                                             .then((auth) {
+                                              if(auth == null){
+                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                    content: SnackBarAlertErrorOnChangePassword()
+                                                ));
+
+                                                return;
+                                              }
                                               if(auth!.id!.length > 0) {
                                                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                     content: SnackBarAlertPasswordChangedSuccessfully()
