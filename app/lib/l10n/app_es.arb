@@ -37,5 +37,7 @@
  "priceNameLabel": "Precio",
  "snackBarPasswordChangedSuccessfully": "Contraseña cambiada correctamente",
  "snackBarErrorOnChangePassword": "Error al cambiar la contraseña",
-  "submitLogoutLabel": "Salir"
+ "submitLogoutLabel": "Salir",
+ "snackBarNameChangedSuccessfully": "Nombre cambiado correctamente",
+ "snackBarErrorOnChangeName": "Error al cambiar el nombre"
 }
