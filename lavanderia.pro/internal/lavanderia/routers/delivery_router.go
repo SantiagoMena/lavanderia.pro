@@ -92,3 +92,33 @@ func NewGetDeliveryRouter(r *gin.Engine, controller *controllers.DeliveryControl
 
 	})
 }
+
+func NewPutDeliveryProfileRouter(r *gin.Engine, controller *controllers.DeliveryController) {
+	r.PUT("/delivery/profile", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		var delivery types.Delivery
+
+		if err := c.BindJSON(&delivery); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
+			return
+		}
+
+		delivery.Auth = authId.(string)
+
+		// Handle Controller
+		deliveryUpdated, errPost := controller.UpdateDelivery(&delivery)
+
+		if errPost != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errPost.Error()})
+		} else {
+			c.IndentedJSON(http.StatusOK, deliveryUpdated)
+		}
+
+	})
+}

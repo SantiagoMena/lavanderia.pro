@@ -155,5 +155,13 @@
   "submitLogoutLabel": "Logout",
   "@submitLogoutLabel": {
     "description": "Submit Logout Label"
+  },
+  "snackBarNameChangedSuccessfully": "Name Changed Successfully",
+  "@snackBarNameChangedSuccessfully": {
+    "description": "Alert Name Changed Successfully"
+  },
+  "snackBarErrorOnChangeName": "Error on Change Name",
+  "@snackBarErrorOnChangeName": {
+    "description": "Alert Error on Change Name"
   }
 }

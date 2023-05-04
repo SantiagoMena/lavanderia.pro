@@ -118,7 +118,7 @@ func NewPutClientRouter(r *gin.Engine, controller *controllers.ClientController)
 		if errPost != nil {
 			c.IndentedJSON(http.StatusBadRequest, gin.H{"msg": errPost.Error()})
 		} else {
-			c.IndentedJSON(http.StatusCreated, clientPosted)
+			c.IndentedJSON(http.StatusOK, clientPosted)
 		}
 
 	})
