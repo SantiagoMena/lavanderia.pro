@@ -34,5 +34,8 @@
  "createBusinessButtonLabel": "Crear Negocio",
  "createProductButtonLabel": "Crear Producto",
  "productNameLabel": "Nombre del Producto",
- "priceNameLabel": "Precio"
+ "priceNameLabel": "Precio",
+ "snackBarPasswordChangedSuccessfully": "Contraseña cambiada correctamente",
+ "snackBarErrorOnChangePassword": "Error al cambiar la contraseña",
+  "submitLogoutLabel": "Salir"
 }

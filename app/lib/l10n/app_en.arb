@@ -16,6 +16,7 @@
     "description": "Submit Login Label"
   },
   "submitRegisterLabel": "Register",
+  "submitRegisterLabel": "Register",
   "@submitRegisterLabel": {
     "description": "Submit Register Label"
   },
@@ -142,5 +143,17 @@
   "priceLabel": "Price",
    "@priceLabel": {
    "description": "Price Label"
+  },
+  "snackBarPasswordChangedSuccessfully": "Password Changed Successfully",
+  "@snackBarPasswordChangedSuccessfully": {
+    "description": "Alert Password Changed Successfully"
+  },
+  "snackBarErrorOnChangePassword": "Error on Change Password",
+  "@snackBarErrorOnChangePassword": {
+    "description": "Alert Error on Change Password"
+  },
+  "submitLogoutLabel": "Logout",
+  "@submitLogoutLabel": {
+    "description": "Submit Logout Label"
   }
 }
