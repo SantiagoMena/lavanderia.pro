@@ -17,7 +17,6 @@ Future<Profile?> getProfile(String token) async {
       }
   );
   profile.delivery = responseDelivery.statusCode == 200;
-  print(['delivery/profile ===>', responseDelivery.body, profile.delivery]);
 
   var urlClient = Uri.http(API_HOST, 'client/profile');
   final responseClient = await http.get(
@@ -28,7 +27,6 @@ Future<Profile?> getProfile(String token) async {
       }
   );
   profile.client = responseClient.statusCode == 200;
-  print(['client/profile ===>',  responseClient.statusCode, responseClient.body, profile.client]);
 
   var urlBusiness = Uri.http(API_HOST, 'business');
   final responseBusiness = await http.get(
@@ -40,7 +38,6 @@ Future<Profile?> getProfile(String token) async {
   );
 
   profile.business = responseBusiness.statusCode == 200;
-  print(['business/profile ===>', responseBusiness.body, profile.business]);
 
   return profile;
 }
