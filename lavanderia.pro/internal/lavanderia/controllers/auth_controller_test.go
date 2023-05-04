@@ -179,6 +179,7 @@ func MakeAuthController() *AuthController {
 		auth.NewRefreshTokenHandler(repositoryAuth),
 		client.NewRegisterClientHandler(repositoryAuth, repositoryClient),
 		delivery.NewRegisterDeliveryHandler(repositoryAuth, repositoryDelivery),
+		auth.NewChangePasswordHandler(repositoryAuth, repositoryBusiness),
 	)
 	return controller
 }

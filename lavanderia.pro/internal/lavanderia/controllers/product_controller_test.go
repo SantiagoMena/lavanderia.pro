@@ -139,6 +139,7 @@ func MakeAuthForProductController() *AuthController {
 	RegisterDeliveryHandler := delivery.NewRegisterDeliveryHandler(repositoryAuth, repositoryDelivery)
 	LoginHandler := auth.NewLoginHandler(repositoryAuth, repositoryBusiness)
 	RefreshTokenHandler := auth.NewRefreshTokenHandler(repositoryAuth)
+	ChangePasswordHandler := auth.NewChangePasswordHandler(repositoryAuth, repositoryBusiness)
 
 	controller := NewAuthController(
 		RegisterBusinessHandler,
@@ -146,6 +147,7 @@ func MakeAuthForProductController() *AuthController {
 		RefreshTokenHandler,
 		RegisterClientHandler,
 		RegisterDeliveryHandler,
+		ChangePasswordHandler,
 	)
 
 	return controller

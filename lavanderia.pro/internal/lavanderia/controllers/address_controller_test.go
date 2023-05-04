@@ -179,12 +179,14 @@ func MakeAuthControllerForTestAddress() *AuthController {
 	repositoryBusiness := repositories.NewBusinessRepository(database)
 	repositoryClient := repositories.NewClientRepository(database)
 	repositoryDelivery := repositories.NewDeliveryRepository(database)
+
 	controller := NewAuthController(
 		business.NewRegisterBusinessHandler(repositoryAuth, repositoryBusiness),
 		auth.NewLoginHandler(repositoryAuth, repositoryBusiness),
 		auth.NewRefreshTokenHandler(repositoryAuth),
 		client.NewRegisterClientHandler(repositoryAuth, repositoryClient),
 		delivery.NewRegisterDeliveryHandler(repositoryAuth, repositoryDelivery),
+		auth.NewChangePasswordHandler(repositoryAuth, repositoryBusiness),
 	)
 	return controller
 }
