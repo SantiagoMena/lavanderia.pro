@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lavanderiapro/pages/business_tabs/business_update_form.dart';
 import 'package:lavanderiapro/pages/business_tabs/business_view.dart';
+import 'package:lavanderiapro/pages/business_tabs/delivery_business_view.dart';
 import 'package:lavanderiapro/pages/business_tabs/product_create_form.dart';
 import 'package:lavanderiapro/pages/client_tabs/business_client_view.dart';
 
@@ -25,7 +27,7 @@ class _ProductBusinessViewState extends State<ProductBusinessView> {
         child: const Icon(Icons.add),
       ),
       appBar: AppBar(
-        title: Text("Manage Products"),
+        title: Text("Manage Business XXX"),
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
@@ -34,25 +36,64 @@ class _ProductBusinessViewState extends State<ProductBusinessView> {
           alignment: Alignment.topCenter,
           child: Column(
             children:[
-                const SizedBox(
-                  height: 50,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                        backgroundColor: Colors.green,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                const BusinessUpdateForm()
+                            )
+                        );
+                      },
+                      child: Text("Edit Business"),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                        backgroundColor: Colors.green,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                const DeliveryBusinessView()
+                            )
+                        );
+                      },
+                      child: Text(AppLocalizations.of(context)!.manageDeliveryButtonLabel),
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   child: Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      child: Text("Select Product")
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        child: Text("Manage Products")
                     ),
                   ),
                 ),
                 Expanded(
                   child: ListView.builder(
                     itemCount: items.length,
-                    /*prototypeItem: ListTile(
-                      title: Text(items.first),
-                    ),*/
                     itemBuilder: (context, index) {
                       var businessItem = items[index];
-                      return BusinessCard(businessItem: businessItem);
+                      return ProductCard(businessItem: businessItem);
                     },
                   ),
                 ), // Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
@@ -65,8 +106,8 @@ class _ProductBusinessViewState extends State<ProductBusinessView> {
   }
 }
 
-class BusinessCard extends StatelessWidget {
-  const BusinessCard({
+class ProductCard extends StatelessWidget {
+  const ProductCard({
     super.key,
     required this.businessItem,
   });

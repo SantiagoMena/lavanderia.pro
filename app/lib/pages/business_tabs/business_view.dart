@@ -15,8 +15,14 @@ class _BusinessViewState extends State<BusinessView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         title: Text("Business Name"),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+        child: const Icon(Icons.add),
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
@@ -30,11 +36,11 @@ class _BusinessViewState extends State<BusinessView> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Center(
+                  SizedBox(
+                    height: 50,
                     child: Text("Manage Products"),
                   ),
-                  SizedBox(
-                    height: 650,
+                  Expanded(
                     child: ListView.builder(
                       itemCount: items.length,
                       /*prototypeItem: ListTile(
@@ -56,16 +62,6 @@ class _BusinessViewState extends State<BusinessView> {
   }
 }
 
-class SelectedProducts extends StatelessWidget {
-  const SelectedProducts({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Text("Products Selected +1");
-  }
-}
 
 class ManageProductCard extends StatelessWidget {
   const ManageProductCard({
@@ -79,56 +75,6 @@ class ManageProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-        },
-        child: const Icon(Icons.add),
-      ),
-      /*body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-          onPressed: () {
-
-          },
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(child: Text(items[productIndex], style: TextStyle(color: Colors.black),)),
-                      Expanded(child: Text("")),
-                      Expanded(child:
-                        Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5),
-                                child: Text("Stock: 112", style: TextStyle(color: Colors.black),)
-                            )
-                        )
-                      ),
-                    ]
-                  ),
-                  Row(
-                      children: [
-                        Container(child: Text("Desc ...", style: TextStyle(color: Colors.black),)),
-                        Expanded(child: Text("")),
-                      ]
-                  ),
-                  Row(
-                      children: [
-                        Container(child: Text('Price: \$0000', style: TextStyle(color: Colors.black),)),
-                        Expanded(child: Text("")),
-                      ]
-                  ),
-                ],
-              ),
-          ),
-        )
-      ),*/
-    );
+    return Text(items[productIndex]);
   }
 }
