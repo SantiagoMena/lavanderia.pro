@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/auth/register_business.dart';
 import 'package:lavanderiapro/pages/client_tabs/addresses_client_view.dart';
+import 'package:lavanderiapro/services/get_business_profile_service.dart';
+import 'package:lavanderiapro/services/get_client_profile_service.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileClientTab extends StatefulWidget {
-   const ProfileClientTab({super.key, this.token});
-
-  final String? token;
+   const ProfileClientTab({super.key});
 
   @override
   State<ProfileClientTab> createState() => _ProfileClientTabState();
@@ -26,158 +27,211 @@ class _ProfileClientTabState extends State<ProfileClientTab> {
 
     Profile? profile;
 
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints viewportConstraints) {
-      return Align(
-        alignment: Alignment.topCenter,
-        child: SingleChildScrollView(
-              reverse: true,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Colors.green,
+    return FutureBuilder(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return CircularProgressIndicator();
+        }
+
+        if(snapshot.hasData) {
+          String token = snapshot.data!.getString('token') ?? '';
+
+          return FutureBuilder(
+            future: getClientProfile(token),
+            builder: (context, snapshot) {
+            return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
+              if(snapshot.hasData){
+                print(['nameController.text', nameController.text]);
+                nameController.text = snapshot.data!.name ?? '';
+                return Align(
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 16),
+                        child: Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              backgroundColor: Colors.green,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddressesClientView()));
+                            },
+                            child: Text(AppLocalizations.of(context)!
+                                .manageAddressesButtonLabel),
+                          ),
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddressesClientView()
-                              )
-                          );
-                        },
-                        child: Text(AppLocalizations.of(context)!.manageAddressesButtonLabel),
                       ),
-                    ),
-                  ),
-                  Form(
-                       key: _formNameKey,
-                       child: Column(
-                         children:[
-                           Padding(
-                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                             child: TextFormField(
-                               controller: nameController,
-                               decoration: const InputDecoration(border: OutlineInputBorder(), label: ClientNameLabel()),
-                               validator: (value) {
-                                 if(value == null || value.isEmpty){
-                                   return AppLocalizations.of(context)!.emptyNameAlert;
-                                 }
-                                 return null;
-                               },
-                             ),
-                           ),
-                           Padding(
-                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                             child: Center(
-                               child: ElevatedButton(
-                                 style: ElevatedButton.styleFrom(
-                                   minimumSize: const Size.fromHeight(50),
-                                   backgroundColor: Colors.green,
-                                 ),
-                                 onPressed: () {
-                                   if(_formNameKey.currentState!.validate()){
-                                     // Change Name
-
-                                   } else {
-                                     ScaffoldMessenger.of(context).showSnackBar(
-                                         const SnackBar(content: FillInputSnackBar())
-                                     );
-                                   }
-                                 },
-                                 child: Text(AppLocalizations.of(context)!.changeNameButtonLabel),
-                               ),
-                             ),
-                           ),
-                         ],
-                       ),
-                     ),
-                  Form(
+                      Form(
+                        key: _formNameKey,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 16),
+                              child: TextFormField(
+                                controller: nameController,
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    label: ClientNameLabel()),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return AppLocalizations.of(context)!
+                                        .emptyNameAlert;
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 16),
+                              child: Center(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize:
+                                        const Size.fromHeight(50),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                  onPressed: () {
+                                    if (_formNameKey.currentState!
+                                        .validate()) {
+                                      // Change Name
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content:
+                                                  FillInputSnackBar()));
+                                    }
+                                  },
+                                  child: Text(
+                                      AppLocalizations.of(context)!
+                                          .changeNameButtonLabel),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Form(
                         key: _formPasswordKey,
-                         child: Column(
-                             children:[
-                           Padding(
-                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                             child: TextFormField(
-                               controller: passwordController,
-                               obscureText: true,
-                               decoration: const InputDecoration(border: OutlineInputBorder(), label: CurrentPasswordLabel()),
-                               validator: (value) {
-                                 if(value == null || value.isEmpty){
-                                   return AppLocalizations.of(context)!.emptyPasswordAlert;
-                                 }
-                                 return null;
-                               },
-                             ),
-                           ),
-                           Padding(
-                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                             child: TextFormField(
-                               controller: newPasswordController,
-                               obscureText: true,
-                               decoration: const InputDecoration(border: OutlineInputBorder(), label: NewPasswordLabel()),
-                               validator: (value) {
-                                 if(value == null || value.isEmpty){
-                                   return AppLocalizations.of(context)!.emptyPasswordAlert;
-                                 }
-                                 return null;
-                               },
-                             ),
-                           ),
-                           Padding(
-                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                             child: Center(
-                               child: ElevatedButton(
-                                 style: ElevatedButton.styleFrom(
-                                   minimumSize: const Size.fromHeight(50),
-                                   backgroundColor: Colors.green,
-                                 ),
-                                 onPressed: () {
-                                   if(_formPasswordKey.currentState!.validate()){
-                                     // Change Name
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 16),
+                              child: TextFormField(
+                                controller: passwordController,
+                                obscureText: true,
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    label: CurrentPasswordLabel()),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return AppLocalizations.of(context)!
+                                        .emptyPasswordAlert;
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 16),
+                              child: TextFormField(
+                                controller: newPasswordController,
+                                obscureText: true,
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    label: NewPasswordLabel()),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return AppLocalizations.of(context)!
+                                        .emptyPasswordAlert;
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 16),
+                              child: Center(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize:
+                                        const Size.fromHeight(50),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                  onPressed: () {
+                                    if (_formPasswordKey.currentState!
+                                        .validate()) {
+                                      // Change Name
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content:
+                                                  FillInputSnackBar()));
+                                    }
+                                  },
+                                  child: Text(
+                                      AppLocalizations.of(context)!
+                                          .changePasswordButtonLabel),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 16),
+                        child: Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              backgroundColor: Colors.green,
+                            ),
+                            onPressed: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/login', (_) => false);
+                            },
+                            child: Text("Logout"),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context)
+                                  .viewInsets
+                                  .bottom))
+                    ],
+                  ),
+                ),
+              );
+              } else {
+                return CircularProgressIndicator();
+              }
+            });
+          }
+          );
+        }
 
-                                   } else {
-                                     ScaffoldMessenger.of(context).showSnackBar(
-                                         const SnackBar(content: FillInputSnackBar())
-                                     );
-                                   }
-                                 },
-                                 child: Text(AppLocalizations.of(context)!.changePasswordButtonLabel),
-                               ),
-                             ),
-                           ),
-                           ],
-                         ),
-                       ),
-                  Padding(
-                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                   child: Center(
-                     child: ElevatedButton(
-                       style: ElevatedButton.styleFrom(
-                         minimumSize: const Size.fromHeight(50),
-                         backgroundColor: Colors.green,
-                       ),
-                       onPressed: () {
-                         Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
-                       },
-                       child: Text("Logout"),
-                     ),
-                   ),
-                 ),
-                  Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
-                ],
-               ),
-              ),
-        );
-      }
-    );
+        return CircularProgressIndicator();
+
+    });
   }
 }
 

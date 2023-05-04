@@ -2,20 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/auth/login.dart';
 import 'package:lavanderiapro/auth/register_business.dart';
+import 'package:lavanderiapro/pages/business_tabs/business_tab.dart';
 import 'package:lavanderiapro/pages/business_tabs/home_business.dart';
 import 'package:lavanderiapro/pages/client_tabs/home_client.dart';
 import 'package:lavanderiapro/pages/delivery_tabs/delivery_client.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key, this.token});
-
-  final String? token;
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-
-
+/*
+    Future<SharedPreferences> _sprefs = SharedPreferences.getInstance();
+    _sprefs.then((prefs) {
+      final String? refresh_token = prefs.getString('refresh_token');
+      print(["REFRESH_TOKEN", refresh_token]);
+    },
+    onError: (error) {
+      print("SharedPreferences ERROR = $error");
+    });
+*/
     Profile? profile;
     List<Widget> children = [
       Padding(
@@ -26,41 +34,60 @@ class HomePage extends StatelessWidget {
       )
     ];
 
-      //children.add(const LoginAsBusinessButton());
-
-
     return Scaffold(
       /*appBar: AppBar(
         title: const Text('Select Profile'),
       ),*/
       body: FutureBuilder(
-        future: getProfile(token ?? ''),
+        future: SharedPreferences.getInstance(),
         builder: (context, snapshot) {
-
-
           if(snapshot.hasData) {
-            if(snapshot.data!.business == true) {
-              children.add(const LoginAsBusinessButton());
-            }
-            if(snapshot.data!.client == true) {
-              children.add(const LoginAsClientButton());
-            }
-            if(snapshot.data!.delivery == true) {
-              children.add(const LoginAsDeliveryButton());
-            }
+            String? tokenStored = snapshot.data!.getString('token');
 
-            print([snapshot.data!.business, snapshot.data!.client, snapshot.data!.delivery]);
-            if(snapshot.data!.business == true && snapshot.data!.client == false && snapshot.data!.delivery == false) {
-              return HomeBusinessTab();
-            }
+            print(["tokenStored", tokenStored]);
+            getProfile(tokenStored ?? '').then((profile) {
+              if(profile!.business == true) {
+                children.add(const LoginAsBusinessButton());
+              }
+              if(profile!.client == true) {
+                children.add(const LoginAsClientButton());
+              }
+              if(profile!.delivery == true) {
+                children.add(const LoginAsDeliveryButton());
+              }
 
-            if(snapshot.data!.business == false && snapshot.data!.client == true && snapshot.data!.delivery == false) {
-              return HomeClientTab();
-            }
+              if(profile!.business == true && profile!.client == false && profile!.delivery == false) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            BusinessTab()
+                    )
+                );
+              }
 
-            if(snapshot.data!.business == false && snapshot.data!.client == false && snapshot.data!.delivery == true) {
-              return HomeDeliveryTab();
-            }
+              if(profile!.business == false && profile!.client == true && profile!.delivery == false) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            HomeClientTab()
+                    )
+                );
+                // return HomeClientTab();
+              }
+
+              if(profile!.business == false && profile!.client == false && profile!.delivery == true) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            HomeDeliveryTab()
+                    )
+                );
+                // return HomeDeliveryTab();
+              }
+            }).catchError((onError) => print(onError));
 
           } else if (snapshot.connectionState != ConnectionState.done) {
             children = [CircularProgressIndicator()];
