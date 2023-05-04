@@ -34,21 +34,6 @@ class _ProfileBusinessTabState extends State<ProfileBusinessTab> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Colors.green,
-                        ),
-                        onPressed: () {
-
-                        },
-                        child: Text(AppLocalizations.of(context)!.manageDeliveryButtonLabel),
-                      ),
-                    ),
-                  ),
                   Form(
                         key: _formPasswordKey,
                          child: Column(
