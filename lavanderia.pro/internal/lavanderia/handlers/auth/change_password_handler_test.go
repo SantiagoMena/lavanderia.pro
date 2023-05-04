@@ -72,6 +72,7 @@ func TestChangePasswordHandle(t *testing.T) {
 	})
 
 	assert.Nil(t, errChangePassword, "Error on change password")
+	assert.NotEmpty(t, changePassword, "changePassword Empty")
 
 	authFoundChanged, errAuthFoundChanged := authRepository.GetByEmail(auth)
 	assert.NotEmpty(t, authFoundChanged, "authFoundChanged Empty")
