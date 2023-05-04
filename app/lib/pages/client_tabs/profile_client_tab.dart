@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/auth/register_business.dart';
+import 'package:lavanderiapro/pages/client_tabs/addresses_client_view.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
 
 class ProfileClientTab extends StatefulWidget {
@@ -45,7 +46,12 @@ class _ProfileClientTabState extends State<ProfileClientTab> {
                           backgroundColor: Colors.green,
                         ),
                         onPressed: () {
-
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddressesClientView()
+                              )
+                          );
                         },
                         child: Text(AppLocalizations.of(context)!.manageAddressesButtonLabel),
                       ),
