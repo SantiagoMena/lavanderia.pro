@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/pages/client_tabs/business_client_view.dart';
+import 'package:lavanderiapro/services/search_business_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NewOrderClientTab extends StatefulWidget {
    const NewOrderClientTab({super.key, this.token});
@@ -14,40 +16,57 @@ class NewOrderClientTab extends StatefulWidget {
 class _NewOrderClientTabState extends State<NewOrderClientTab> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints viewportConstraints) {
-        var items = List<String>.generate(15, (i) => 'Business $i');
-        return Align(
-        alignment: Alignment.topCenter,
-        child: Column(
-          children:[
-              const SizedBox(
-                height: 50,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: SelectBusinessLabel()
+    return FutureBuilder(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        if(snapshot.hasData) {
+          String? token = snapshot.data!.getString('token');
+
+          return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints viewportConstraints) {
+          // var items = List<String>.generate(1, (i) => 'Business $i');
+          return Align(
+          alignment: Alignment.topCenter,
+          child: Column(
+            children:[
+                const SizedBox(
+                  height: 50,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: SelectBusinessLabel()
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: items.length,
-                  /*prototypeItem: ListTile(
-                    title: Text(items.first),
-                  ),*/
-                  itemBuilder: (context, index) {
-                    var businessItem = items[index];
-                    return BusinessCard(businessItem: businessItem);
-                  },
+                Expanded(
+                  child: FutureBuilder(
+                    future: searchBusiness(token ?? ""),
+                    builder: (context, snapshot) {
+                      if(snapshot.hasData) {
+                        return ListView.builder(
+                        itemCount: snapshot.data!.length ?? 1,
+                        itemBuilder: (context, index) {
+                          var businessItem = snapshot.data![index];
+                          return BusinessCard(businessItem: businessItem, token: token ?? "");
+                        },
+                      );
+                      } else {
+                       return CircularProgressIndicator();
+                      }
+                    },
+                  ),
                 ),
-              ),
-              // Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
-            ],
-           ),
-        );
-      }
+                // Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
+              ],
+             ),
+          );
+        }
+      );
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
     );
   }
 }
@@ -56,9 +75,11 @@ class BusinessCard extends StatelessWidget {
   const BusinessCard({
     super.key,
     required this.businessItem,
+    required this.token,
   });
 
-  final String businessItem;
+  final Business businessItem;
+  final String token;
 
   @override
   Widget build(BuildContext context) {
@@ -69,13 +90,13 @@ class BusinessCard extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => BusinessClientView()
+                  builder: (context) => BusinessClientView(businessItem: businessItem, token: token)
               )
           )
         },
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 50),
-            child: Text(businessItem),
+            child: Text(businessItem.name ?? ""),
           )
       ),
     );
