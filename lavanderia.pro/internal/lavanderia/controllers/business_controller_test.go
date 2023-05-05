@@ -195,6 +195,7 @@ func MakeController() *BusinessController {
 		business.NewGetBusinessHandler(repository),
 		business.NewGetAllBusinessByAuthHandler(repository),
 		business.NewRegisterBusinessDeliveryHandler(authRepository, repository, deliveryRepository),
+		business.NewSearchBusinessHandler(repository),
 	)
 	return controller
 }

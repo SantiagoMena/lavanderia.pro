@@ -256,3 +256,27 @@ func NewPostRegisterBusinessDeliveryRouter(r *gin.Engine, controller *controller
 
 	})
 }
+
+func NewSearchBusinessRouter(r *gin.Engine, controller *controllers.BusinessController) {
+	r.GET("/business/search", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		if authId == nil {
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		business, err := controller.SearchBusiness()
+
+		// if business == nil {
+		// 	c.JSON(http.StatusOK, bu)
+		// 	return
+		// }
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+		} else {
+			c.JSON(http.StatusOK, business)
+		}
+	})
+}

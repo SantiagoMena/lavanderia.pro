@@ -179,3 +179,20 @@ func (businessRepository *BusinessRepository) FindAllBusinessByAuth(auth string)
 
 	return businessMap, nil
 }
+
+func (businessRepository *BusinessRepository) Search() ([]types.Business, error) {
+	businessDb, err := businessRepository.database.FindAllFilter(businessCollection, bson.D{
+		{Key: "deleted_at", Value: nil},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var businessMap []types.Business
+	if err = businessDb.All(context.TODO(), &businessMap); err != nil {
+		return []types.Business{}, err
+	}
+
+	return businessMap, nil
+}
