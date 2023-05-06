@@ -18,7 +18,7 @@ class HomeClientTab extends StatelessWidget {
 
     Profile? profile;
 
-    return  DefaultTabController(
+    return DefaultTabController(
         length: 3,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
