@@ -1,8 +1,7 @@
 import 'dart:collection';
-import 'package:flutter/foundation.dart';
 import 'package:lavanderiapro/services/get_all_products_business_service.dart';
 
-class OrderModel extends ChangeNotifier {
+class OrderModel {
   /// Internal, private state of the cart.
   final List<Product> _items = [];
 
@@ -10,28 +9,34 @@ class OrderModel extends ChangeNotifier {
   UnmodifiableListView<Product> get items => UnmodifiableListView(_items);
 
   /// The current total price of all items (assuming all items cost $42).
-  int get totalPrice => _items.length * 42;
+  num get totalPrice => _items.isNotEmpty ? _items.map((e) => e.price).reduce((value, element) => element != null ? value! + element : value) ?? 0 : 0;
 
   int get count => _items.length;
 
   /// Adds [item] to cart. This and [removeAll] are the only ways to modify the
-  /// cart from the outside.
   void add(Product item) {
     _items.add(item);
-    // This call tells the widgets that are listening to this model to rebuild.
-    notifyListeners();
   }
 
   /// Removes all items from the cart.
   void removeAll() {
     _items.clear();
-    // This call tells the widgets that are listening to this model to rebuild.
-    notifyListeners();
   }
 
   void remove(Product item) {
     _items.remove(item);
-    // This call tells the widgets that are listening to this model to rebuild.
-    notifyListeners();
+  }
+
+  List<Product> getGrouped() {
+    List<Product> group = List<Product>.empty(growable: true);
+
+    _items.forEach((element) {
+      Iterable<Product> elementFound = group.where((elementGroup) => elementGroup.id == element.id);
+      if(elementFound.isEmpty) {
+        group.add(element);
+      }
+    });
+
+    return group;
   }
 }
