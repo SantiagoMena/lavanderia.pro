@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/models/OrderModel.dart';
+import 'package:lavanderiapro/pages/client_tabs/check_order_client_view.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
 import 'package:lavanderiapro/services/get_all_products_business_service.dart';
 import 'package:lavanderiapro/services/search_business_service.dart';
@@ -77,8 +78,7 @@ class _BusinessClientViewState extends State<BusinessClientView> {
            Navigator.push(
                context,
                MaterialPageRoute(
-                   builder: (context) =>
-                       ProcessedOrderClient()
+                   builder: (context) => CheckOrderClient(order: order)
                )
            );
          },
