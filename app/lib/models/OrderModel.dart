@@ -24,7 +24,20 @@ class OrderModel {
   }
 
   void remove(Product item) {
-    _items.remove(item);
+    for(final element in _items){
+      if(element.id == item.id){
+        _items.remove(element);
+        break;
+      }
+    }
+  }
+
+  void delete(Product item) {
+    for(final element in _items){
+      if(element.id == item.id){
+        _items.remove(element);
+      }
+    }
   }
 
   List<Product> getGrouped() {
@@ -38,5 +51,17 @@ class OrderModel {
     });
 
     return group;
+  }
+
+  int countProduct(Product item) {
+    int counter = 0;
+
+    _items.forEach((element) {
+      if(element.id == item.id){
+        counter++;
+      }
+    });
+
+    return counter;
   }
 }
