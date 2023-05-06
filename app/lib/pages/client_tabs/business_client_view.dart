@@ -38,42 +38,51 @@ class _BusinessClientViewState extends State<BusinessClientView> {
 
      order.getGrouped().forEach((element) {
        widgets.add(
-         ListTile(title: Text(element!.name ?? ""))
+         ListTile(
+             title: Row(
+               children: [
+                 Expanded(child: Text(element!.name ?? "")),
+                 Text("x ${order.countProduct(element)}" ?? "x 0"),
+                 Text(" "),
+                 Text("\$ ${(element.price ?? 0) * order.countProduct(element)}" ?? "0"),
+               ],
+             )
+         )
        );
      });
 
      widgets.add(
-         ListTile(
-       title: Row(
-         children: [
-           const Align(
-             alignment: Alignment.topLeft,
-             child: Text(
-               '☝️ Process Order',
-               style: TextStyle(color: Colors.white),
+       ListTile(
+         title: Row(
+           children: [
+             const Align(
+               alignment: Alignment.topLeft,
+               child: Text(
+                 '☝️ Process Order',
+                 style: TextStyle(color: Colors.white),
+               ),
              ),
-           ),
-           const Expanded(child: Text("")),
-           Align(
-             alignment: Alignment.topRight,
-             child: Text(
-               '\$${order.totalPrice}',
-               style: const TextStyle(color: Colors.white),
+             const Expanded(child: Text("")),
+             Align(
+               alignment: Alignment.topRight,
+               child: Text(
+                 '\$${order.totalPrice}',
+                 style: const TextStyle(color: Colors.white),
+               ),
              ),
-           ),
-         ],
-       ),
-       tileColor: Colors.green,
-       onTap: () {
-         Navigator.push(
-             context,
-             MaterialPageRoute(
-                 builder: (context) =>
-                     ProcessedOrderClient()
-             )
-         );
-       },
-     )
+           ],
+         ),
+         tileColor: Colors.green,
+         onTap: () {
+           Navigator.push(
+               context,
+               MaterialPageRoute(
+                   builder: (context) =>
+                       ProcessedOrderClient()
+               )
+           );
+         },
+       )
      );
 
      return widgets;
@@ -111,6 +120,7 @@ class _BusinessClientViewState extends State<BusinessClientView> {
                                     productItem: productItem,
                                     pushProductCallback: pushProduct,
                                     popProductCallback: popProduct,
+                                    countProductCallback: order.countProduct,
                                 );
                               },
                             );
@@ -153,11 +163,13 @@ class ProductCard extends StatelessWidget {
     required this.productItem,
     required this.pushProductCallback,
     required this.popProductCallback,
+    required this.countProductCallback,
   });
 
   final Product productItem;
   final Function pushProductCallback;
   final Function popProductCallback;
+  final Function countProductCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +209,7 @@ class ProductCard extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text("0"),
+                          child: Text(countProductCallback(productItem).toString()),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
