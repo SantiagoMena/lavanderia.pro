@@ -7,31 +7,88 @@ import 'package:lavanderiapro/services/search_business_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
-class BusinessClientView extends StatelessWidget {
+class BusinessClientView extends StatefulWidget {
    BusinessClientView({super.key, this.token, this.businessItem});
    final Business? businessItem;
    final String? token;
+
+  @override
+  State<BusinessClientView> createState() => _BusinessClientViewState();
+}
+
+class _BusinessClientViewState extends State<BusinessClientView> {
    OrderModel order = OrderModel();
 
    void pushProduct(Product product) {
-     order.add(product);
+     setState(() {
+       order.add(product);
+     });
      print(order.totalPrice);
    }
 
    void popProduct(Product product) {
-     order.remove(product);
+     setState(() {
+       order.remove(product);
+     });
      print(order.totalPrice);
+   }
+
+   List<Widget> getOrderProducts() {
+     List<Widget> widgets = List<Widget>.empty(growable: true);
+
+     order.getGrouped().forEach((element) {
+       widgets.add(
+         ListTile(title: Text(element!.name ?? ""))
+       );
+     });
+
+     widgets.add(
+         ListTile(
+       title: Row(
+         children: [
+           const Align(
+             alignment: Alignment.topLeft,
+             child: Text(
+               '☝️ Process Order',
+               style: TextStyle(color: Colors.white),
+             ),
+           ),
+           const Expanded(child: Text("")),
+           Align(
+             alignment: Alignment.topRight,
+             child: Text(
+               '\$${order.totalPrice}',
+               style: const TextStyle(color: Colors.white),
+             ),
+           ),
+         ],
+       ),
+       tileColor: Colors.green,
+       onTap: () {
+         Navigator.push(
+             context,
+             MaterialPageRoute(
+                 builder: (context) =>
+                     ProcessedOrderClient()
+             )
+         );
+       },
+     )
+     );
+
+     return widgets;
    }
 
    @override
   Widget build(BuildContext context) {
      return Scaffold(
           appBar: AppBar(
-          title: Text(businessItem!.name ?? ""),
+          title: Text(widget.businessItem!.name ?? ""),
         ),
         body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints viewportConstraints) {
-            return Align(
+            return
+              Align(
               alignment: Alignment.bottomCenter,
               child: SingleChildScrollView(
                 reverse: true,
@@ -43,11 +100,11 @@ class BusinessClientView extends StatelessWidget {
                     SizedBox(
                       height: viewportConstraints.maxHeight - AppBar().preferredSize.height,
                       child: FutureBuilder(
-                        future: getAllProductsBusiness(token ?? "", businessItem!.id ?? ""),
+                        future: getAllProductsBusiness(widget.token ?? "", widget.businessItem!.id ?? ""),
                         builder: (context, snapshot) {
                           if(snapshot.hasData) {
                             return ListView.builder(
-                              itemCount: snapshot.data!.length ?? 1,
+                              itemCount: snapshot.data!.length ?? 0,
                               itemBuilder: (context, index) {
                                 var productItem = snapshot.data![index];
                                 return ProductCard(
@@ -64,60 +121,18 @@ class BusinessClientView extends StatelessWidget {
                       ),
                     ),
                      ExpansionTile(
-                           title: Text('Products selected'),
-                           subtitle: Text('Show full order'),
-                           children: <Widget>[
-                             ListTile(title: Text('This is tile number 1')),
-                             ListTile(title: Text('This is tile number 3')),
-                             ListTile(title: Text('This is tile number 4')),
-                             ListTile(title: Text('This is tile number 5')),
-                             ListTile(title: Text('This is tile number 6')),
-                             ListTile(title: Text('This is tile number 7')),
-                             ListTile(title: Text('This is tile number 8')),
-                             ListTile(title: Text('This is tile number 9')),
-                             ListTile(title: Text('This is tile number 10')),
-                             ListTile(title: Text('This is tile number 11')),
-                             ListTile(
-                               title: Row(
-                                 children: const [
-                                   Align(
-                                     alignment: Alignment.topLeft,
-                                     child: Text(
-                                       '☝️ Process Order',
-                                       style: TextStyle(color: Colors.white),
-                                     ),
-                                   ),
-                                   Expanded(child: Text("")),
-                                   Align(
-                                     alignment: Alignment.topRight,
-                                     child: Text(
-                                       '\$123,4',
-                                       style: TextStyle(color: Colors.white),
-                                     ),
-                                   ),
-                                 ],
-                               ),
-                               tileColor: Colors.green,
-                               onTap: () {
-                                 Navigator.push(
-                                     context,
-                                     MaterialPageRoute(
-                                         builder: (context) =>
-                                             ProcessedOrderClient()
-                                     )
-                                 );
-                               },
-                             ),
-                           ]
+                       title:  Text('${order.count} Product Selected'),
+                       subtitle: Text('Show full order'),
+                       children: getOrderProducts()
                     ),
                     // Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
                   ],
               ),
-              ),
-            );
-          }
-        ),
-      );
+            ),
+        );
+      }
+    )
+   );
   }
 }
 
