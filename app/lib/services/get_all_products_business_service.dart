@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lavanderiapro/util/constants.dart';
-import 'package:lavanderiapro/models/ProductModel.dart';
+import 'package:lavanderiapro/models/product.dart';
 
 Future<List<Product>?> getAllProductsBusiness(String token, String businessId) async {
   var urlClient = Uri.http(API_HOST, 'business/$businessId/products');

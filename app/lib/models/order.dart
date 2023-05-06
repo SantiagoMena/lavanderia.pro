@@ -1,5 +1,5 @@
 import 'dart:collection';
-import 'package:lavanderiapro/models/ProductModel.dart';
+import 'package:lavanderiapro/models/product.dart';
 
 class OrderModel {
   /// Internal, private state of the cart.

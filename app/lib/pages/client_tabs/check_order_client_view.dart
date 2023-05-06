@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/auth/register_business.dart';
-import 'package:lavanderiapro/models/OrderModel.dart';
+import 'package:lavanderiapro/models/order.dart';
+import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
 import 'package:lavanderiapro/services/get_address_client_service.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
+import 'package:lavanderiapro/widgets/ProductCardCart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lavanderiapro/models/product.dart';
 
 class CheckOrderClient extends StatefulWidget {
    const CheckOrderClient({super.key, this.order});
@@ -19,11 +22,22 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
 
+  void pushProduct(Product product) {
+    setState(() {
+      widget.order!.add(product);
+    });
+  }
+
+  void popProduct(Product product) {
+    setState(() {
+      widget.order!.remove(product);
+    });
+  }
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         title: Text("Check Order \$${widget.order!.totalPrice}"),
       ),
       body: LayoutBuilder(
@@ -39,17 +53,61 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                          child: Text("🧾", style: TextStyle(fontSize: 70),)
+                      const SizedBox(
+                        height: 50,
+                        child: Align(
+                            alignment: Alignment.center,
+                            child: DropdownAddress()
                         ),
                       ),
-                      Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom)),
-                      const Align(
-                          alignment: Alignment.center,
-                          child: DropdownAddress()
+                      SizedBox(
+                        height: viewportConstraints.maxHeight - AppBar().preferredSize.height - 50,
+                        child: ListView.builder(
+                          itemCount: widget.order!.getGrouped().length ?? 0,
+                          itemBuilder: (context, index) {
+                            var productItem = widget.order!.getGrouped()[index];
+                            if(productItem == null) {
+                              return Text("");
+                            }
+
+                            return ProductCardCart(
+                                productItem: productItem,
+                                pushProductCallback: pushProduct,
+                                popProductCallback: popProduct,
+                                countProductCallback: widget.order!.countProduct,
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: 50,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Center(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(50),
+                                backgroundColor: Colors.green,
+                              ),
+                              onPressed: () {
+                                if(_formKey.currentState!.validate()){
+                                  // Change Name
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const ProcessedOrderClient()
+                                      )
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text("FillInputSnackBar()"))
+                                  );
+                                }
+                              },
+                              child: Text("Make Order"),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                    ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lavanderiapro/models/ProductModel.dart';
+import 'package:lavanderiapro/models/product.dart';
 
 class ProductCardCart extends StatelessWidget {
   const ProductCardCart({

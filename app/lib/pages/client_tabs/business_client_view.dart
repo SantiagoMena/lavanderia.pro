@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:lavanderiapro/models/OrderModel.dart';
+import 'package:lavanderiapro/models/order.dart';
 import 'package:lavanderiapro/pages/business_tabs/products_business_view.dart';
 import 'package:lavanderiapro/pages/client_tabs/check_order_client_view.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
 import 'package:lavanderiapro/services/get_all_products_business_service.dart';
 import 'package:lavanderiapro/services/search_business_service.dart';
-import 'package:lavanderiapro/models/ProductModel.dart';
+import 'package:lavanderiapro/models/product.dart';
 import 'package:lavanderiapro/widgets/ProductCardCart.dart';
 
 class BusinessClientView extends StatefulWidget {
