@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/models/OrderModel.dart';
+import 'package:lavanderiapro/pages/business_tabs/products_business_view.dart';
 import 'package:lavanderiapro/pages/client_tabs/check_order_client_view.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
 import 'package:lavanderiapro/services/get_all_products_business_service.dart';
 import 'package:lavanderiapro/services/search_business_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:provider/provider.dart';
+import 'package:lavanderiapro/models/ProductModel.dart';
+import 'package:lavanderiapro/widgets/ProductCardCart.dart';
 
 class BusinessClientView extends StatefulWidget {
    BusinessClientView({super.key, this.token, this.businessItem});
@@ -116,7 +117,7 @@ class _BusinessClientViewState extends State<BusinessClientView> {
                               itemCount: snapshot.data!.length ?? 0,
                               itemBuilder: (context, index) {
                                 var productItem = snapshot.data![index];
-                                return ProductCard(
+                                return ProductCardCart(
                                     productItem: productItem,
                                     pushProductCallback: pushProduct,
                                     popProductCallback: popProduct,
@@ -154,80 +155,5 @@ class SelectedProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text("Products Selected +1");
-  }
-}
-
-class ProductCard extends StatelessWidget {
-  const ProductCard({
-    super.key,
-    required this.productItem,
-    required this.pushProductCallback,
-    required this.popProductCallback,
-    required this.countProductCallback,
-  });
-
-  final Product productItem;
-  final Function pushProductCallback;
-  final Function popProductCallback;
-  final Function countProductCallback;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(child: Text(productItem.name ?? "")),
-                  Expanded(child: Text("")),
-                ]
-              ),
-              Row(
-                  children: [
-                    Container(child: Text("Desc ...")),
-                    Expanded(child: Text("")),
-                  ]
-              ),
-              Row(
-                  children: [
-                    Container(child: Text('Price: \$0000')),
-                    Expanded(child: Text("")),
-                    Container(child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              popProductCallback(productItem);
-                            },
-                            child: Text("➖")
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(countProductCallback(productItem).toString()),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                pushProductCallback(productItem);
-                              },
-                              child: Text("➕")
-                          ),
-                        ),
-                      ],
-                    )),
-                  ]
-              ),
-            ],
-          ),
-        ),
-      )
-    );
   }
 }
