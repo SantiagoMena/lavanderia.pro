@@ -26,11 +26,16 @@ func TestDeliveryClientHandler(t *testing.T) {
 		},
 	}
 
+	productRepository := MakeProductRepositoryToTestDeliveryClient()
 	// create product
-	product := &types.Product{
+	productObject := &types.Product{
 		Name:  "product test",
 		Price: 0.123,
 	}
+	product, errCreateProduct := productRepository.Create(productObject)
+
+	assert.Equal(t, nil, errCreateProduct, "error on create product handler")
+	assert.NotEmpty(t, product, "product empty on create")
 
 	// create client
 	client := &types.Client{
@@ -48,7 +53,7 @@ func TestDeliveryClientHandler(t *testing.T) {
 
 	// create product list
 	productList := &[]types.OrderProduct{
-		{Product: *product, Amount: 10},
+		{Product: types.Product{ID: product.ID}, Amount: 10},
 	}
 
 	// create order
@@ -238,4 +243,12 @@ func MakeDeliveryClientOrderHandlerToTestDeliveryClient() *DeliveryClientOrderHa
 	handler := NewDeliveryClientOrderHandler(repository)
 
 	return handler
+}
+
+func MakeProductRepositoryToTestDeliveryClient() *repositories.ProductRepository {
+	config := config.NewConfig()
+	database := databases.NewMongoDatabase(config)
+	repository := repositories.NewProductRepository(database)
+
+	return repository
 }

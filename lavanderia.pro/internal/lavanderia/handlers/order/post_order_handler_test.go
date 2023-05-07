@@ -26,11 +26,16 @@ func TestPostOrderHandler(t *testing.T) {
 		},
 	}
 
+	productRepository := MakeProductRepositoryToTestPost()
 	// create product
-	product := &types.Product{
+	productObject := &types.Product{
 		Name:  "product test",
 		Price: 0.123,
 	}
+	product, errCreateProduct := productRepository.Create(productObject)
+
+	assert.Equal(t, nil, errCreateProduct, "error on create product handler")
+	assert.NotEmpty(t, product, "product empty on create")
 
 	// create client
 	client := &types.Client{
@@ -48,7 +53,7 @@ func TestPostOrderHandler(t *testing.T) {
 
 	// create product list
 	productList := &[]types.OrderProduct{
-		{Product: *product, Amount: 10},
+		{Product: types.Product{ID: product.ID}, Amount: 10},
 	}
 
 	// create order
@@ -83,4 +88,12 @@ func MakePostOrderHandlerToTest() *PostOrderHandler {
 	handler := NewPostOrderHandler(repository, productRepository)
 
 	return handler
+}
+
+func MakeProductRepositoryToTestPost() *repositories.ProductRepository {
+	config := config.NewConfig()
+	database := databases.NewMongoDatabase(config)
+	repository := repositories.NewProductRepository(database)
+
+	return repository
 }
