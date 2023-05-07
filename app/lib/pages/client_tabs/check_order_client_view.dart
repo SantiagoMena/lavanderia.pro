@@ -93,31 +93,43 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Center(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size.fromHeight(50),
-                                backgroundColor: Colors.green,
-                              ),
-                              onPressed: () {
-                                if(_formKey.currentState!.validate()){
-                                  // TODO: Set address active
-                                  if(widget.order!.addressId == "") {
-                                    widget.order!.setAddressId(widget.order!.items.first.id ?? "");
-                                  }
-  
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const ProcessedOrderClient()
-                                      )
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text("FillInputSnackBar()"))
-                                  );
-                                }
-                              },
-                              child: Text("Make Order"),
+                            child: FutureBuilder(
+                              future: SharedPreferences.getInstance(),
+                              builder: (context, snapshot) {
+                                return ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size.fromHeight(50),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                  onPressed: () {
+                                    if(_formKey.currentState!.validate() && widget.order!.count > 0 && snapshot.hasData){
+                                      // TODO: Set address active
+                                      if(widget.order!.addressId == "") {
+                                        widget.order!.setAddressId(widget.order!.items.first.id ?? "");
+                                      }
+
+                                      postOrder(snapshot.data!.getString('token') ?? "", widget.order).then((order) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => const ProcessedOrderClient()
+                                            )
+                                        );
+                                      }).catchError((onError) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text("EROR ON MAKE ORDER"))
+                                        );
+                                        return onError;
+                                      });
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text("FillInputSnackBar()"))
+                                      );
+                                    }
+                                  },
+                                  child: Text("Make Order"),
+                                );
+                              }
                             ),
                           ),
                         ),
