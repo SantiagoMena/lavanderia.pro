@@ -5,6 +5,7 @@ import 'package:lavanderiapro/models/order.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
 import 'package:lavanderiapro/services/get_address_client_service.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
+import 'package:lavanderiapro/services/post_order_service.dart';
 import 'package:lavanderiapro/widgets/ProductCardCart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lavanderiapro/models/product.dart';
@@ -33,6 +34,14 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
       widget.order!.remove(product);
     });
   }
+
+  void setAddressId(String addressId) {
+    setState(() {
+      widget.order!.setAddressId(addressId);
+      print(widget.order!.addressId);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -53,11 +62,11 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const SizedBox(
+                      SizedBox(
                         height: 50,
                         child: Align(
                             alignment: Alignment.center,
-                            child: DropdownAddress()
+                            child: DropdownAddress(setAddress: setAddressId)
                         ),
                       ),
                       SizedBox(
@@ -91,7 +100,11 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
                               ),
                               onPressed: () {
                                 if(_formKey.currentState!.validate()){
-                                  // Change Name
+                                  // TODO: Set address active
+                                  if(widget.order!.addressId == "") {
+                                    widget.order!.setAddressId(widget.order!.items.first.id ?? "");
+                                  }
+  
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -121,7 +134,9 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
 }
 
 class DropdownAddress extends StatefulWidget {
-  const DropdownAddress({super.key});
+  const DropdownAddress({super.key,  this.setAddress});
+
+  final Function? setAddress;
 
   @override
   State<DropdownAddress> createState() => _DropdownAddressState();
@@ -140,29 +155,30 @@ class _DropdownAddressState extends State<DropdownAddress> {
             future: getAddressClient(snapshot.data!.getString('token') ?? ""),
             builder: (contextAddress, snapshotAddress) {
               if(snapshotAddress.hasData){
-                // dropdownValue = snapshotAddress.data!.first.id!;
                 return DropdownButton<String>(
-                value: dropdownValue ?? snapshotAddress.data!.first.id!,
-                icon: const Icon(Icons.arrow_downward),
-                elevation: 16,
-                style: const TextStyle(color: Colors.deepPurple),
-                underline: Container(
-                  height: 2,
-                  color: Colors.deepPurpleAccent,
-                ),
-                onChanged: (String? value) {
-                  print(value);
-                  // This is called when the user selects an item.
-                  setState(() {
-                    dropdownValue = value!;
-                  });
-                },
-                items: snapshotAddress.data!.map<DropdownMenuItem<String>>((Address value) {
-                  return DropdownMenuItem<String>(
-                    value: value.id,
-                    child: Text(value.address ?? ""),
-                  );
-                }).toList(),
+                  autofocus: true,
+                  value: dropdownValue ?? snapshotAddress.data!.first.id!,
+                  icon: const Icon(Icons.arrow_downward),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.black),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.green,
+                  ),
+                  onChanged: (String? value) {
+                    print(value);
+                    // This is called when the user selects an item.
+                    setState(() {
+                      dropdownValue = value!;
+                      widget.setAddress!(value);
+                    });
+                  },
+                  items: snapshotAddress.data!.map<DropdownMenuItem<String>>((Address value) {
+                    return DropdownMenuItem<String>(
+                      value: value.id,
+                      child: Text(value.address ?? ""),
+                    );
+                  }).toList(),
               );
               }
               else {
