@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lavanderiapro/models/address.dart';
 import 'package:lavanderiapro/pages/business_tabs/business_view.dart';
-import 'package:lavanderiapro/pages/business_tabs/products_business_view.dart';
-import 'package:lavanderiapro/pages/client_tabs/business_client_view.dart';
+import 'package:lavanderiapro/services/post_address_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressCreateForm extends StatefulWidget {
    const AddressCreateForm({super.key, this.token});
@@ -15,14 +17,16 @@ class AddressCreateForm extends StatefulWidget {
 
 class _AddressCreateFormState extends State<AddressCreateForm> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
+  TextEditingController addressNameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController extraInfoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Create Address"),
+        title: const Text("Create Address"),
       ),
       body: Form(
         key: _formKey,
@@ -30,23 +34,23 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
           reverse: true,
           child: Column(
             children: [
-                const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: Text("Create New Address")
+              const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: Text("Create New Address")
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: TextFormField(
+                  controller: addressNameController,
+                  decoration: const InputDecoration(border: OutlineInputBorder(), label: Text("Name Address")),
+                  validator: (value) {
+                    if(value == null || value.isEmpty){
+                      return AppLocalizations.of(context)!.emptyNameAlert;
+                    }
+                    return null;
+                  },
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: TextFormField(
-                    controller: nameController,
-                    decoration: const InputDecoration(border: OutlineInputBorder(), label: BusinessNameLabel()),
-                    validator: (value) {
-                      if(value == null || value.isEmpty){
-                        return AppLocalizations.of(context)!.emptyNameAlert;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 child: TextFormField(
@@ -60,39 +64,92 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
                   },
                 ),
               ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
-                        backgroundColor: Colors.green,
-                      ),
-                      onPressed: () {
-                        if(_formKey.currentState!.validate()){
-                          // Change Name
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProductBusinessView()
-                              )
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("FillInputSnackBar()"))
-                          );
-                        }
-                      },
-                      child: Text(AppLocalizations.of(context)!.createBusinessButtonLabel),
-                    ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: TextFormField(
+                  controller: phoneController,
+                  decoration: const InputDecoration(border: OutlineInputBorder(), label: Text("Phone")),
+                  validator: (value) {
+                    if(value == null || value.isEmpty){
+                      return AppLocalizations.of(context)!.emptyNameAlert;
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: TextFormField(
+                  controller: extraInfoController,
+                  decoration: const InputDecoration(border: OutlineInputBorder(), label: Text("Extra Info")),
+                  validator: (value) {
+                    if(value == null || value.isEmpty){
+                      return AppLocalizations.of(context)!.emptyNameAlert;
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: Center(
+                  child: FutureBuilder(
+                    future: SharedPreferences.getInstance(),
+                    builder: (context, snapshot) {
+                      if(snapshot.hasData) {
+                        String token = snapshot.data!.getString('token') ?? "";
+                        Address address = Address.fromJson({
+                          'address': addressController.text,
+                          'name': addressNameController.text,
+                          'phone': phoneController.text,
+                          'extraInfo': extraInfoController.text,
+                        });
+
+                        return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Colors.green,
+                        ),
+                        onPressed: () {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          if(_formKey.currentState!.validate()){
+                            postAddress(token, address).then((addressCreated) {
+                              Navigator.pop(context);
+                              print(['addressCreated', addressCreated]);
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: SnackBarFillInputLabel())
+                            );
+                          }
+                        },
+                        child: const Text('Create Address'),
+                      );
+                      }
+                      else {
+                        return const CircularProgressIndicator();
+                      }
+                    }
                   ),
                 ),
-                Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
-              ],
-            ),
+              ),
+              Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
+            ],
+          ),
         ),
-        ),
+      ),
     );
+  }
+}
+
+class SnackBarFillInputLabel extends StatelessWidget {
+  const SnackBarFillInputLabel({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.snackBarFillInput);
   }
 }
 
@@ -118,20 +175,20 @@ class BusinessCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
         onPressed: () {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => BusinessView()
+                  builder: (context) => const BusinessView()
               )
           );
         },
         child: Padding(
-            child: Text(businessItem, style: TextStyle(color: Colors.black),),
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 50),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 50),
+            child: Text(businessItem, style: const TextStyle(color: Colors.black),),
         )
       ),
     );
