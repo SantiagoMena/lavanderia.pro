@@ -145,7 +145,8 @@ func MakePostOrderHandlerToTestPickUpBusiness() *PostOrderHandler {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repository := repositories.NewOrderRepository(database)
-	handler := NewPostOrderHandler(repository)
+	productRepository := repositories.NewProductRepository(database)
+	handler := NewPostOrderHandler(repository, productRepository)
 
 	return handler
 }
