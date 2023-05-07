@@ -103,25 +103,54 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
                                   ),
                                   onPressed: () {
                                     if(_formKey.currentState!.validate() && widget.order!.count > 0 && snapshot.hasData){
-                                      postOrder(snapshot.data!.getString('token') ?? "", widget.order).then((order) {
-                                        if(order != null) {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => const ProcessedOrderClient()
-                                              )
-                                          );
-                                        } else {
+                                      String token = snapshot.data!.getString('token') ?? "";
+                                      if(widget.order!.addressId.isEmpty || widget.order!.addressId == ""){
+                                        getAddressClient(token).then((addresses) {
+                                          // TODO: Set default address
+                                          widget.order!.setAddressId(addresses.first.id ?? "");
+                                            postOrder(token, widget.order).then((order) {
+                                              if(order != null) {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => const ProcessedOrderClient()
+                                                    )
+                                                );
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
+                                                );
+                                              }
+                                            }).catchError((onError) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
+                                              );
+                                              return onError;
+                                            });
+                                        })
+                                            .catchError((onError) => onError);
+                                      } else {
+
+                                        postOrder(token, widget.order).then((order) {
+                                          if(order != null) {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => const ProcessedOrderClient()
+                                                )
+                                            );
+                                          } else {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
+                                            );
+                                          }
+                                        }).catchError((onError) {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                               const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
                                           );
-                                        }
-                                      }).catchError((onError) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
-                                        );
-                                        return onError;
-                                      });
+                                          return onError;
+                                        });
+                                      }
                                     } else {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                           const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
