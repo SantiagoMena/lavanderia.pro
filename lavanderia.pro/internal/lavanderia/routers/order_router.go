@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -610,5 +611,42 @@ func NewDeliveryClientOrderRouter(
 		}
 
 		c.IndentedJSON(http.StatusOK, orderDeliveredClient)
+	})
+}
+
+func NewGetClientOrdersRouter(
+	r *gin.Engine,
+	productController *controllers.ProductController,
+	orderController *controllers.OrderController,
+	businessController *controllers.BusinessController,
+	clientController *controllers.ClientController,
+) {
+	r.GET("/business-order/client", func(c *gin.Context) {
+		authId := c.MustGet("auth")
+
+		var orderId types.Order
+		if err := c.ShouldBindUri(&orderId); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": err})
+			return
+		}
+
+		clientAuthId := authId.(string)
+		clientAuth, errAuthClient := clientController.GetClientByAuth(&types.Client{Auth: clientAuthId})
+
+		if errAuthClient != nil {
+			fmt.Println(errAuthClient)
+			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
+			return
+		}
+
+		// Handle Controller
+		orders, err := orderController.GetClientOrders(&clientAuth)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
+		} else {
+			c.IndentedJSON(http.StatusOK, orders)
+		}
+
 	})
 }

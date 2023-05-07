@@ -859,6 +859,7 @@ func MakeOrderControllerForTest() *OrderController {
 		order.NewAssignDeliveryOrderHandler(repositoryOrder),
 		order.NewPickUpBusinessOrderHandler(repositoryOrder),
 		order.NewDeliveryClientOrderHandler(repositoryOrder),
+		order.NewGetClientOrdersHandler(repositoryOrder),
 	)
 
 	return OrderController

@@ -18,6 +18,7 @@ type OrderController struct {
 	AssignDeliveryOrderHandler *order.AssignDeliveryOrderHandler
 	PickUpBusinessOrderHandler *order.PickUpBusinessOrderHandler
 	DeliveryClientOrderHandler *order.DeliveryClientOrderHandler
+	GetClientOrdersHandler     *order.GetClientOrdersHandler
 }
 
 func NewOrderController(
@@ -33,6 +34,7 @@ func NewOrderController(
 	AssignDeliveryOrderHandler *order.AssignDeliveryOrderHandler,
 	PickUpBusinessOrderHandler *order.PickUpBusinessOrderHandler,
 	DeliveryClientOrderHandler *order.DeliveryClientOrderHandler,
+	GetClientOrdersHandler *order.GetClientOrdersHandler,
 ) *OrderController {
 	return &OrderController{
 		PostOrderHandler:           PostOrderHandler,
@@ -47,6 +49,7 @@ func NewOrderController(
 		AssignDeliveryOrderHandler: AssignDeliveryOrderHandler,
 		PickUpBusinessOrderHandler: PickUpBusinessOrderHandler,
 		DeliveryClientOrderHandler: DeliveryClientOrderHandler,
+		GetClientOrdersHandler:     GetClientOrdersHandler,
 	}
 }
 
@@ -165,6 +168,16 @@ func (controller OrderController) DeliveryClientOrder(order *types.Order) (types
 
 	if err != nil {
 		return types.Order{}, err
+	}
+
+	return orderDb, err
+}
+
+func (controller OrderController) GetClientOrders(client *types.Client) ([]types.Order, error) {
+	orderDb, err := controller.GetClientOrdersHandler.Handle(client)
+
+	if err != nil {
+		return []types.Order{}, err
 	}
 
 	return orderDb, err

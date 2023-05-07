@@ -495,3 +495,24 @@ func (orderRepository *OrderRepository) DeliveryClient(order *types.Order) (type
 
 	return assignedOrder, nil
 }
+
+func (orderRepository *OrderRepository) GetAllOrdersByClient(client string) ([]types.Order, error) {
+	ordersDb, err := orderRepository.database.FindAllFilterSort(orderCollection, bson.D{
+		{Key: "client._id", Value: client},
+		{Key: "deleted_at", Value: nil},
+	}, bson.D{
+		{Key: "updated_at", Value: -1},
+		{Key: "created_at", Value: -1},
+	})
+
+	if err != nil {
+		return []types.Order{}, err
+	}
+
+	var ordersMap []types.Order
+	if err = ordersDb.All(context.TODO(), &ordersMap); err != nil {
+		return []types.Order{}, err
+	}
+
+	return ordersMap, nil
+}
