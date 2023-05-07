@@ -10,10 +10,6 @@ import '../models/address.dart';
 
 Future<Address?> postAddress(String token, Address? address) async {
   var url = Uri.http(API_HOST, 'address');
-  print(['address!.name', address!.name]);
-  print(['address!.address', address!.address]);
-  print(['address!.phone', address!.phone]);
-  print(['address!.extra', address!.extra]);
   final response = await http.post(
       url,
       headers: {
