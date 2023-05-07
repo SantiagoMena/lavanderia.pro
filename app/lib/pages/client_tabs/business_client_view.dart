@@ -133,11 +133,10 @@ class _BusinessClientViewState extends State<BusinessClientView> {
                       ),
                     ),
                      ExpansionTile(
-                       title:  Text('${order.count} Product Selected'),
-                       subtitle: Text('Show full order'),
+                       title:  Text(AppLocalizations.of(context)!.productsSelectedLabel(order.count)),
+                       subtitle: Text(AppLocalizations.of(context)!.showFullOrderLabel),
                        children: getOrderProducts()
                     ),
-                    // Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
                   ],
               ),
             ),
@@ -145,16 +144,5 @@ class _BusinessClientViewState extends State<BusinessClientView> {
       }
     )
    );
-  }
-}
-
-class SelectedProducts extends StatelessWidget {
-  const SelectedProducts({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Text("Products Selected +1");
   }
 }

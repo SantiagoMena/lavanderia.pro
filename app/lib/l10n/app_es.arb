@@ -43,5 +43,7 @@
   "snackBarErrorOnMakeOrder": "Error al crear la orden",
   "makeOrderLabel": "Crear Orden",
   "addAddressLabel": "Agregar Dirección",
-  "appBarCheckOrder": "Verificar Orden {price}"
+  "appBarCheckOrder": "Verificar Orden {price}",
+  "productsSelectedLabel": "{products} Productos Seleccionados",
+  "showFullOrderLabel": "Ver orden completa"
 }

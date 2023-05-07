@@ -185,5 +185,19 @@
         "example": "$123"
       }
     }
+  },
+  "productsSelectedLabel": "{products} Products Selected",
+  "@productsSelectedLabel": {
+    "description": "Products Selected Label",
+    "placeholders": {
+      "products": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "showFullOrderLabel": "Show Full Order",
+  "@addAddressLabel": {
+    "description": "Show Full Order Label"
   }
 }
