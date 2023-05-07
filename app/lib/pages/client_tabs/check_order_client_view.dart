@@ -120,7 +120,6 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
   }
 }
 
-const List<String> list = <String>['One', 'Two', 'Three', 'Four'];
 class DropdownAddress extends StatefulWidget {
   const DropdownAddress({super.key});
 
@@ -129,54 +128,53 @@ class DropdownAddress extends StatefulWidget {
 }
 
 class _DropdownAddressState extends State<DropdownAddress> {
-
-  String dropdownValue = list.first;
+  String? dropdownValue;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: SharedPreferences.getInstance(),
       builder: (context, snapshot) {
-        if(snapshot.hasData){
+        if(snapshot.hasData) {
           return FutureBuilder(
             future: getAddressClient(snapshot.data!.getString('token') ?? ""),
             builder: (contextAddress, snapshotAddress) {
-              if(snapshotAddress.hasData) {
-                List<Address>? addresses = snapshotAddress.data;
-
+              if(snapshotAddress.hasData){
+                // dropdownValue = snapshotAddress.data!.first.id!;
                 return DropdownButton<String>(
-                  value: addresses!.first.id ?? "",
-                  icon: const Icon(Icons.arrow_downward),
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
-                  ),
-                  onChanged: (String? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      dropdownValue = value!;
-                    });
-                  },
-                  items: addresses?.map<DropdownMenuItem<String>>((Address address) {
-                    return DropdownMenuItem<String>(
-                      value: address.id,
-                      child: Text(address.address ?? ""),
-                    );
-                  }).toList(),
-                );
+                value: dropdownValue ?? snapshotAddress.data!.first.id!,
+                icon: const Icon(Icons.arrow_downward),
+                elevation: 16,
+                style: const TextStyle(color: Colors.deepPurple),
+                underline: Container(
+                  height: 2,
+                  color: Colors.deepPurpleAccent,
+                ),
+                onChanged: (String? value) {
+                  print(value);
+                  // This is called when the user selects an item.
+                  setState(() {
+                    dropdownValue = value!;
+                  });
+                },
+                items: snapshotAddress.data!.map<DropdownMenuItem<String>>((Address value) {
+                  return DropdownMenuItem<String>(
+                    value: value.id,
+                    child: Text(value.address ?? ""),
+                  );
+                }).toList(),
+              );
               }
               else {
-                return const CircularProgressIndicator();
+                return Text("Add Address");
               }
             }
           );
-        } else {
-          return const CircularProgressIndicator();
+        }
+        else {
+          return CircularProgressIndicator();
         }
       }
     );
   }
 }
-
