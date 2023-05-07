@@ -98,19 +98,20 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
                     builder: (context, snapshot) {
                       if(snapshot.hasData) {
                         String token = snapshot.data!.getString('token') ?? "";
-                        Address address = Address.fromJson({
-                          'address': addressController.text,
-                          'name': addressNameController.text,
-                          'phone': phoneController.text,
-                          'extraInfo': extraInfoController.text,
-                        });
-
                         return ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
                           backgroundColor: Colors.green,
                         ),
                         onPressed: () {
+                          Address address = Address.fromJson({
+                            'address': addressController.text,
+                            'name': addressNameController.text,
+                            'phone': phoneController.text,
+                            'extra': extraInfoController.text,
+                          });
+                          print([address.name, address.address, address.phone, address.extra]);
+
                           FocusManager.instance.primaryFocus?.unfocus();
                           if(_formKey.currentState!.validate()){
                             postAddress(token, address).then((addressCreated) {
