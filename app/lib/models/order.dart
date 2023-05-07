@@ -5,6 +5,10 @@ class OrderModel {
   /// Internal, private state of the cart.
   final List<Product> _items = [];
 
+  late String businessId = "";
+
+  late String addressId = "";
+
   /// An unmodifiable view of the items in the cart.
   UnmodifiableListView<Product> get items => UnmodifiableListView(_items);
 
@@ -12,6 +16,14 @@ class OrderModel {
   num get totalPrice => _items.isNotEmpty ? _items.map((e) => e.price).reduce((value, element) => element != null ? value! + element : value) ?? 0 : 0;
 
   int get count => _items.length;
+
+  void setBusinessId(String id){
+    businessId = id;
+  }
+
+  void setAddressId(String id){
+    addressId = id;
+  }
 
   /// Adds [item] to cart. This and [removeAll] are the only ways to modify the
   void add(Product item) {
