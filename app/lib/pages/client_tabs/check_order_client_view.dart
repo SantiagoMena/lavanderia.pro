@@ -38,7 +38,6 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
   void setAddressId(String addressId) {
     setState(() {
       widget.order!.setAddressId(addressId);
-      print(widget.order!.addressId);
     });
   }
 
@@ -47,7 +46,7 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Check Order \$${widget.order!.totalPrice}"),
+        title: Text(AppLocalizations.of(context)!.appBarCheckOrder("\$${widget.order!.totalPrice}")),
       ),
       body: LayoutBuilder(
       builder: (BuildContext context, BoxConstraints viewportConstraints) {
@@ -103,31 +102,32 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
                                   ),
                                   onPressed: () {
                                     if(_formKey.currentState!.validate() && widget.order!.count > 0 && snapshot.hasData){
-                                      // TODO: Set address active
-                                      if(widget.order!.addressId == "") {
-                                        widget.order!.setAddressId(widget.order!.items.first.id ?? "");
-                                      }
-
                                       postOrder(snapshot.data!.getString('token') ?? "", widget.order).then((order) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => const ProcessedOrderClient()
-                                            )
-                                        );
+                                        if(order != null) {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => const ProcessedOrderClient()
+                                              )
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
+                                          );
+                                        }
                                       }).catchError((onError) {
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text("EROR ON MAKE ORDER"))
+                                            const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
                                         );
                                         return onError;
                                       });
                                     } else {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text("FillInputSnackBar()"))
+                                          const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
                                       );
                                     }
                                   },
-                                  child: Text("Make Order"),
+                                  child: Text(AppLocalizations.of(context)!.makeOrderLabel),
                                 );
                               }
                             ),
@@ -142,6 +142,17 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
       }
       ),
     );
+  }
+}
+
+class SnackBarErrorOnMakeOrderLabel extends StatelessWidget {
+  const SnackBarErrorOnMakeOrderLabel({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(AppLocalizations.of(context)!.snackBarErrorOnMakeOrder);
   }
 }
 
@@ -194,7 +205,20 @@ class _DropdownAddressState extends State<DropdownAddress> {
               );
               }
               else {
-                return Text("Add Address");
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50),
+                      backgroundColor: Colors.green,
+                    ),
+                    onPressed: () {
+                      // TODO: Redirect to add address view
+                      Navigator.pop(context);
+                    },
+                      child: Text(AppLocalizations.of(context)!.addAddressLabel)
+                  ),
+                );
               }
             }
           );

@@ -39,5 +39,9 @@
   "snackBarErrorOnChangePassword": "Error al cambiar la contraseña",
   "submitLogoutLabel": "Salir",
   "snackBarNameChangedSuccessfully": "Nombre cambiado correctamente",
-  "snackBarErrorOnChangeName": "Error al cambiar el nombre"
+  "snackBarErrorOnChangeName": "Error al cambiar el nombre",
+  "snackBarErrorOnMakeOrder": "Error al crear la orden",
+  "makeOrderLabel": "Crear Orden",
+  "addAddressLabel": "Agregar Dirección",
+  "appBarCheckOrder": "Verificar Orden {price}"
 }

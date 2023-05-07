@@ -163,5 +163,27 @@
   "snackBarErrorOnChangeName": "Error on Change Name",
   "@snackBarErrorOnChangeName": {
     "description": "Alert Error on Change Name"
+  },
+  "snackBarErrorOnMakeOrder": "Error on Make Order",
+  "@snackBarErrorOnMakeOrder": {
+    "description": "Alert Error on Make Order"
+  },
+  "makeOrderLabel": "Make Order",
+  "@makeOrderLabel": {
+    "description": "Make Order Label"
+  },
+  "addAddressLabel": "Add Address",
+  "@addAddressLabel": {
+    "description": "Add Address Label"
+  },
+  "appBarCheckOrder": "Check Order {price}",
+  "@appBarCheckOrder": {
+    "description": "App Bar Title Check Order With Price",
+    "placeholders": {
+      "price": {
+        "type": "String",
+        "example": "$123"
+      }
+    }
   }
 }
