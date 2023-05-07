@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/models/address.dart';
 import 'package:lavanderiapro/pages/business_tabs/business_view.dart';
+import 'package:lavanderiapro/services/delete_address_service.dart';
 import 'package:lavanderiapro/services/post_address_service.dart';
 import 'package:lavanderiapro/services/put_address_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -134,6 +135,45 @@ class _AddressUpdateFormState extends State<AddressUpdateForm> {
                         return const CircularProgressIndicator();
                       }
                     }
+                  ),
+                ),
+              ),
+              Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: Center(
+                  child: FutureBuilder(
+                      future: SharedPreferences.getInstance(),
+                      builder: (contextBuilder, snapshot) {
+                        if(snapshot.hasData) {
+                          String token = snapshot.data!.getString('token') ?? "";
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              backgroundColor: Colors.green,
+                            ),
+                            onPressed: () {
+                              Address address = Address.fromJson({
+                                'id': widget.address!.id,
+                              });
+
+                              FocusManager.instance.primaryFocus?.unfocus();
+
+                              deleteAddress(token, address).then((addressDeleted){
+                                Navigator.pop(context);
+                              }).catchError((onError) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Error on delete address"))
+                                );
+                                return onError;
+                              });
+                            },
+                            child: const Text('Delete Address'),
+                          );
+                        }
+                        else {
+                          return const CircularProgressIndicator();
+                        }
+                      }
                   ),
                 ),
               ),

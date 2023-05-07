@@ -110,7 +110,6 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
                           if(_formKey.currentState!.validate()){
                             postAddress(token, address).then((addressCreated) {
                               Navigator.pop(context);
-                              print(['addressCreated', addressCreated]);
                             });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
