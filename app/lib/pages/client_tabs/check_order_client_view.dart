@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/auth/register_business.dart';
 import 'package:lavanderiapro/models/address.dart';
 import 'package:lavanderiapro/models/order.dart';
+import 'package:lavanderiapro/pages/client_tabs/address_create_form.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
 import 'package:lavanderiapro/services/get_address_client_service.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
@@ -243,8 +244,12 @@ class _DropdownAddressState extends State<DropdownAddress> {
                       backgroundColor: Colors.green,
                     ),
                     onPressed: () {
-                      // TODO: Redirect to add address view
-                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AddressCreateForm()
+                          )
+                      );
                     },
                       child: Text(AppLocalizations.of(context)!.addAddressLabel)
                   ),
