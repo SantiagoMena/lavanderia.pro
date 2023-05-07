@@ -260,6 +260,7 @@ func MakeBusinessControllerForTestClient() *BusinessController {
 		business.NewGetBusinessHandler(businessRepository),
 		business.NewGetAllBusinessByAuthHandler(businessRepository),
 		business.NewRegisterBusinessDeliveryHandler(authRepository, businessRepository, deliveryRepository),
+		business.NewSearchBusinessHandler(businessRepository),
 	)
 
 	return controller

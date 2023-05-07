@@ -13,6 +13,7 @@ type BusinessController struct {
 	GetBusinessHandler              *business.GetBusinessHandler
 	GetAllBusinessByAuthHandler     *business.GetAllBusinessByAuthHandler
 	RegisterBusinessDeliveryHandler *business.RegisterBusinessDeliveryHandler
+	SearchBusinessHandler           *business.SearchBusinessHandler
 }
 
 func NewBusinessController(
@@ -23,6 +24,7 @@ func NewBusinessController(
 	GetBusinessHandler *business.GetBusinessHandler,
 	GetAllBusinessByAuthHandler *business.GetAllBusinessByAuthHandler,
 	RegisterBusinessDeliveryHandler *business.RegisterBusinessDeliveryHandler,
+	SearchBusinessHandler *business.SearchBusinessHandler,
 ) *BusinessController {
 	return &BusinessController{
 		GetAllBusinessHandler:           GetAllBusinessHandler,
@@ -32,6 +34,7 @@ func NewBusinessController(
 		GetBusinessHandler:              GetBusinessHandler,
 		GetAllBusinessByAuthHandler:     GetAllBusinessByAuthHandler,
 		RegisterBusinessDeliveryHandler: RegisterBusinessDeliveryHandler,
+		SearchBusinessHandler:           SearchBusinessHandler,
 	}
 }
 
@@ -92,4 +95,15 @@ func (controller BusinessController) GetAllBusinessByAuth(authId string) ([]type
 func (controller BusinessController) RegisterBusinessDelivery(auth *types.Auth, business *types.Business, delivery *types.Delivery) (types.Delivery, error) {
 	deliveryRegistered, err := controller.RegisterBusinessDeliveryHandler.Handle(auth, business, delivery)
 	return deliveryRegistered, err
+}
+
+func (controller BusinessController) SearchBusiness() ([]types.Business, error) {
+	// Handle Create Business
+	businessDb, err := controller.SearchBusinessHandler.Handle()
+
+	if err != nil {
+		return []types.Business{}, err
+	}
+
+	return businessDb, err
 }

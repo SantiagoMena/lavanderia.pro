@@ -16,6 +16,7 @@ func NewPostOrderRouter(
 	orderController *controllers.OrderController,
 	businessController *controllers.BusinessController,
 	clientController *controllers.ClientController,
+	addressController *controllers.AddressController,
 ) {
 	r.POST("/business-order/:id", func(c *gin.Context) {
 		authId := c.MustGet("auth")
@@ -55,18 +56,23 @@ func NewPostOrderRouter(
 			return
 		}
 
-		if clientAuth.ID != orderObject.Client.ID {
+		addressFound, errAddress := addressController.GetAddress(&types.Address{ID: orderObject.Address.ID})
+
+		if errAddress != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": "error on get address"})
+			return
+		}
+
+		if addressFound.Client != clientAuth.ID {
 			c.JSON(http.StatusForbidden, gin.H{"msg": "permissions denied"})
 			return
 		}
 
-		orderObject.Client.Auth = authId.(string)
-
 		// Handle Controller
 		order, err := orderController.PostOrder(&types.Order{
-			Client:   orderObject.Client,
+			Client:   clientAuth,
 			Business: businessFound,
-			Address:  orderObject.Address,
+			Address:  *addressFound,
 			Products: orderObject.Products,
 		})
 

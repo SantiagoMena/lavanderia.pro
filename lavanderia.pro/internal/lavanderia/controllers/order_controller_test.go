@@ -844,9 +844,10 @@ func MakeOrderControllerForTest() *OrderController {
 	config := config.NewConfig()
 	database := databases.NewMongoDatabase(config)
 	repositoryOrder := repositories.NewOrderRepository(database)
+	productRepository := repositories.NewProductRepository(database)
 
 	OrderController := NewOrderController(
-		order.NewPostOrderHandler(repositoryOrder),
+		order.NewPostOrderHandler(repositoryOrder, productRepository),
 		order.NewGetOrderHandler(repositoryOrder),
 		order.NewDeleteOrderHandler(repositoryOrder),
 		order.NewAcceptOrderHandler(repositoryOrder),

@@ -42,4 +42,7 @@ require (
 	golang.org/x/sys v0.0.0-20210903071746-97244b99971b // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	lavanderia.pro/internal/lavanderia/handlers v0.0.0-00010101000000-000000000000 // indirect
 )
+
+replace lavanderia.pro/internal/lavanderia/handlers => ../
