@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:lavanderiapro/models/order.dart';
 import 'package:lavanderiapro/util/constants.dart';
 
-Future<ClientProfile?> postOrder(String token, OrderModel? order) async {
+Future<PostOrderResponse?> postOrder(String token, OrderModel? order) async {
   print(['business-order/${order!.businessId}', token]);
   var url = Uri.http(API_HOST, 'business-order/${order!.businessId}');
   var products = [];
@@ -33,30 +33,22 @@ Future<ClientProfile?> postOrder(String token, OrderModel? order) async {
         }
       }
   ));
-  if (response.statusCode == 200) {
-    print(response.body);
-    // Si la llamada al servidor fue exitosa, analiza el JSON
-    return ClientProfile.fromJson(json.decode(response.body));
+  if (response.statusCode == 201) {
+    return PostOrderResponse.fromJson(json.decode(response.body));
   } else {
     print(response.body);
   }
   return null;
 }
 
-class ClientProfile {
+class PostOrderResponse {
   final String? id;
-  final String? name;
-  final String? createdAt;
-  final String? updatedAt;
 
-  ClientProfile({this.id, this.name, this.createdAt, this.updatedAt});
+  PostOrderResponse({this.id});
 
-  factory ClientProfile.fromJson(Map<String, dynamic> json) {
-    return ClientProfile(
+  factory PostOrderResponse.fromJson(Map<String, dynamic> json) {
+    return PostOrderResponse(
       id: json['id'],
-      name: json['name'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
     );
   }
 }
