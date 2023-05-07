@@ -76,6 +76,7 @@ class _BusinessClientViewState extends State<BusinessClientView> {
          ),
          tileColor: Colors.green,
          onTap: () {
+           order.setBusinessId(widget.businessItem!.id ?? "");
            Navigator.push(
                context,
                MaterialPageRoute(
