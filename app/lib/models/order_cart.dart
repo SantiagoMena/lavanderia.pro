@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'package:lavanderiapro/models/product.dart';
 
-class OrderModel {
+class OrderCart {
   /// Internal, private state of the cart.
   final List<Product> _items = [];
 

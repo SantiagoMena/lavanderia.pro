@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:lavanderiapro/models/order.dart';
+import 'package:lavanderiapro/models/order_cart.dart';
 import 'package:lavanderiapro/pages/business_tabs/products_business_view.dart';
 import 'package:lavanderiapro/pages/client_tabs/check_order_client_view.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
@@ -19,7 +19,7 @@ class BusinessClientView extends StatefulWidget {
 }
 
 class _BusinessClientViewState extends State<BusinessClientView> {
-   OrderModel order = OrderModel();
+   OrderCart order = OrderCart();
 
    void pushProduct(Product product) {
      setState(() {

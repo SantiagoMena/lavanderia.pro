@@ -3,10 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:lavanderiapro/models/order.dart';
+import 'package:lavanderiapro/models/order_cart.dart';
 import 'package:lavanderiapro/util/constants.dart';
 
-Future<PostOrderResponse?> postOrder(String token, OrderModel? order) async {
+Future<PostOrderResponse?> postOrder(String token, OrderCart? order) async {
   var url = Uri.http(API_HOST, 'business-order/${order!.businessId}');
   var products = [];
 

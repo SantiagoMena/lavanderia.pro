@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/auth/register_business.dart';
 import 'package:lavanderiapro/models/address.dart';
-import 'package:lavanderiapro/models/order.dart';
+import 'package:lavanderiapro/models/order_cart.dart';
 import 'package:lavanderiapro/pages/client_tabs/address_create_form.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
 import 'package:lavanderiapro/services/get_address_client_service.dart';
@@ -15,7 +15,7 @@ import 'package:lavanderiapro/models/product.dart';
 class CheckOrderClient extends StatefulWidget {
    const CheckOrderClient({super.key, this.order});
 
-   final OrderModel? order;
+   final OrderCart? order;
 
   @override
   State<CheckOrderClient> createState() => _CheckOrderClientState();
