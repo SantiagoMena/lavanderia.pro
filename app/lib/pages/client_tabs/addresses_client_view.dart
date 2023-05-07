@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/pages/client_tabs/address_create_form.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
+import 'package:lavanderiapro/services/get_address_client_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressesClientView extends StatefulWidget {
    const AddressesClientView({super.key, this.token});
@@ -46,17 +48,36 @@ class _AddressesClientViewState extends State<AddressesClientView> {
                       alignment: Alignment.center,
                       child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                          child: Text("Select a order")
+                          child: Text("Select a Address")
                       ),
                     ),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        var orderItem = items[index];
-                        return AddressCard(items: items, ordertIndex: index);
-                      },
+                    child: FutureBuilder(
+                      future: SharedPreferences.getInstance(),
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData){
+                          return FutureBuilder(
+                            future: getAddressClient(snapshot.data!.getString('token') ?? ""),
+                            builder: (context, snapshot) {
+                            if(snapshot.hasData) {
+                              return ListView.builder(
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  var addressItem = snapshot.data![index];
+                                  return AddressCard(addressItem: addressItem);
+                                },
+                              );
+                            } else {
+                              return const Text("Empty Addresses");
+                            }
+                          }
+                        );
+                        }
+                        else {
+                          return const CircularProgressIndicator();
+                        }
+                      }
                     ),
                   ),
                   // Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
@@ -72,12 +93,10 @@ class _AddressesClientViewState extends State<AddressesClientView> {
 class AddressCard extends StatelessWidget {
   const AddressCard({
     super.key,
-    required this.items,
-    required this.ordertIndex,
+    required this.addressItem,
   });
 
-  final int ordertIndex;
-  final List<String> items;
+  final Address addressItem;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +119,7 @@ class AddressCard extends StatelessWidget {
                 Row(
                     children: [
                       Container(child:
-                        Text(items[ordertIndex], style: TextStyle(color: Colors.black)),
+                        Text(addressItem.name ?? "", style: TextStyle(color: Colors.black)),
                       ),
                       Expanded(child: Text("")),
                       Expanded(
@@ -124,8 +143,7 @@ class AddressCard extends StatelessWidget {
                 ),
                 Row(
                     children: [
-                      Container(child: Text('Address 123, 123', style: TextStyle(color: Colors.black),)),
-                      Expanded(child: Text("")),
+                      Expanded(child: Text(addressItem.address ?? "", style: TextStyle(color: Colors.black),)),
                     ]
                 ),
               ],
