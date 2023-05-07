@@ -7,9 +7,7 @@ import 'package:lavanderiapro/services/post_address_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressCreateForm extends StatefulWidget {
-   const AddressCreateForm({super.key, this.token});
-
-  final String? token;
+   const AddressCreateForm({super.key});
 
   @override
   State<AddressCreateForm> createState() => _AddressCreateFormState();
@@ -45,7 +43,7 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
                   decoration: const InputDecoration(border: OutlineInputBorder(), label: Text("Name Address")),
                   validator: (value) {
                     if(value == null || value.isEmpty){
-                      return AppLocalizations.of(context)!.emptyNameAlert;
+                      return "Empty address name alert";
                     }
                     return null;
                   },
@@ -58,7 +56,7 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
                   decoration: const InputDecoration(border: OutlineInputBorder(), label: Text("Address")),
                   validator: (value) {
                     if(value == null || value.isEmpty){
-                      return AppLocalizations.of(context)!.emptyNameAlert;
+                      return "Empty address alert";
                     }
                     return null;
                   },
@@ -71,7 +69,7 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
                   decoration: const InputDecoration(border: OutlineInputBorder(), label: Text("Phone")),
                   validator: (value) {
                     if(value == null || value.isEmpty){
-                      return AppLocalizations.of(context)!.emptyNameAlert;
+                      return "Empty phone alert";
                     }
                     return null;
                   },
@@ -83,9 +81,6 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
                   controller: extraInfoController,
                   decoration: const InputDecoration(border: OutlineInputBorder(), label: Text("Extra Info")),
                   validator: (value) {
-                    if(value == null || value.isEmpty){
-                      return AppLocalizations.of(context)!.emptyNameAlert;
-                    }
                     return null;
                   },
                 ),
@@ -110,7 +105,6 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
                             'phone': phoneController.text,
                             'extra': extraInfoController.text,
                           });
-                          print([address.name, address.address, address.phone, address.extra]);
 
                           FocusManager.instance.primaryFocus?.unfocus();
                           if(_formKey.currentState!.validate()){

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lavanderiapro/models/address.dart';
 import 'package:lavanderiapro/pages/client_tabs/address_create_form.dart';
+import 'package:lavanderiapro/pages/client_tabs/address_update_form.dart';
 import 'package:lavanderiapro/services/get_address_client_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -106,7 +108,7 @@ class AddressCard extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AddressCreateForm()
+                        builder: (context) => AddressUpdateForm(address: addressItem)
                     )
                 );
               },
