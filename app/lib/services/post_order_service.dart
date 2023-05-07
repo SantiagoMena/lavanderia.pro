@@ -7,12 +7,15 @@ import 'package:lavanderiapro/models/order.dart';
 import 'package:lavanderiapro/util/constants.dart';
 
 Future<ClientProfile?> postOrder(String token, OrderModel? order) async {
+  print(['business-order/${order!.businessId}', token]);
   var url = Uri.http(API_HOST, 'business-order/${order!.businessId}');
   var products = [];
 
   order.getGrouped().forEach((element) {
     products.add({
-      'id': element.id,
+      'product': {
+        'id': element.id
+      },
       'amount': order.countProduct(element)
     });
   });
@@ -35,8 +38,7 @@ Future<ClientProfile?> postOrder(String token, OrderModel? order) async {
     // Si la llamada al servidor fue exitosa, analiza el JSON
     return ClientProfile.fromJson(json.decode(response.body));
   } else {
-    // Si la llamada no fue exitosa, lanza un error.
-    // throw Exception('Failed to login');
+    print(response.body);
   }
   return null;
 }
