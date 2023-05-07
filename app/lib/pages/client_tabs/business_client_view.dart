@@ -57,11 +57,11 @@ class _BusinessClientViewState extends State<BusinessClientView> {
        ListTile(
          title: Row(
            children: [
-             const Align(
+             Align(
                alignment: Alignment.topLeft,
                child: Text(
-                 '☝️ Process Order',
-                 style: TextStyle(color: Colors.white),
+                 AppLocalizations.of(context)!.processOrderLabel,
+                 style: const TextStyle(color: Colors.white),
                ),
              ),
              const Expanded(child: Text("")),

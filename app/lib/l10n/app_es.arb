@@ -45,5 +45,6 @@
   "addAddressLabel": "Agregar Dirección",
   "appBarCheckOrder": "Verificar Orden {price}",
   "productsSelectedLabel": "{products} Productos Seleccionados",
-  "showFullOrderLabel": "Ver orden completa"
+  "showFullOrderLabel": "Ver orden completa",
+  "processOrderLabel": "☝️ Procesar Orden"
 }
