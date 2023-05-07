@@ -140,7 +140,12 @@ func (addressRepository *AddressRepository) GetAddresses(address *types.Address)
 		{Key: "deleted_at", Value: nil},
 	}
 
-	objectAddresses, err := addressRepository.database.FindAllFilter(addressCollection, filter)
+	sort := bson.D{
+		{Key: "updated_at", Value: -1},
+		{Key: "created_at", Value: -1},
+	}
+
+	objectAddresses, err := addressRepository.database.FindAllFilterSort(addressCollection, filter, sort)
 
 	if err != nil {
 		return &[]types.Address{}, err
