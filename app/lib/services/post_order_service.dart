@@ -7,7 +7,6 @@ import 'package:lavanderiapro/models/order.dart';
 import 'package:lavanderiapro/util/constants.dart';
 
 Future<PostOrderResponse?> postOrder(String token, OrderModel? order) async {
-  print(['business-order/${order!.businessId}', token]);
   var url = Uri.http(API_HOST, 'business-order/${order!.businessId}');
   var products = [];
 

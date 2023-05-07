@@ -3,17 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/models/address.dart';
 import 'package:lavanderiapro/pages/business_tabs/business_view.dart';
+import 'package:lavanderiapro/services/delete_address_service.dart';
 import 'package:lavanderiapro/services/post_address_service.dart';
+import 'package:lavanderiapro/services/put_address_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AddressCreateForm extends StatefulWidget {
-   const AddressCreateForm({super.key});
+class AddressUpdateForm extends StatefulWidget {
+  const AddressUpdateForm({super.key, required this.address});
+
+  final Address address;
 
   @override
-  State<AddressCreateForm> createState() => _AddressCreateFormState();
+  State<AddressUpdateForm> createState() => _AddressUpdateFormState();
 }
 
-class _AddressCreateFormState extends State<AddressCreateForm> {
+class _AddressUpdateFormState extends State<AddressUpdateForm> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController addressNameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
@@ -22,9 +26,14 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
 
   @override
   Widget build(BuildContext context) {
+    addressNameController.text = widget.address!.name ?? "";
+    addressController.text = widget.address!.address ?? "";
+    phoneController.text = widget.address!.phone ?? "";
+    extraInfoController.text = widget.address!.extra ?? "";
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create Address"),
+        title: Text("Update Address: ${widget.address.name}"),
       ),
       body: Form(
         key: _formKey,
@@ -34,7 +43,7 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
             children: [
               const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: Text("Create New Address")
+                  child: Text("Update Address")
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -100,16 +109,18 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
                         ),
                         onPressed: () {
                           Address address = Address.fromJson({
+                            'id': widget.address!.id,
                             'address': addressController.text,
                             'name': addressNameController.text,
                             'phone': phoneController.text,
                             'extra': extraInfoController.text,
                           });
-
+                          
                           FocusManager.instance.primaryFocus?.unfocus();
                           if(_formKey.currentState!.validate()){
-                            postAddress(token, address).then((addressCreated) {
+                            putAddress(token, address).then((addressCreated) {
                               Navigator.pop(context);
+                              print(['addressCreated', addressCreated]);
                             });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -117,13 +128,52 @@ class _AddressCreateFormState extends State<AddressCreateForm> {
                             );
                           }
                         },
-                        child: const Text('Create Address'),
+                        child: const Text('Update Address'),
                       );
                       }
                       else {
                         return const CircularProgressIndicator();
                       }
                     }
+                  ),
+                ),
+              ),
+              Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: Center(
+                  child: FutureBuilder(
+                      future: SharedPreferences.getInstance(),
+                      builder: (contextBuilder, snapshot) {
+                        if(snapshot.hasData) {
+                          String token = snapshot.data!.getString('token') ?? "";
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              backgroundColor: Colors.green,
+                            ),
+                            onPressed: () {
+                              Address address = Address.fromJson({
+                                'id': widget.address!.id,
+                              });
+
+                              FocusManager.instance.primaryFocus?.unfocus();
+
+                              deleteAddress(token, address).then((addressDeleted){
+                                Navigator.pop(context);
+                              }).catchError((onError) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Error on delete address"))
+                                );
+                                return onError;
+                              });
+                            },
+                            child: const Text('Delete Address'),
+                          );
+                        }
+                        else {
+                          return const CircularProgressIndicator();
+                        }
+                      }
                   ),
                 ),
               ),

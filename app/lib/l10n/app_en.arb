@@ -199,5 +199,9 @@
   "showFullOrderLabel": "Show Full Order",
   "@addAddressLabel": {
     "description": "Show Full Order Label"
+  },
+  "processOrderLabel": "☝️ Process Order",
+  "@processOrderLabel": {
+    "description": "Process Order Label"
   }
 }

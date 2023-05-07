@@ -14,16 +14,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-/*
-    Future<SharedPreferences> _sprefs = SharedPreferences.getInstance();
-    _sprefs.then((prefs) {
-      final String? refresh_token = prefs.getString('refresh_token');
-      print(["REFRESH_TOKEN", refresh_token]);
-    },
-    onError: (error) {
-      print("SharedPreferences ERROR = $error");
-    });
-*/
     Profile? profile;
     List<Widget> children = [
       Padding(

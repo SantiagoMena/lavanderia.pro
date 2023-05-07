@@ -104,7 +104,6 @@ func (addressRepository *AddressRepository) Update(address *types.Address) (*typ
 
 	update := bson.D{
 		{Key: "$set", Value: bson.D{
-			{Key: "client", Value: address.Client},
 			{Key: "name", Value: address.Name},
 			{Key: "position", Value: address.Position},
 			{Key: "address", Value: address.Address},
@@ -140,7 +139,12 @@ func (addressRepository *AddressRepository) GetAddresses(address *types.Address)
 		{Key: "deleted_at", Value: nil},
 	}
 
-	objectAddresses, err := addressRepository.database.FindAllFilter(addressCollection, filter)
+	sort := bson.D{
+		{Key: "updated_at", Value: -1},
+		{Key: "created_at", Value: -1},
+	}
+
+	objectAddresses, err := addressRepository.database.FindAllFilterSort(addressCollection, filter, sort)
 
 	if err != nil {
 		return &[]types.Address{}, err

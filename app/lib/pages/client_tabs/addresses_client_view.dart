@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lavanderiapro/models/address.dart';
 import 'package:lavanderiapro/pages/client_tabs/address_create_form.dart';
-import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
+import 'package:lavanderiapro/pages/client_tabs/address_update_form.dart';
+import 'package:lavanderiapro/services/get_address_client_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressesClientView extends StatefulWidget {
    const AddressesClientView({super.key, this.token});
@@ -17,14 +19,14 @@ class _AddressesClientViewState extends State<AddressesClientView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Manage Addresses"),
+        title: const Text("Manage Addresses"),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddressCreateForm()
+                  builder: (context) => const AddressCreateForm()
               )
           );
         },
@@ -32,7 +34,6 @@ class _AddressesClientViewState extends State<AddressesClientView> {
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          var items = List<String>.generate(15, (i) => 'Address Title $i');
           return Align(
             alignment: Alignment.bottomCenter,
               child: Column(
@@ -46,17 +47,36 @@ class _AddressesClientViewState extends State<AddressesClientView> {
                       alignment: Alignment.center,
                       child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                          child: Text("Select a order")
+                          child: Text("Select a Address")
                       ),
                     ),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        var orderItem = items[index];
-                        return AddressCard(items: items, ordertIndex: index);
-                      },
+                    child: FutureBuilder(
+                      future: SharedPreferences.getInstance(),
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData){
+                          return FutureBuilder(
+                            future: getAddressClient(snapshot.data!.getString('token') ?? ""),
+                            builder: (context, snapshot) {
+                            if(snapshot.hasData) {
+                              return ListView.builder(
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  var addressItem = snapshot.data![index];
+                                  return AddressCard(addressItem: addressItem);
+                                },
+                              );
+                            } else {
+                              return const Text("Empty Addresses");
+                            }
+                          }
+                        );
+                        }
+                        else {
+                          return const CircularProgressIndicator();
+                        }
+                      }
                     ),
                   ),
                   // Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
@@ -72,65 +92,64 @@ class _AddressesClientViewState extends State<AddressesClientView> {
 class AddressCard extends StatelessWidget {
   const AddressCard({
     super.key,
-    required this.items,
-    required this.ordertIndex,
+    required this.addressItem,
   });
 
-  final int ordertIndex;
-  final List<String> items;
+  final Address addressItem;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AddressCreateForm()
-                )
-            );
-          },
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Column(
-              children: [
-                Row(
-                    children: [
-                      Container(child:
-                        Text(items[ordertIndex], style: TextStyle(color: Colors.black)),
-                      ),
-                      Expanded(child: Text("")),
-                      Expanded(
-                          child: Align(
-                              alignment: Alignment.topRight,
-                              child: Text(
-                                "Active",
-                                style: TextStyle(color: Colors.green),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddressUpdateForm(address: addressItem)
+                    )
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Column(
+                  children: [
+                    Row(
+                        children: [
+                          Text(addressItem.name ?? "", style: const TextStyle(color: Colors.black)),
+                          const Expanded(child: Text("")),
+                          const Expanded(
+                              child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Text(
+                                    "Active",
+                                    style: TextStyle(color: Colors.green),
+                                  )
                               )
-                          )
-                      ),
-                    ]
+                          ),
+                        ]
+                    ),
+                    Row(
+                        children: const [
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(""),
+                            ),
+                        ]
+                    ),
+                    Row(
+                        children: [
+                          Expanded(child: Text(addressItem.address ?? "", style: const TextStyle(color: Colors.black),)),
+                        ]
+                    ),
+                  ],
                 ),
-                Row(
-                    children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(""),
-                        ),
-                    ]
-                ),
-                Row(
-                    children: [
-                      Container(child: Text('Address 123, 123', style: TextStyle(color: Colors.black),)),
-                      Expanded(child: Text("")),
-                    ]
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         )
     );
   }

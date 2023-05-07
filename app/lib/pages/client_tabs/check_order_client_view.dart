@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/auth/register_business.dart';
+import 'package:lavanderiapro/models/address.dart';
 import 'package:lavanderiapro/models/order.dart';
+import 'package:lavanderiapro/pages/client_tabs/address_create_form.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
 import 'package:lavanderiapro/services/get_address_client_service.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
@@ -102,25 +104,54 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
                                   ),
                                   onPressed: () {
                                     if(_formKey.currentState!.validate() && widget.order!.count > 0 && snapshot.hasData){
-                                      postOrder(snapshot.data!.getString('token') ?? "", widget.order).then((order) {
-                                        if(order != null) {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => const ProcessedOrderClient()
-                                              )
-                                          );
-                                        } else {
+                                      String token = snapshot.data!.getString('token') ?? "";
+                                      if(widget.order!.addressId.isEmpty || widget.order!.addressId == ""){
+                                        getAddressClient(token).then((addresses) {
+                                          // TODO: Set default address
+                                          widget.order!.setAddressId(addresses.first.id ?? "");
+                                            postOrder(token, widget.order).then((order) {
+                                              if(order != null) {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => const ProcessedOrderClient()
+                                                    )
+                                                );
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
+                                                );
+                                              }
+                                            }).catchError((onError) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
+                                              );
+                                              return onError;
+                                            });
+                                        })
+                                            .catchError((onError) => onError);
+                                      } else {
+
+                                        postOrder(token, widget.order).then((order) {
+                                          if(order != null) {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => const ProcessedOrderClient()
+                                                )
+                                            );
+                                          } else {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
+                                            );
+                                          }
+                                        }).catchError((onError) {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                               const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
                                           );
-                                        }
-                                      }).catchError((onError) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
-                                        );
-                                        return onError;
-                                      });
+                                          return onError;
+                                        });
+                                      }
                                     } else {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                           const SnackBar(content: SnackBarErrorOnMakeOrderLabel())
@@ -213,8 +244,12 @@ class _DropdownAddressState extends State<DropdownAddress> {
                       backgroundColor: Colors.green,
                     ),
                     onPressed: () {
-                      // TODO: Redirect to add address view
-                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AddressCreateForm()
+                          )
+                      );
                     },
                       child: Text(AppLocalizations.of(context)!.addAddressLabel)
                   ),
