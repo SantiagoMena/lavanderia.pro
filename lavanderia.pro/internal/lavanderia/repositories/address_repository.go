@@ -104,7 +104,6 @@ func (addressRepository *AddressRepository) Update(address *types.Address) (*typ
 
 	update := bson.D{
 		{Key: "$set", Value: bson.D{
-			{Key: "client", Value: address.Client},
 			{Key: "name", Value: address.Name},
 			{Key: "position", Value: address.Position},
 			{Key: "address", Value: address.Address},
