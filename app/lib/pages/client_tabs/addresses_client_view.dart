@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/pages/client_tabs/address_create_form.dart';
-import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
 import 'package:lavanderiapro/services/get_address_client_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,14 +17,14 @@ class _AddressesClientViewState extends State<AddressesClientView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Manage Addresses"),
+        title: const Text("Manage Addresses"),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddressCreateForm()
+                  builder: (context) => const AddressCreateForm()
               )
           );
         },
@@ -34,7 +32,6 @@ class _AddressesClientViewState extends State<AddressesClientView> {
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          var items = List<String>.generate(15, (i) => 'Address Title $i');
           return Align(
             alignment: Alignment.bottomCenter,
               child: Column(
@@ -101,54 +98,56 @@ class AddressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AddressCreateForm()
-                )
-            );
-          },
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Column(
-              children: [
-                Row(
-                    children: [
-                      Container(child:
-                        Text(addressItem.name ?? "", style: TextStyle(color: Colors.black)),
-                      ),
-                      Expanded(child: Text("")),
-                      Expanded(
-                          child: Align(
-                              alignment: Alignment.topRight,
-                              child: Text(
-                                "Active",
-                                style: TextStyle(color: Colors.green),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AddressCreateForm()
+                    )
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Column(
+                  children: [
+                    Row(
+                        children: [
+                          Text(addressItem.name ?? "", style: const TextStyle(color: Colors.black)),
+                          const Expanded(child: Text("")),
+                          const Expanded(
+                              child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Text(
+                                    "Active",
+                                    style: TextStyle(color: Colors.green),
+                                  )
                               )
-                          )
-                      ),
-                    ]
+                          ),
+                        ]
+                    ),
+                    Row(
+                        children: const [
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(""),
+                            ),
+                        ]
+                    ),
+                    Row(
+                        children: [
+                          Expanded(child: Text(addressItem.address ?? "", style: const TextStyle(color: Colors.black),)),
+                        ]
+                    ),
+                  ],
                 ),
-                Row(
-                    children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(""),
-                        ),
-                    ]
-                ),
-                Row(
-                    children: [
-                      Expanded(child: Text(addressItem.address ?? "", style: TextStyle(color: Colors.black),)),
-                    ]
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         )
     );
   }
