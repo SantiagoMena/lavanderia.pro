@@ -64,4 +64,8 @@ class Order {
       deliveredClientAt: json['delivered_client_at'],
     );
   }
+
+  num get totalPrice => products!.isNotEmpty ? products!.map((e) => (e.product!.price ?? 0) * (e.amount ?? 0) ).reduce((value, element) => element != null ? value! + element : value) ?? 0 : 0;
+  num get totalProducts => products!.isNotEmpty ? products!.map((e) => (e.amount ?? 0) ).reduce((value, element) => element != null ? value! + element : value) ?? 0 : 0;
 }
+
