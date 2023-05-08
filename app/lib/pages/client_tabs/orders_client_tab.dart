@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lavanderiapro/models/order.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
+import 'package:lavanderiapro/services/get_all_orders_client_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OrdersClientTab extends StatefulWidget {
@@ -16,7 +18,6 @@ class _OrdersClientTabState extends State<OrdersClientTab> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints viewportConstraints) {
-        var items = List<String>.generate(15, (i) => 'Order $i');
         return Align(
         alignment: Alignment.topCenter,
         child: Column(
@@ -35,27 +36,31 @@ class _OrdersClientTabState extends State<OrdersClientTab> {
                   child: FutureBuilder(
                   future: SharedPreferences.getInstance(),
                   builder: (contexSharedPreferences, snapshot) {
-                    return FutureBuilder(
-                      future: SharedPreferences.getInstance(),
-                      builder: (contexOrders, snapshotOrders) {
-                        if(snapshot.hasData) {
-
-                          return ListView.builder(
-                            itemCount: items.length,
-                            /*prototypeItem: ListTile(
-                              title: Text(items.first),
-                            ),*/
-                            itemBuilder: (context, index) {
-                              var orderItem = items[index];
-                              return OrderCard(items: items, ordertIndex: index);
-                            },
-                          );
+                    if(snapshot.hasData) {
+                      String token = snapshot.data!.getString('token') ?? "";
+                      return FutureBuilder(
+                        future: getAllOrderClient(token),
+                        builder: (contextOrders, snapshotOrders) {
+                          if(snapshotOrders.hasData) {
+                            return ListView.builder(
+                              itemCount: snapshotOrders.data!.length,
+                              /*prototypeItem: ListTile(
+                                title: Text(items.first),
+                              ),*/
+                              itemBuilder: (context, index) {
+                                var orderItem = snapshotOrders.data![index];
+                                return OrderCard(orderItem: orderItem);
+                              },
+                            );
+                          }
+                          else {
+                              return const Text("Not found orders");
+                          }
                         }
-                        else {
-                            return const CircularProgressIndicator();
-                        }
-                      }
-                    );
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
                   }
                 ),
               ),
@@ -71,12 +76,10 @@ class _OrdersClientTabState extends State<OrdersClientTab> {
 class OrderCard extends StatelessWidget {
   const OrderCard({
     super.key,
-    required this.items,
-    required this.ordertIndex,
+    required this.orderItem,
   });
 
-  final int ordertIndex;
-  final List<String> items;
+  final Order orderItem;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +101,7 @@ class OrderCard extends StatelessWidget {
               children: [
                 Row(
                     children: [
-                      Text(items[ordertIndex], style: const TextStyle(color: Colors.black)),
+                      Text(orderItem.business!.name ?? "", style: const TextStyle(color: Colors.black)),
                       const Expanded(child: Text("")),
                       const Expanded(
                           child: Align(
@@ -112,9 +115,9 @@ class OrderCard extends StatelessWidget {
                     ]
                 ),
                 Row(
-                    children: const [
-                      Text("Date: 30/04/2023", style: TextStyle(color: Colors.black),),
-                      Expanded(child: Text("")),
+                    children: [
+                      Text("Date: ${orderItem.createdAt}", style: const TextStyle(color: Colors.black),),
+                      const Expanded(child: Text("")),
                     ]
                 ),
                 Row(
