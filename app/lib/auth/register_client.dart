@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lavanderiapro/services/login_service.dart';
 import 'package:lavanderiapro/services/register_business_service.dart';
 import 'package:lavanderiapro/services/register_client_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class RegisterClientPage extends StatefulWidget {
@@ -93,17 +94,35 @@ class _RegisterClientPageState extends State<RegisterClientPage> {
                           emailClientRegister(nameController.text, emailController.text, passwordController.text)
                             .then((business) => business!.created_at!.length > 0 ?
                               emailLogin(emailController.text, passwordController.text).then(
-                                      (token) =>
-                                  token!.token!.length > 0 ?
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => HomePage()
-                                        )
-                                    ) :
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: SnackBarRegisterError())
-                                    )
+                                      (token) {
+                                        if(token!.token!.length > 0){
+                                          try {
+                                            Future<SharedPreferences> _sprefs = SharedPreferences.getInstance();
+                                            _sprefs.then((prefs) {
+                                              prefs.setString('token', token!.token ?? '');
+                                              prefs.setString('refresh_token', token!.refresh_token ?? '');
+                                            },
+                                                onError: (error) {
+                                                  print("SharedPreferences ERROR = $error");
+                                                });
+
+                                          } catch (e) {
+                                            print(e);
+                                          }
+
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                  const HomePage()
+                                              )
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text("SnackBarLoginError()"))
+                                          );
+                                        }
+                                      }
                               ).catchError((e) => ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: SnackBarRegisterError())
                               )) :
