@@ -36,8 +36,15 @@ Future<List<Order>?> getAllOrderClient(String token) async {
 
       return Order.fromJson({
         'id': model['id'],
+        'address': Address.fromJson({
+          'id': model['address']['id'],
+          'name': model['address']['name'],
+          'address': model['address']['address'],
+          'phone': model['address']['phone'],
+          'extra': model['address']['extra'],
+        }),
         'business': Business.fromJson({
-          'id': model['client']['id'],
+          'id': model['business']['id'],
           'name': model['business']['name'],
         }),
         'client': Client.fromJson({
