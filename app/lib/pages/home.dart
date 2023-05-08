@@ -25,28 +25,24 @@ class HomePage extends StatelessWidget {
     ];
 
     return Scaffold(
-      /*appBar: AppBar(
-        title: const Text('Select Profile'),
-      ),*/
       body: FutureBuilder(
         future: SharedPreferences.getInstance(),
         builder: (context, snapshot) {
           if(snapshot.hasData) {
             String? tokenStored = snapshot.data!.getString('token');
 
-            print(["tokenStored", tokenStored]);
             getProfile(tokenStored ?? '').then((profile) {
               if(profile!.business == true) {
                 children.add(const LoginAsBusinessButton());
               }
-              if(profile!.client == true) {
+              if(profile.client == true) {
                 children.add(const LoginAsClientButton());
               }
-              if(profile!.delivery == true) {
+              if(profile.delivery == true) {
                 children.add(const LoginAsDeliveryButton());
               }
 
-              if(profile!.business == true && profile!.client == false && profile!.delivery == false) {
+              if(profile.business == true && profile.client == false && profile.delivery == false) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -56,7 +52,7 @@ class HomePage extends StatelessWidget {
                 );
               }
 
-              if(profile!.business == false && profile!.client == true && profile!.delivery == false) {
+              if(profile.business == false && profile.client == true && profile.delivery == false) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -67,7 +63,7 @@ class HomePage extends StatelessWidget {
                 // return HomeClientTab();
               }
 
-              if(profile!.business == false && profile!.client == false && profile!.delivery == true) {
+              if(profile.business == false && profile.client == false && profile.delivery == true) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
