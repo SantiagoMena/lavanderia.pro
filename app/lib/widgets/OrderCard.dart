@@ -19,7 +19,7 @@ class OrderCard extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const ProcessedOrderClient()
+                    builder: (context) => ProcessedOrderClient(orderId: orderItem.id,)
                 )
             );
           },
@@ -32,15 +32,30 @@ class OrderCard extends StatelessWidget {
                     children: [
                       Text(orderItem.business!.name ?? "", style: const TextStyle(color: Colors.black)),
                       const Expanded(child: Text("")),
-                      const Expanded(
+                      Expanded(
                           child: Align(
                               alignment: Alignment.topRight,
-                              child: Text(
-                                "Active",
-                                style: TextStyle(color: Colors.green),
-                              )
+                              child: OrderStatus(orderItem: orderItem)
                           )
                       ),
+                    ]
+                ),
+                Row(
+                    children: [
+                      Text('Products: ${orderItem.totalProducts}', style: TextStyle(color: Colors.black),),
+                      Expanded(child: Text("")),
+                    ]
+                ),
+                Row(
+                    children: [
+                      Text('Price: \$${orderItem.totalPrice}', style: TextStyle(color: Colors.black),),
+                      Expanded(child: Text("")),
+                    ]
+                ),
+                Row(
+                    children: [
+                      Text('Address: ${orderItem?.address?.address ?? ""}', style: TextStyle(color: Colors.black),),
+                      Expanded(child: Text("")),
                     ]
                 ),
                 Row(
@@ -49,16 +64,51 @@ class OrderCard extends StatelessWidget {
                       const Expanded(child: Text("")),
                     ]
                 ),
-                Row(
-                    children: const [
-                      Text('Price: \$0000', style: TextStyle(color: Colors.black),),
-                      Expanded(child: Text("")),
-                    ]
-                ),
               ],
             ),
           ),
         )
+    );
+  }
+}
+
+class OrderStatus extends StatelessWidget {
+  const OrderStatus({
+    super.key,
+    required this.orderItem,
+  });
+
+  final Order orderItem;
+
+  @override
+  Widget build(BuildContext context) {
+    String status = "active";
+
+    if(orderItem.acceptedAt != null){
+      status = "accepted";
+    }
+    if(orderItem.assignedPickupAt != null){
+      status = "pickup assigned";
+    }
+    if(orderItem.pickupClientAt != null){
+      status = "picked up";
+    }
+    if(orderItem.processingAt != null){
+      status = "processing";
+    }
+    if(orderItem.finishedAt != null){
+      status = "finished";
+    }
+    if(orderItem.deliveredClientAt != null){
+      status = "delivered";
+    }
+    if(orderItem.rejectedAt != null){
+      status = "rejected";
+    }
+
+    return Text(
+      status,
+      style: TextStyle(color: Colors.green),
     );
   }
 }
