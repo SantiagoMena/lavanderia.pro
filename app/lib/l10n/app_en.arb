@@ -203,5 +203,9 @@
   "processOrderLabel": "☝️ Process Order",
   "@processOrderLabel": {
     "description": "Process Order Label"
+  },
+  "statusNew": "New",
+  "@statusNew": {
+    "description": "Status New"
   }
 }

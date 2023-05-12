@@ -46,5 +46,7 @@
   "appBarCheckOrder": "Verificar Orden {price}",
   "productsSelectedLabel": "{products} Productos Seleccionados",
   "showFullOrderLabel": "Ver orden completa",
-  "processOrderLabel": "☝️ Procesar Orden"
+  "processOrderLabel": "☝️ Procesar Orden",
+  "statusNew": "Nuevo",
+  "priceLabel": "Precio"
 }
