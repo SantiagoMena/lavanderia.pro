@@ -67,5 +67,33 @@ class Order {
 
   num get totalPrice => products!.isNotEmpty ? products!.map((e) => (e.product!.price ?? 0) * (e.amount ?? 0) ).reduce((value, element) => element != null ? value! + element : value) ?? 0 : 0;
   num get totalProducts => products!.isNotEmpty ? products!.map((e) => (e.amount ?? 0) ).reduce((value, element) => element != null ? value! + element : value) ?? 0 : 0;
+
+  String getStatus(){
+    String status = "active";
+
+    if(acceptedAt != null){
+      status = "accepted";
+    }
+    if(assignedPickupAt != null){
+      status = "pickup assigned";
+    }
+    if(pickupClientAt != null){
+      status = "picked up";
+    }
+    if(processingAt != null){
+      status = "processing";
+    }
+    if(finishedAt != null){
+      status = "finished";
+    }
+    if(deliveredClientAt != null){
+      status = "delivered";
+    }
+    if(rejectedAt != null){
+      status = "rejected";
+    }
+
+    return status;
+  }
 }
 
