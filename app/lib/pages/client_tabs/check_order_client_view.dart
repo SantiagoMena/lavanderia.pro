@@ -8,7 +8,7 @@ import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart
 import 'package:lavanderiapro/services/get_address_client_service.dart';
 import 'package:lavanderiapro/services/get_profile_service.dart';
 import 'package:lavanderiapro/services/post_order_service.dart';
-import 'package:lavanderiapro/widgets/ProductCardCart.dart';
+import 'package:lavanderiapro/widgets/product_card_cart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lavanderiapro/models/product.dart';
 

@@ -7,7 +7,7 @@ import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart
 import 'package:lavanderiapro/services/get_all_products_business_service.dart';
 import 'package:lavanderiapro/services/search_business_service.dart';
 import 'package:lavanderiapro/models/product.dart';
-import 'package:lavanderiapro/widgets/ProductCardCart.dart';
+import 'package:lavanderiapro/widgets/product_card_cart.dart';
 
 class BusinessClientView extends StatefulWidget {
    BusinessClientView({super.key, this.token, this.businessItem});
