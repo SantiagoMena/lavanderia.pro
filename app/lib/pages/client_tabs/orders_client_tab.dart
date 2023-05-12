@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lavanderiapro/models/order.dart';
 import 'package:lavanderiapro/pages/client_tabs/processed_order_client_view.dart';
 import 'package:lavanderiapro/services/get_all_orders_client_service.dart';
-import 'package:lavanderiapro/widgets/OrderCard.dart';
+import 'package:lavanderiapro/widgets/order_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OrdersClientTab extends StatefulWidget {

@@ -82,33 +82,15 @@ class OrderStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String status = "active";
 
-    if(orderItem.acceptedAt != null){
-      status = "accepted";
-    }
-    if(orderItem.assignedPickupAt != null){
-      status = "pickup assigned";
-    }
-    if(orderItem.pickupClientAt != null){
-      status = "picked up";
-    }
-    if(orderItem.processingAt != null){
-      status = "processing";
-    }
-    if(orderItem.finishedAt != null){
-      status = "finished";
-    }
-    if(orderItem.deliveredClientAt != null){
-      status = "delivered";
-    }
-    if(orderItem.rejectedAt != null){
-      status = "rejected";
+
+    if(orderItem.getStatus() == 'new') {
+
     }
 
     return Text(
-      status,
-      style: TextStyle(color: Colors.green),
+      orderItem.getStatus(),
+      style: const TextStyle(color: Colors.green),
     );
   }
 }
