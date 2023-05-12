@@ -107,14 +107,14 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
                                       String token = snapshot.data!.getString('token') ?? "";
                                       if(widget.order!.addressId.isEmpty || widget.order!.addressId == ""){
                                         getAddressClient(token).then((addresses) {
-                                          // TODO: Set default address
+                                          // Set default address
                                           widget.order!.setAddressId(addresses.first.id ?? "");
                                             postOrder(token, widget.order).then((order) {
                                               if(order != null) {
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder: (context) => const ProcessedOrderClient()
+                                                        builder: (context) => ProcessedOrderClient(orderId: order.id,)
                                                     )
                                                 );
                                               } else {
@@ -137,7 +137,7 @@ class _CheckOrderClientState extends State<CheckOrderClient> {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => const ProcessedOrderClient()
+                                                    builder: (context) => ProcessedOrderClient(orderId: order.id,)
                                                 )
                                             );
                                           } else {
